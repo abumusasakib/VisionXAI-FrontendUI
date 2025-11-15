@@ -1,0 +1,361 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:flutter/foundation.dart'; // Import for kIsWeb
+import 'package:vision_xai/features/image_caption/presentation/screen/widget/attention_view.dart';
+
+import 'package:vision_xai/l10n/localization_extension.dart';
+import 'package:go_router/go_router.dart';
+import 'package:vision_xai/core/routes/app_routes.dart';
+import 'package:vision_xai/features/settings/presentation/cubit/settings_feature_cubit.dart';
+import 'package:vision_xai/features/settings/domain/entity/settings_entity.dart';
+
+import '../cubit/home/home_cubit.dart';
+import '../cubit/home/home_state.dart';
+import '../cubit/image_caption/image_caption_cubit.dart';
+
+
+class Home extends StatelessWidget {
+  const Home({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(context.tr.appTitle),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              // Navigate to the settings page using GoRouter
+              context.push(AppRoutes.settings);
+            },
+            icon: const Icon(Icons.settings),
+          ),
+        ],
+      ),
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<SettingsFeatureCubit, SettingsEntity?>(
+            listener: (context, state) {
+              if (state != null) {
+                debugPrint(
+                    'Settings changed: locale=${state.locale} ip=${state.ip}');
+              }
+            },
+          ),
+          BlocListener<HomeCubit, HomeState>(
+            listener: (context, state) {
+              if (state.errorMessage != null) {
+                // Show error dialog
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text(context.tr.errorTitle),
+                      content: Text(state.errorMessage!),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            context.read<HomeCubit>().reset();
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(context.tr.ok),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+          ),
+          BlocListener<HomeCubit, HomeState>(
+            listenWhen: (previous, current) =>
+                current.infoMessage != null &&
+                current.infoMessage != previous.infoMessage,
+            listener: (context, state) {
+              if (state.infoMessage != null) {
+                final messenger = ScaffoldMessenger.of(context);
+                messenger.hideCurrentSnackBar();
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(state.infoMessage!),
+                    behavior: SnackBarBehavior.floating,
+                    duration: const Duration(milliseconds: 2500),
+                  ),
+                );
+                context.read<HomeCubit>().clearInfoMessage();
+              }
+            },
+          ),
+        ],
+        child: BlocConsumer<HomeCubit, HomeState>(
+          listener: (context, state) {
+            if (state.errorMessage != null) {
+              // Handle errors
+              debugPrint('Error: ${state.errorMessage}');
+            }
+          },
+          builder: (context, state) {
+            final cubit = context.read<HomeCubit>();
+            final picker = ImagePicker();
+
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                final isWideScreen = constraints.maxWidth > 600;
+
+                return SafeArea(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: isWideScreen
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: _buildImageDisplay(context, state),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  flex: 2,
+                                  child: _buildControls(
+                                      context, cubit, state, picker),
+                                ),
+                              ],
+                            )
+                          : Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                _buildImageDisplay(context, state),
+                                const SizedBox(height: 16),
+                                _buildControls(context, cubit, state, picker),
+                              ],
+                            ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImageDisplay(BuildContext context, HomeState state) {
+    if (state.imageFile != null) {
+      return GestureDetector(
+        onLongPress: () => _showPreviewDialog(context, state.imageFile!),
+        child: kIsWeb
+            ? Image.network(
+                state.imageFile!.path,
+                height: 200,
+                fit: BoxFit.cover,
+              )
+            : Image.file(
+                File(state.imageFile!.path),
+                height: 200,
+                fit: BoxFit.cover,
+              ),
+      );
+    }
+
+    // Fallback placeholder
+    return Container(
+      height: 200,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black54, width: 2),
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Center(
+        child: Text(context.tr.noImageSelected),
+      ),
+    );
+  }
+
+  void _showPreviewDialog(BuildContext context, XFile imageFile) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.all(16),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: screenHeight * 0.8,
+              maxWidth: screenWidth * 0.9,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: ClipRRect(
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(4)),
+                    child: kIsWeb
+                        ? Image.network(
+                            imageFile.path,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.file(
+                            File(imageFile.path),
+                            height: 200,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(context.tr.ok),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildControls(BuildContext context, HomeCubit cubit, HomeState state,
+      ImagePicker picker) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Button to Select Image
+        ElevatedButton.icon(
+          onPressed: () async {
+            final pickedImage = await picker.pickImage(
+              source: ImageSource.gallery,
+            );
+            if (pickedImage != null) {
+              cubit.selectImage(pickedImage);
+            }
+          },
+          icon: const Icon(Icons.photo_library),
+          label: Text(context.tr.selectImageFromGallery),
+        ),
+        const SizedBox(height: 16),
+        if (!kIsWeb && !Platform.isWindows)
+          ElevatedButton.icon(
+            onPressed: () async {
+              final pickedImage = await picker.pickImage(
+                source: ImageSource.camera,
+              );
+              if (pickedImage != null) {
+                cubit.selectImage(pickedImage);
+              }
+            },
+            icon: const Icon(Icons.camera_alt),
+            label: Text(context.tr.camera),
+          ),
+        const SizedBox(height: 16),
+        // Button to Upload Image
+        ElevatedButton.icon(
+          onPressed: state.isLoading
+              ? null
+              : () async {
+                  if (context.mounted) {
+                    cubit.uploadAndGenerateCaption(context);
+                  }
+                },
+          icon: const Icon(Icons.cloud_upload),
+          label: state.isLoading
+              ? const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                )
+              : Text(context.tr.generateCaption),
+        ),
+        const SizedBox(height: 16),
+        if (state.isLoading)
+          ElevatedButton.icon(
+            onPressed: () {
+              cubit.stopCaptionGeneration(context);
+            },
+            icon: const Icon(Icons.stop),
+            label: Text(context.tr.stopCaptionGeneration),
+          ),
+        const SizedBox(height: 16),
+        if (state.isLoading)
+          Center(
+            child: Text(
+              context.tr.generatingCaption,
+              style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+            ),
+          ),
+        const SizedBox(height: 16),
+        // Text Output for Caption
+        Container(
+          constraints: const BoxConstraints(minHeight: 100),
+          child: Center(
+            child: state.testOutput.isNotEmpty
+                ? Column(
+                    children: [
+                      Text(
+                        state.testOutput,
+                        textAlign: TextAlign.center,
+                        style:
+                            const TextStyle(fontSize: 18, color: Colors.black),
+                      ),
+                      const SizedBox(height: 12),
+                      // Show attention image and token-level UI when image-captioned entity is available
+                      BlocBuilder<ImageCaptionCubit, ImageCaptionState>(
+                        builder: (context, imgState) {
+                          return imgState.maybeWhen(
+                              loaded: (entity) =>
+                                  AttentionView(entity: entity),
+                              orElse: () => const SizedBox.shrink());
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        transitionBuilder: (child, animation) => FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        ),
+                        child: state.isSpeaking
+                            // Stop button (only visible when speaking)
+                            ? ElevatedButton.icon(
+                                key: const ValueKey('stopButton'),
+                                onPressed: () {
+                                  context.read<HomeCubit>().stopSpeaking();
+                                },
+                                icon: const Icon(Icons.stop),
+                                label: Text(context.tr.stop),
+                              )
+                            // Listen button (only visible when not speaking)
+                            : ElevatedButton.icon(
+                                key: const ValueKey('listenButton'),
+                                onPressed: () {
+                                  context
+                                      .read<HomeCubit>()
+                                      .speakCaption(state.testOutput, context);
+                                },
+                                icon: const Icon(Icons.volume_up),
+                                label: Text(context.tr.listen),
+                              ),
+                      ),
+                    ],
+                  )
+                : Text(
+                    context.tr.captionText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 18, color: Colors.black54),
+                  ),
+          ),
+        ),
+      ],
+    );
+  }
+}
