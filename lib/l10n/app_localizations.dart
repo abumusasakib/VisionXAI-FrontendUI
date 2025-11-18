@@ -218,6 +218,12 @@ abstract class AppLocalizations {
   /// **'OK'**
   String get ok;
 
+  /// The language information for the settings screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
   /// The title for the language settings screen.
   ///
   /// In en, this message translates to:
@@ -391,6 +397,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No caption available.'**
   String get captionMissing;
+
+  /// Label for the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Palette Settings'**
+  String get paletteSettings;
+
+  /// Label for the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Color Configuration'**
+  String get colorConfiguration;
+
+  /// Label for the primary color setting in the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary Color'**
+  String get primaryColor;
+
+  /// Label for the secondary color setting in the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Secondary Color'**
+  String get secondaryColor;
+
+  /// Label for the background color setting in the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Background Color'**
+  String get backgroundColor;
+
+  /// Label for the actions section in the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get actionsSection;
+
+  /// Label for the save action in the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// Label for the delete action in the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// Label for the clear action in the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
+  /// Label for the cancel action in the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// Title for the preset name alert dialog in the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Name Preset'**
+  String get presetNameAlertTitle;
+
+  /// Placeholder text for the preset name input field in the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Provide preset name'**
+  String get presetNamePlaceholder;
+
+  /// Title for the presets list in the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Presets List'**
+  String get presetsList;
+
+  /// Label for the save preset action in the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Preset'**
+  String get savePreset;
+
+  /// Label for the delete preset title in the palette settings section.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Preset?'**
+  String get deletePresetTitle;
+
+  /// Error message when the server returns a bad response.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete preset {presetName}?'**
+  String deletePresetMessage(Object presetName);
 }
 
 class _AppLocalizationsDelegate

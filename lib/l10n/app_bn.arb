@@ -154,5 +154,74 @@
   "captionMissing": "কোনো ক্যাপশন প্রাপ্ত হয়নি।",
   "@captionMissing": {
     "description": "Error message when no caption is received from the server."
+  },
+  "paletteSettings": "প্যালেট সেটিংস",
+  "@paletteSettings": {
+    "description": "Label for the palette settings section."
+  },
+  "colorConfiguration": "রঙ কনফিগারেশন",
+  "@colorConfiguration": {
+    "description": "Label for the palette settings section."
+  },
+  "primaryColor": "প্রাথমিক রঙ",
+  "@primaryColor": {
+    "description": "Label for the primary color setting in the palette settings section."
+  },
+  "secondaryColor": "দ্বিতীয় রঙ",
+  "@secondaryColor": {
+    "description": "Label for the secondary color setting in the palette settings section."
+  },
+  "backgroundColor": "পটভূমির রঙ",
+  "@backgroundColor": {
+    "description": "Label for the background color setting in the palette settings section."
+  },
+  "actionsSection": "কার্যক্রম",
+  "@actionsSection": {
+    "description": "Label for the actions section in the palette settings section."
+  },
+  "save": "সংরক্ষণ করুন",
+  "@save": {
+    "description": "Label for the save action in the palette settings section."
+  },
+  "delete": "মুছে ফেলুন",
+  "@delete": {
+    "description": "Label for the delete action in the palette settings section."
+  },
+  "reset": "রিসেট করুন",
+  "@reset": {
+    "description": "Label for the reset action in the palette settings section."
+  },
+  "cancel": "বাতিল করুন",
+  "@cancel": {
+    "description": "Label for the cancel action in the palette settings section."
+  },
+  "presetNameAlertTitle": "নাম প্রিসেট করুন",
+  "@presetNameAlertTitle": {
+    "description": "Title for the preset name alert dialog in the palette settings section."
+  },
+  "presetNamePlaceholder": "প্রিসেট নাম প্রদান করুন",
+  "@presetNamePlaceholder": {
+    "description": "Placeholder text for the preset name input field in the palette settings section."
+  },
+  "presetsList": "প্রিসেট তালিকা",
+  "@presetsList": {
+    "description": "Title for the presets list in the palette settings section."
+  },
+  "savePreset": "প্রিসেট সংরক্ষণ করুন",
+  "@savePreset": {
+    "description": "Label for the save preset action in the palette settings section."
+  },
+  "deletePresetTitle": "প্রিসেট মুছে ফেলবেন?",
+  "@deletePresetTitle": {
+    "description": "Label for the delete preset title in the palette settings section."
+  },
+  "deletePresetMessage": "প্রিসেট {presetName} মুছে ফেলবেন?",
+  "@deletePresetMessage": {
+    "description": "Error message when the server returns a bad response.",
+    "placeholders": {
+      "presetName": {
+        "description": "The name of the preset to be deleted."
+      }
+    }
   }
 }

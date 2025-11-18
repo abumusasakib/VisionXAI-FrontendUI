@@ -69,6 +69,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ok => 'OK';
 
   @override
+  String get language => 'Language';
+
+  @override
   String get languageSettings => 'Language Settings';
 
   @override
@@ -166,4 +169,54 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get captionMissing => 'No caption available.';
+
+  @override
+  String get paletteSettings => 'Palette Settings';
+
+  @override
+  String get colorConfiguration => 'Color Configuration';
+
+  @override
+  String get primaryColor => 'Primary Color';
+
+  @override
+  String get secondaryColor => 'Secondary Color';
+
+  @override
+  String get backgroundColor => 'Background Color';
+
+  @override
+  String get actionsSection => 'Actions';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get reset => 'Reset';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get presetNameAlertTitle => 'Name Preset';
+
+  @override
+  String get presetNamePlaceholder => 'Provide preset name';
+
+  @override
+  String get presetsList => 'Presets List';
+
+  @override
+  String get savePreset => 'Save Preset';
+
+  @override
+  String get deletePresetTitle => 'Delete Preset?';
+
+  @override
+  String deletePresetMessage(Object presetName) {
+    return 'Delete preset $presetName?';
+  }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:vision_xai/l10n/app_localizations_en.dart';
+import 'package:vision_xai/l10n/app_localizations.dart';
 
 extension LocalizationExtension on BuildContext {
   AppLocalizations get tr {
@@ -9,7 +8,7 @@ extension LocalizationExtension on BuildContext {
       debugPrint('ERROR: AppLocalizations.of(this) is null');
       debugPrint(
           "Localizations not found for context! Using English fallback.");
-      return AppLocalizationsEn() as AppLocalizations;
+      return lookupAppLocalizations(const Locale('en'));
     }
     return localizations;
   }

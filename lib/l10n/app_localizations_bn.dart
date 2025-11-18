@@ -12,7 +12,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get appTitle => 'VisionXAI';
 
   @override
-  String get settingsScreenTitle => 'Settings';
+  String get settingsScreenTitle => 'সেটিংস';
 
   @override
   String get ip => 'IP ঠিকানা';
@@ -67,6 +67,9 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get ok => 'ঠিক আছে';
+
+  @override
+  String get language => 'ভাষা';
 
   @override
   String get languageSettings => 'ভাষা সেটিংস';
@@ -166,4 +169,54 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get captionMissing => 'কোনো ক্যাপশন প্রাপ্ত হয়নি।';
+
+  @override
+  String get paletteSettings => 'প্যালেট সেটিংস';
+
+  @override
+  String get colorConfiguration => 'রঙ কনফিগারেশন';
+
+  @override
+  String get primaryColor => 'প্রাথমিক রঙ';
+
+  @override
+  String get secondaryColor => 'দ্বিতীয় রঙ';
+
+  @override
+  String get backgroundColor => 'পটভূমির রঙ';
+
+  @override
+  String get actionsSection => 'কার্যক্রম';
+
+  @override
+  String get save => 'সংরক্ষণ করুন';
+
+  @override
+  String get delete => 'মুছে ফেলুন';
+
+  @override
+  String get reset => 'রিসেট করুন';
+
+  @override
+  String get cancel => 'বাতিল করুন';
+
+  @override
+  String get presetNameAlertTitle => 'নাম প্রিসেট করুন';
+
+  @override
+  String get presetNamePlaceholder => 'প্রিসেট নাম প্রদান করুন';
+
+  @override
+  String get presetsList => 'প্রিসেট তালিকা';
+
+  @override
+  String get savePreset => 'প্রিসেট সংরক্ষণ করুন';
+
+  @override
+  String get deletePresetTitle => 'প্রিসেট মুছে ফেলবেন?';
+
+  @override
+  String deletePresetMessage(Object presetName) {
+    return 'প্রিসেট $presetName মুছে ফেলবেন?';
+  }
 }

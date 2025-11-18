@@ -224,5 +224,74 @@
   "captionMissing": "No caption available.",
   "@captionMissing": {
     "description": "Error message when the server does not provide a caption."
+  },
+  "paletteSettings": "Palette Settings",
+  "@paletteSettings": {
+    "description": "Label for the palette settings section."
+  },
+  "colorConfiguration": "Color Configuration",
+  "@colorConfiguration": {
+    "description": "Label for the palette settings section."
+  },
+  "primaryColor": "Primary Color",
+  "@primaryColor": {
+    "description": "Label for the primary color setting in the palette settings section."
+  },
+  "secondaryColor": "Secondary Color",
+  "@secondaryColor": {
+    "description": "Label for the secondary color setting in the palette settings section."
+  },
+  "backgroundColor": "Background Color",
+  "@backgroundColor": {
+    "description": "Label for the background color setting in the palette settings section."
+  },
+  "actionsSection": "Actions",
+  "@actionsSection": {
+    "description": "Label for the actions section in the palette settings section."
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Label for the save action in the palette settings section."
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Label for the delete action in the palette settings section."
+  },
+  "reset": "Reset",
+  "@reset": {
+    "description": "Label for the clear action in the palette settings section."
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Label for the cancel action in the palette settings section."
+  },
+  "presetNameAlertTitle": "Name Preset",
+  "@presetNameAlertTitle": {
+    "description": "Title for the preset name alert dialog in the palette settings section."
+  },
+  "presetNamePlaceholder": "Provide preset name",
+  "@presetNamePlaceholder": {
+    "description": "Placeholder text for the preset name input field in the palette settings section."
+  },
+  "presetsList": "Presets List",
+  "@presetsList": {
+    "description": "Title for the presets list in the palette settings section."
+  },
+  "savePreset": "Save Preset",
+  "@savePreset": {
+    "description": "Label for the save preset action in the palette settings section."
+  },
+  "deletePresetTitle": "Delete Preset?",
+  "@deletePresetTitle": {
+    "description": "Label for the delete preset title in the palette settings section."
+  },
+  "deletePresetMessage": "Delete preset {presetName}?",
+  "@deletePresetMessage": {
+    "description": "Error message when the server returns a bad response.",
+    "placeholders": {
+      "presetName": {
+        "description": "The name of the preset to be deleted."
+      }
+    }
   }
 }
