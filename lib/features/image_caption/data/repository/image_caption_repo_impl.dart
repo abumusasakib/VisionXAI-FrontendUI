@@ -6,6 +6,7 @@ import '../mapper/image_caption_response_to_entity_group_mapper.dart';
 import '../datasource/remote/image_caption_remote.dart';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
+import 'dart:developer' as developer;
 
 class ImageCaptionRepoImpl implements ImageCaptionRepo {
   ImageCaptionRepoImpl({
@@ -30,7 +31,21 @@ class ImageCaptionRepoImpl implements ImageCaptionRepo {
           await _remote.captionImage(multipart, cancelToken: cancelToken);
       final entityGroup = _responseToEntityGroupMapper.map(response);
       return Right(entityGroup);
-    } catch (e) {
+    } on DioException catch (e, st) {
+      // Log full Dio exception details for debugging (response, headers, stack)
+      try {
+        developer.log('DioException in ImageCaptionRepoImpl.call: $e',
+            name: 'ImageCaptionRepoImpl', stackTrace: st);
+        if (e.response != null) {
+          developer.log('DioException response: ${e.response}',
+              name: 'ImageCaptionRepoImpl');
+        }
+      } catch (_) {}
+      // Propagate DioException as-is (it implements Exception)
+      return Left(e);
+    } catch (e, st) {
+      developer.log('Exception in ImageCaptionRepoImpl.call: $e',
+          name: 'ImageCaptionRepoImpl', stackTrace: st);
       return Left(Exception(e.toString()));
     }
   }

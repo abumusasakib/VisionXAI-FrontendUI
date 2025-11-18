@@ -1,9 +1,12 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:vision_xai/features/image_caption/presentation/screen/widget/markers_widget.dart';
 import '../../../data/model/topk_item.dart';
+import '../../../data/model/attention_grid.dart';
 import '../../../domain/entity/image_caption_entity.dart';
+import 'package:vision_xai/features/image_caption/presentation/screen/widget/image_display.dart';
 
-/// Public attention view widget extracted for reuse and testing.
+/// Attention view widget
 class AttentionView extends StatefulWidget {
   final ImageCaptionEntity entity;
 
@@ -30,26 +33,83 @@ class _AttentionViewState extends State<AttentionView> {
     List<List<TopKItem>>? topk;
     if (rawTopk is List) {
       try {
-        topk = rawTopk
-            .map<List<TopKItem>>((outer) => (outer as List).cast<TopKItem>())
-            .toList();
+        final parsed = <List<TopKItem>>[];
+        for (final outer in rawTopk) {
+          if (outer is List) {
+            final inner = <TopKItem>[];
+            for (final entry in outer) {
+              if (entry is TopKItem) {
+                inner.add(entry);
+              } else if (entry is Map) {
+                inner.add(TopKItem.fromMap(Map<String, dynamic>.from(entry)));
+              } else if (entry is List) {
+                inner.add(TopKItem.fromList(entry));
+              } else {
+                // skip unknown entry types
+              }
+            }
+            parsed.add(inner);
+          }
+        }
+        topk = parsed;
       } catch (_) {
         topk = null;
       }
     }
 
-    // Grid override support: server may provide explicit grid size
+    // Grid override support: prefer typed grid, fall back to primitives
     int? gridRows;
     int? gridCols;
-    final grid = widget.entity.attributes['attention_grid'];
-    if (grid is List && grid.length >= 2) {
-      gridRows = (grid[0] as int);
-      gridCols = (grid[1] as int);
+    final typedGrid = widget.entity.attributes['attention_grid_typed'];
+    final rawGrid = widget.entity.attributes['attention_grid'];
+    final rawGridMap = widget.entity.attributes['attention_grid_map'];
+
+    if (typedGrid is AttentionGrid) {
+      gridRows = typedGrid.rows;
+      gridCols = typedGrid.cols;
+    } else if (rawGrid is AttentionGrid) {
+      gridRows = rawGrid.rows;
+      gridCols = rawGrid.cols;
+    } else if (rawGrid is List && rawGrid.length >= 2) {
+      final r = rawGrid[0];
+      final c = rawGrid[1];
+      if (r is num) {
+        gridRows = r.toInt();
+      } else if (r is String) {
+        gridRows = int.tryParse(r);
+      }
+      if (c is num) {
+        gridCols = c.toInt();
+      } else if (c is String) {
+        gridCols = int.tryParse(c);
+      }
+    } else if (rawGridMap is Map) {
+      final r = rawGridMap['rows'];
+      final c = rawGridMap['cols'];
+      if (r is num) {
+        gridRows = r.toInt();
+      } else if (r is String) {
+        gridRows = int.tryParse(r);
+      }
+      if (c is num) {
+        gridCols = c.toInt();
+      } else if (c is String) {
+        gridCols = int.tryParse(c);
+      }
     }
+
     final shape = widget.entity.attributes['attention_shape'];
     if (shape is Map) {
-      gridRows ??= shape['rows'] as int?;
-      gridCols ??= shape['cols'] as int?;
+      gridRows ??= (shape['rows'] is num)
+          ? (shape['rows'] as num).toInt()
+          : (shape['rows'] is String
+              ? int.tryParse(shape['rows'].toString())
+              : null);
+      gridCols ??= (shape['cols'] is num)
+          ? (shape['cols'] as num).toInt()
+          : (shape['cols'] is String
+              ? int.tryParse(shape['cols'].toString())
+              : null);
     }
 
     return Column(
@@ -64,13 +124,10 @@ class _AttentionViewState extends State<AttentionView> {
                 return Stack(
                   children: [
                     Positioned.fill(
-                      child: Image.memory(
-                        imageBytes,
-                        fit: BoxFit.cover,
-                      ),
+                      child: imageWidgetFromBytes(context, imageBytes),
                     ),
                     if (topk != null && _selectedTokenIndex != null)
-                      ..._buildMarkers(
+                      ...markersWidget(
                           topk, _selectedTokenIndex!, width, height,
                           gridRows: gridRows, gridCols: gridCols),
                   ],
@@ -116,50 +173,5 @@ class _AttentionViewState extends State<AttentionView> {
         ),
       ],
     );
-  }
-
-  List<Widget> _buildMarkers(
-      List<List<TopKItem>> topk, int tokenIndex, double width, double height,
-      {int? gridRows, int? gridCols}) {
-    if (tokenIndex >= topk.length) return [];
-    final items = topk[tokenIndex];
-    if (items.isEmpty) return [];
-
-    int maxRow = 0, maxCol = 0;
-    for (final item in items) {
-      if (item.row > maxRow) maxRow = item.row;
-      if (item.col > maxCol) maxCol = item.col;
-    }
-
-    final rows = gridRows ?? (maxRow + 1);
-    final cols = gridCols ?? (maxCol + 1);
-    final cellW = width / (cols > 0 ? cols : 1);
-    final cellH = height / (rows > 0 ? rows : 1);
-
-    return items.asMap().entries.map((entry) {
-      final i = entry.key;
-      final t = entry.value;
-      // Marker size and opacity reflect score magnitude
-      final normalized = (t.score.clamp(0.0, 1.0));
-      final markerSize = 8.0 + (normalized * 20.0); // 8..28
-      final opacity = 0.35 + (normalized * 0.6); // 0.35..0.95
-
-      final left = (t.col + 0.5) * cellW - (markerSize / 2);
-      final top = (t.row + 0.5) * cellH - (markerSize / 2);
-      return Positioned(
-        left: left.clamp(0.0, width - markerSize),
-        top: top.clamp(0.0, height - markerSize),
-        child: Container(
-          key: Key('marker-$tokenIndex-$i'),
-          width: markerSize,
-          height: markerSize,
-          decoration: BoxDecoration(
-            color: Colors.red.withOpacity(opacity),
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 1.0),
-          ),
-        ),
-      );
-    }).toList();
   }
 }

@@ -13,7 +13,7 @@ class ImageCaptionRemote {
     final form = FormData.fromMap({'image': image});
     final uri = '${baseUrl ?? ''}/caption';
     final response = await dio.post(uri, data: form, cancelToken: cancelToken);
-    return ImageCaptionResponseDto.fromJson(
-        response.data as Map<String, dynamic>);
+    final body = response.data as Map<String, dynamic>;
+    return ImageCaptionResponseDto.fromMap(body);
   }
 }

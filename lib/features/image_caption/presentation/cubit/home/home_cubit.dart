@@ -5,6 +5,8 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vision_xai/core/utils/error_message_mapper.dart';
+import 'package:vision_xai/core/services/notification_service.dart';
 import '../../../../../core/common/client/tts_client.dart';
 import 'package:dio/dio.dart';
 import '../image_caption/image_caption_cubit.dart';
@@ -21,8 +23,12 @@ class HomeCubit extends Cubit<HomeState> {
 
   final TtsClient _ttsClient;
 
-  HomeCubit(this._imageCaptionCubit, {TtsClient? ttsClient})
-      : _ttsClient = ttsClient ?? FlutterTtsClient(),
+  final NotificationService _notificationService;
+
+  HomeCubit(this._imageCaptionCubit,
+      {required NotificationService notificationService, TtsClient? ttsClient})
+      : _notificationService = notificationService,
+        _ttsClient = ttsClient ?? FlutterTtsClient(),
         super(HomeState.initial()) {
     _configureTts();
   }
@@ -50,7 +56,17 @@ class HomeCubit extends Cubit<HomeState> {
       emit(state.copyWith(isSpeaking: false));
     });
 
-    if (Platform.isIOS) {
+    // Guard Platform checks because `dart:io` operations are unsupported on web
+    // and may throw at runtime (Platform._operatingSystem). Use a try/catch
+    // so web builds won't crash when accessing Platform.
+    bool isIos = false;
+    try {
+      isIos = Platform.isIOS;
+    } catch (_) {
+      isIos = false;
+    }
+
+    if (isIos) {
       await _ttsClient.setSharedInstance(true);
       await _ttsClient.setIosAudioCategory(
         IosTextToSpeechAudioCategory.ambient,
@@ -117,13 +133,23 @@ class HomeCubit extends Cubit<HomeState> {
 
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
-    try {
+    // Wrap the upload+generation flow so we return a Result and optionally
+    // show a SnackBar on error (handled inside runWithErrorHandling).
+    final result = await runWithErrorHandling<void>(() async {
       final xFile = state.imageFile!;
+      // Log effective base URL constructed from the current state (IP/port)
+      // and file details so developers can verify what the client will call.
+      try {
+        final effectiveBase = 'http://${state.ip.trim()}:${state.port.trim()}';
+        log('Uploading image to $effectiveBase/caption', name: 'HomeCubit');
+        log('Uploading file: ${xFile.name}, size: ${await xFile.length()} bytes',
+            name: 'HomeCubit');
+      } catch (_) {}
+
       final bytes = await xFile.readAsBytes();
       final filename = xFile.name;
 
       _isCaptionGenerationInProgress = true;
-
       _cancelToken = CancelToken();
 
       // Trigger API via ImageCaptionCubit and get the terminal state directly
@@ -134,35 +160,35 @@ class HomeCubit extends Cubit<HomeState> {
         initial: (_) {},
         loading: (_) {},
         loaded: (loaded) {
-          emit(state.copyWith(
-              testOutput: loaded.entity.attributes['caption'] ?? '',
-              isLoading: false));
+          if (context.mounted) {
+            emit(state.copyWith(
+                testOutput: loaded.entity.attributes['caption'] ?? '',
+                isLoading: false));
+          }
         },
         failure: (failure) {
-          if (context.mounted) {
-            emit(state.copyWith(
-                errorMessage: failure.error.toString(), isLoading: false));
-          }
+          // Convert terminal failure into an exception so runWithErrorHandling
+          // can catch it and return a failure Result.
+          final err = failure.error;
+          throw err;
         },
         unKnown: (_) {
-          if (context.mounted) {
-            emit(state.copyWith(
-                errorMessage: context.tr.captionMissing, isLoading: false));
-          }
+          throw Exception(context.tr.captionMissing);
         },
       );
-    } catch (e, stackTrace) {
-      log('Exception in uploadAndGenerateCaption: $e',
-          stackTrace: stackTrace, name: 'HomeCubit');
-      if (context.mounted) {
-        emit(state.copyWith(
-            errorMessage: context.tr.unknownError, isLoading: false));
-      }
-    } finally {
-      _isCaptionGenerationInProgress = false;
-      _cancelToken = null;
-      emit(state.copyWith(isLoading: false));
+    },
+        showSnackOnError: true,
+        notificationService: _notificationService,
+        context: context);
+
+    if (!result.isSuccess) {
+      // Ensure UI reflects error
+      emit(state.copyWith(errorMessage: result.errorMessage, isLoading: false));
     }
+
+    _isCaptionGenerationInProgress = false;
+    _cancelToken = null;
+    emit(state.copyWith(isLoading: false));
   }
 
   /// Stops the caption generation flow
