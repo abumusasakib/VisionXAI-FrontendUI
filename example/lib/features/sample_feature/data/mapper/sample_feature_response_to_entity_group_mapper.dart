@@ -6,13 +6,12 @@ import 'sample_feature_json_to_model_mapper.dart';
 import 'sample_feature_model_to_entity_mapper.dart';
 
 /// Maps a typed response DTO to an entity group.
-class SampleFeatureResponseToEntityGroupMapper
-    implements Mapper<SampleFeatureResponseDto, SampleFeatureEntityGroup> {
+class SampleFeatureResponseToEntityGroupMapper implements Mapper<SampleFeatureResponseDto, SampleFeatureEntityGroup> {
   const SampleFeatureResponseToEntityGroupMapper({
     required SampleFeatureJsonToModelMapper jsonToModelMapper,
     required SampleFeatureModelToEntityMapper modelToEntityMapper,
-  })  : _jsonToModelMapper = jsonToModelMapper,
-        _modelToEntityMapper = modelToEntityMapper;
+  }) : _jsonToModelMapper = jsonToModelMapper,
+       _modelToEntityMapper = modelToEntityMapper;
 
   final SampleFeatureJsonToModelMapper _jsonToModelMapper;
   final SampleFeatureModelToEntityMapper _modelToEntityMapper;

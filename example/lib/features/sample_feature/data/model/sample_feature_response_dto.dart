@@ -16,7 +16,6 @@ class SampleFeatureResponseDto {
     this.statusCode,
   });
 
-  factory SampleFeatureResponseDto.fromJson(Map<String, dynamic> json) =>
-      _$SampleFeatureResponseDtoFromJson(json);
+  factory SampleFeatureResponseDto.fromJson(Map<String, dynamic> json) => _$SampleFeatureResponseDtoFromJson(json);
   Map<String, dynamic> toJson() => _$SampleFeatureResponseDtoToJson(this);
 }
