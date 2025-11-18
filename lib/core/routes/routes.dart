@@ -6,6 +6,8 @@ import 'package:vision_xai/features/settings/presentation/screen/settings_screen
 import 'package:vision_xai/features/settings/presentation/screen/ip_settings/ip_settings_screen.dart';
 import 'package:vision_xai/features/settings/presentation/screen/language_settings/language_settings_screen.dart';
 import 'package:vision_xai/features/settings/presentation/screen/about/about_screen.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/screen/palette_settings_screen.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_cubit.dart';
 import 'package:vision_xai/core/di/app_di.dart';
 
 GoRouter createRouter(AppDi appDi) => GoRouter(
@@ -13,7 +15,7 @@ GoRouter createRouter(AppDi appDi) => GoRouter(
       routes: [
         GoRoute(
           path: AppRoutes.home,
-          builder: (context, state) => const Home(),
+          builder: (context, state) => const HomeScreen(),
         ),
         GoRoute(
           path: AppRoutes.settings,
@@ -44,6 +46,21 @@ GoRouter createRouter(AppDi appDi) => GoRouter(
               BlocProvider.value(value: appDi.aboutCubit),
             ],
             child: const AboutScreen(),
+          ),
+        ),
+        GoRoute(
+          path: AppRoutes.paletteSettings,
+          builder: (context, state) => MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: appDi.paletteCubit),
+              BlocProvider(create: (ctx) {
+                // Create the settings cubit here and load persisted overrides.
+                final cubit = PaletteSettingsCubit(appDi.paletteCubit);
+                cubit.loadOverrides();
+                return cubit;
+              }),
+            ],
+            child: const PaletteSettingsScreen(),
           ),
         ),
       ],

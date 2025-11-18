@@ -3,14 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:vision_xai/core/color_palette/palette_state.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
 import 'package:vision_xai/core/di/app_di.dart';
+import 'package:vision_xai/core/di/service_locator.dart';
+import 'package:vision_xai/l10n/app_localizations.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 import 'package:vision_xai/core/routes/routes.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:arb_utils/state_managers/l10n_provider.dart';
-import 'package:vision_xai/core/color_palette/palette_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -22,6 +22,9 @@ void main() async {
   // Open a box for settings
   await Hive.openBox('settings');
 
+  // Open a box for palette overrides
+  await Hive.openBox('palette');
+
   // Ensure locale is set to 'bn' on first launch if not set yet
   final prefs = await SharedPreferences.getInstance();
   if (!prefs.containsKey('locale')) {
@@ -29,6 +32,7 @@ void main() async {
   }
 
   // Create DI after Hive is opened
+  setupServiceLocator();
   final appDi = AppDi.create();
   // Load persisted settings into the SettingsFeatureCubit so UI shows them immediately
   await appDi.settingsFeatureCubit.load();
@@ -83,68 +87,77 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (context) => imageCaptionCubit),
         BlocProvider(create: (context) => homeCubit),
         BlocProvider.value(value: appDi.settingsFeatureCubit),
-        BlocProvider(
-            create: (context) =>
-                PaletteCubit()..updateColors()), // Initialize colors
+        // PaletteCubit is provided from AppDi (resolved via service locator)
+        BlocProvider.value(value: appDi.paletteCubit),
       ],
       child: ChangeNotifierProvider(
         create: (context) => ProviderL10n(),
         child: Builder(
           builder: (context) {
-            return BlocBuilder<PaletteCubit, PaletteState>(
-              builder: (context, paletteState) {
-                return MaterialApp.router(
-                  onGenerateTitle: (cxt) => cxt.tr.appTitle,
-                  locale: context.watch<ProviderL10n>().locale,
-                  localizationsDelegates: const [
-                    AppLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  supportedLocales: AppLocalizations.supportedLocales,
-                  debugShowCheckedModeBanner: false,
-                  theme: ThemeData(
-                    colorScheme: ColorScheme.light(
-                      primary: paletteState.primaryColor,
-                      secondary: paletteState.secondaryColor,
-                      tertiary: paletteState.backgroundColor,
-                    ),
-                    scaffoldBackgroundColor: paletteState.backgroundColor,
-                    appBarTheme: AppBarTheme(
-                      backgroundColor: paletteState.primaryColor,
-                      foregroundColor: Colors.white,
-                    ),
-                    buttonTheme: ButtonThemeData(
-                      buttonColor: paletteState.secondaryColor,
-                      textTheme: ButtonTextTheme.primary,
-                    ),
-                    // Ensure black text and icons on buttons
-                    textButtonTheme: TextButtonThemeData(
-                      style: ButtonStyle(
-                        foregroundColor: WidgetStateProperty.all(Colors.black),
+            // Expose NotificationService to the widget tree for easy access
+            // via Provider (context.read<NotificationService>()).
+            return MultiProvider(
+              providers: [
+                Provider.value(value: appDi.notificationService),
+              ],
+              child: BlocBuilder<PaletteCubit, PaletteState>(
+                builder: (context, paletteState) {
+                  return MaterialApp.router(
+                    onGenerateTitle: (cxt) => cxt.tr.appTitle,
+                    locale: context.watch<ProviderL10n>().locale,
+                    localizationsDelegates: const [
+                      AppLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    supportedLocales: AppLocalizations.supportedLocales,
+                    debugShowCheckedModeBanner: false,
+                    theme: ThemeData(
+                      colorScheme: ColorScheme.light(
+                        primary: paletteState.primaryColor,
+                        secondary: paletteState.secondaryColor,
+                        tertiary: paletteState.backgroundColor,
+                      ),
+                      scaffoldBackgroundColor: paletteState.backgroundColor,
+                      appBarTheme: AppBarTheme(
+                        backgroundColor: paletteState.primaryColor,
+                        foregroundColor: Colors.white,
+                      ),
+                      buttonTheme: ButtonThemeData(
+                        buttonColor: paletteState.secondaryColor,
+                        textTheme: ButtonTextTheme.primary,
+                      ),
+                      // Ensure black text and icons on buttons
+                      textButtonTheme: TextButtonThemeData(
+                        style: ButtonStyle(
+                          foregroundColor:
+                              WidgetStateProperty.all(Colors.black),
+                        ),
+                      ),
+                      elevatedButtonTheme: ElevatedButtonThemeData(
+                        style: ButtonStyle(
+                          foregroundColor:
+                              WidgetStateProperty.all(Colors.black),
+                        ),
+                      ),
+                      outlinedButtonTheme: OutlinedButtonThemeData(
+                        style: ButtonStyle(
+                          foregroundColor:
+                              WidgetStateProperty.all(Colors.black),
+                        ),
+                      ),
+                      iconTheme: const IconThemeData(
+                        color: Colors.white,
+                      ),
+                      primaryIconTheme: const IconThemeData(
+                        color: Colors.white,
                       ),
                     ),
-                    elevatedButtonTheme: ElevatedButtonThemeData(
-                      style: ButtonStyle(
-                        foregroundColor: WidgetStateProperty.all(Colors.black),
-                      ),
-                    ),
-                    outlinedButtonTheme: OutlinedButtonThemeData(
-                      style: ButtonStyle(
-                        foregroundColor: WidgetStateProperty.all(Colors.black),
-                      ),
-                    ),
-                    iconTheme: const IconThemeData(
-                      color: Colors.white,
-                    ),
-                    primaryIconTheme: const IconThemeData(
-                      color: Colors.white,
-                    ),
-                  ),
-                  routerConfig: createRouter(appDi),
-                );
-              },
+                    routerConfig: createRouter(appDi),
+                  );
+                },
+              ),
             );
           },
         ),

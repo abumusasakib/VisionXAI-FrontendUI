@@ -4,4 +4,5 @@ class AppRoutes {
   static const languageSettings = '/languageSettings';
   static const ipSettings = '/ipSettings';
   static const about = '/about';
+  static const paletteSettings = '/paletteSettings';
 }
