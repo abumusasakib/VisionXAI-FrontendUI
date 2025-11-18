@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
+import 'package:provider/provider.dart';
+import 'package:vision_xai/core/services/notification_service.dart';
+import 'package:vision_xai/core/utils/error_message_mapper.dart';
 
 import '../../cubit/settings_feature_cubit.dart';
 import '../../../domain/entity/settings_entity.dart';
@@ -65,31 +68,33 @@ class _IpSettingsScreenState extends State<IpSettingsScreen> {
                     backgroundColor: Colors.green.shade600,
                     elevation: 0,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     String ip = _ipController.text;
                     String port = _portController.text;
+                    final ns = context.read<NotificationService>();
                     if (ip.isNotEmpty && port.isNotEmpty) {
                       final entity = SettingsEntity(
                           ip: ip,
                           port: port,
                           locale: cubit.state?.locale ?? 'en');
-                      cubit.save(entity);
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          backgroundColor: Colors.green.shade600,
-                          content: Text(
-                            context.tr.ipPortUpdated,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      );
-                      Navigator.of(context).pop();
+                      final successMsg = context.tr.ipPortUpdated;
+                      final result = await runWithErrorHandling<void>(
+                          () => cubit.save(entity),
+                          showSnackOnError: true,
+                          notificationService: ns,
+                          context: context,
+                          successMessage: successMsg,
+                          showSuccessOnSuccess: true);
+                      if (result.isSuccess) {
+                        // Close only when the widget is still mounted
+                        if (context.mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      }
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(context.tr.enterIpAndPort)),
+                      ns.showSnackBar(
+                        context,
+                        context.tr.enterIpAndPort,
                       );
                     }
                   },

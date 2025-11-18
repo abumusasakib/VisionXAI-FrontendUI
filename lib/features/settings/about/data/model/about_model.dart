@@ -4,7 +4,7 @@ class AboutModel {
 
   const AboutModel({required this.appVersion, required this.platform});
 
-  /// Convert to a JSON map (useful for debugging or persistence).
+  /// Convert to a JSON map (for debugging or persistence).
   Map<String, Object?> toJson() =>
       {'appVersion': appVersion, 'platform': platform};
 

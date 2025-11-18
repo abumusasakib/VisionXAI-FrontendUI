@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import '../../domain/entity/about_entity.dart';
 import '../../domain/repository/about_repo.dart';
 import '../datasource/about_local_data_source.dart';
@@ -13,6 +15,10 @@ class AboutRepoImpl implements AboutRepo {
   @override
   Future<AboutEntity> loadAppInfo() async {
     final AboutModel model = await _local.fetchAppInfo();
+    try {
+      developer.log('AboutModel loaded: ${model.toJson()}',
+          name: 'AboutRepoImpl');
+    } catch (_) {}
     return _mapper.modelToEntity(model);
   }
 }

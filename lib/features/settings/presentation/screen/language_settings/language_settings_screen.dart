@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:arb_utils/state_managers/l10n_provider.dart';
 import 'package:vision_xai/core/common/widgets/custom_language_selector_dropdown.dart';
 import 'package:vision_xai/core/constants/ip_details.dart';
+import 'package:vision_xai/l10n/app_localizations.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 
 import '../../cubit/settings_feature_cubit.dart';

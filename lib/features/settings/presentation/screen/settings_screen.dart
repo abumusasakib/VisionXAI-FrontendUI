@@ -43,6 +43,12 @@ class _SettingsFeatureScreenState extends State<SettingsFeatureScreen> {
               onTap: () => context.push(AppRoutes.languageSettings),
             ),
             ListTile(
+              leading: const Icon(Icons.palette),
+              title: Text(context.tr.paletteSettings),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () => context.push(AppRoutes.paletteSettings),
+            ),
+            ListTile(
               leading: const Icon(Icons.info),
               title: Text(context.tr.about),
               trailing: const Icon(Icons.arrow_forward_ios),

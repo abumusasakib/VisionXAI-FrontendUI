@@ -22,5 +22,5 @@ AboutDependencies createAboutDependencies() {
   return AboutDependencies(aboutUC: uc, aboutCubit: cubit);
 }
 
-/// Backwards-compatible helper that only returns the cubit.
+/// Helper that only returns the cubit.
 AboutCubit createAboutCubit() => createAboutDependencies().aboutCubit;
