@@ -46,3 +46,13 @@ app.*.map.json
 # FVM Version Cache
 .fvm/
 .qodo
+
+# Android build artifacts and metadata
+/android/build/
+/android/.last_build_id
+
+# Windows desktop build artifacts (CMake, caches, last build id)
+/windows/build/
+
+# Ignore IDE/project local build ids
+.last_build_id
