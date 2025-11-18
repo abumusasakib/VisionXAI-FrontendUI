@@ -21,7 +21,7 @@ void main() {
 
     final ds = SettingsLocalDataSource(box: box);
 
-    final model = const SettingsModel(ip: '10.0.0.5', port: '4242', locale: 'fr');
+    const model = SettingsModel(ip: '10.0.0.5', port: '4242', locale: 'fr');
     await ds.save(model);
 
     // read raw via box.get to ensure keys are stored

@@ -19,8 +19,8 @@ void main() {
     final tokens = ['hello', 'world'];
     final tokenScores = [0.5, 0.1];
     final topk = [
-      [TopKItem(row: 0, col: 0, score: 0.8)],
-      [TopKItem(row: 0, col: 0, score: 0.2)],
+      [const TopKItem(row: 0, col: 0, score: 0.8)],
+      [const TopKItem(row: 0, col: 0, score: 0.2)],
     ];
 
     final entity = ImageCaptionEntity(attributes: {
@@ -69,8 +69,8 @@ void main() {
     final tokenScores = [0.9];
     final topk = [
       [
-        TopKItem(row: 0, col: 0, score: 0.9),
-        TopKItem(row: 1, col: 1, score: 0.6),
+        const TopKItem(row: 0, col: 0, score: 0.9),
+        const TopKItem(row: 1, col: 1, score: 0.6),
       ],
     ];
 
@@ -110,8 +110,8 @@ void main() {
     // two items with different scores to compare size/opacity
     final topk = [
       [
-        TopKItem(row: 0, col: 0, score: 0.1),
-        TopKItem(row: 0, col: 1, score: 0.9),
+        const TopKItem(row: 0, col: 0, score: 0.1),
+        const TopKItem(row: 0, col: 1, score: 0.9),
       ],
     ];
 
@@ -120,7 +120,7 @@ void main() {
       'tokens': tokens,
       'token_scores': tokenScores,
       // Provide explicit grid override
-      'attention_grid': [1, 2],
+      'attention_grid': const [1, 2],
       'attention_topk_items': topk,
     });
 
@@ -168,7 +168,7 @@ void main() {
     final tokens = ['p'];
     final tokenScores = [1.0];
     final topk = [
-      [TopKItem(row: 1, col: 0, score: 1.0)],
+      [const TopKItem(row: 1, col: 0, score: 1.0)],
     ];
 
     final entity = ImageCaptionEntity(attributes: {
@@ -176,7 +176,7 @@ void main() {
       'tokens': tokens,
       'token_scores': tokenScores,
       // explicit grid override 2x2
-      'attention_grid': [2, 2],
+      'attention_grid': const [2, 2],
       'attention_topk_items': topk,
     });
 
@@ -199,14 +199,14 @@ void main() {
     final height = imageRect.height;
 
     // grid 2x2 -> cell sizes
-    final rows = 2;
-    final cols = 2;
+    const rows = 2;
+    const cols = 2;
     final cellW = width / cols;
     final cellH = height / rows;
 
     // marker size for score 1.0
-    final normalized = 1.0;
-    final markerSize = 8.0 + (normalized * 20.0);
+    const normalized = 1.0;
+    const markerSize = 8.0 + (normalized * 20.0);
 
     final expectedLeftLocal = (0 + 0.5) * cellW - (markerSize / 2);
     final expectedTopLocal = (1 + 0.5) * cellH - (markerSize / 2);
@@ -229,7 +229,7 @@ void main() {
     final tokens = ['m'];
     final tokenScores = [0.5];
     final topk = [
-      [TopKItem(row: 2, col: 3, score: 0.5)],
+      [const TopKItem(row: 2, col: 3, score: 0.5)],
     ];
 
     final entity = ImageCaptionEntity(attributes: {
@@ -237,7 +237,7 @@ void main() {
       'tokens': tokens,
       'token_scores': tokenScores,
       // provide shape as Map instead of list
-      'attention_shape': {'rows': 3, 'cols': 4},
+      'attention_shape': const {'rows': 3, 'cols': 4},
       'attention_topk_items': topk,
     });
 
@@ -259,8 +259,8 @@ void main() {
     final width = imageRect.width;
     final height = imageRect.height;
 
-    final rows = 3;
-    final cols = 4;
+    const rows = 3;
+    const cols = 4;
     final cellW = width / cols;
     final cellH = height / rows;
 
@@ -290,8 +290,8 @@ void main() {
     // and another at the far bottom-right (col = cols-1, row = rows-1)
     final topk = [
       [
-        TopKItem(row: 0, col: 0, score: 1.0),
-        TopKItem(row: 2, col: 2, score: 1.0),
+        const TopKItem(row: 0, col: 0, score: 1.0),
+        const TopKItem(row: 2, col: 2, score: 1.0),
       ],
     ];
 
@@ -300,7 +300,7 @@ void main() {
       'tokens': tokens,
       'token_scores': tokenScores,
       // use grid 3x3 so second marker targets bottom-right
-      'attention_grid': [3, 3],
+      'attention_grid': const [3, 3],
       'attention_topk_items': topk,
     });
 
@@ -339,15 +339,15 @@ void main() {
     final tokens = ['one', 'two'];
     final tokenScores = [0.8, 0.3];
     final topk = [
-      [TopKItem(row: 0, col: 0, score: 0.8)],
-      [TopKItem(row: 0, col: 1, score: 0.3)],
+      [const TopKItem(row: 0, col: 0, score: 0.8)],
+      [const TopKItem(row: 0, col: 1, score: 0.3)],
     ];
 
     final entity = ImageCaptionEntity(attributes: {
       'attention_image_bytes': imageBytes,
       'tokens': tokens,
       'token_scores': tokenScores,
-      'attention_grid': [1, 2],
+      'attention_grid': const [1, 2],
       'attention_topk_items': topk,
     });
 
@@ -391,8 +391,8 @@ void main() {
     // Use high scores to increase marker size and force clamping
     final topk = [
       [
-        TopKItem(row: 0, col: 0, score: 1.0), // top-left
-        TopKItem(row: 2, col: 2, score: 1.0), // bottom-right
+        const TopKItem(row: 0, col: 0, score: 1.0), // top-left
+        const TopKItem(row: 2, col: 2, score: 1.0), // bottom-right
       ],
     ];
 
@@ -401,7 +401,7 @@ void main() {
       'tokens': tokens,
       'token_scores': tokenScores,
       // grid 3x3 so the right/bottom marker targets the corner cell
-      'attention_grid': [3, 3],
+      'attention_grid': const [3, 3],
       'attention_topk_items': topk,
     });
 
@@ -430,14 +430,14 @@ void main() {
     final height = imageRect.height;
 
     // cell sizes for 3x3 grid
-    final rows = 3;
-    final cols = 3;
+    const rows = 3;
+    const cols = 3;
     final cellW = width / cols;
     final cellH = height / rows;
 
     // marker size formula from widget
-    final normalized = 1.0;
-    final markerSize = 8.0 + (normalized * 20.0); // 28.0
+    const normalized = 1.0;
+    const markerSize = 8.0 + (normalized * 20.0); // 28.0
 
     // expected left/top for top-left before clamping
     final expectedLeftLocal0 = (0 + 0.5) * cellW - (markerSize / 2);
@@ -476,8 +476,8 @@ void main() {
     // Use a 10x10 grid so each cell is small; place a marker near bottom-right to force clamping
     final topk = [
       [
-        TopKItem(row: 9, col: 9, score: 1.0), // will be clamped
-        TopKItem(row: 0, col: 0, score: 1.0), // top-left
+        const TopKItem(row: 9, col: 9, score: 1.0), // will be clamped
+        const TopKItem(row: 0, col: 0, score: 1.0), // top-left
       ],
     ];
 
@@ -485,7 +485,7 @@ void main() {
       'attention_image_bytes': imageBytes,
       'tokens': tokens,
       'token_scores': tokenScores,
-      'attention_grid': [10, 10],
+      'attention_grid': const [10, 10],
       'attention_topk_items': topk,
     });
 
@@ -509,13 +509,13 @@ void main() {
     final width = imageRect.width;
     final height = imageRect.height;
 
-    final rows = 10;
-    final cols = 10;
+    const rows = 10;
+    const cols = 10;
     final cellW = width / cols;
     final cellH = height / rows;
 
     // marker size = 8 + normalized*20 = 28
-    final markerSize = 28.0;
+    const markerSize = 28.0;
 
     // For bottom-right (col=9,row=9), expected local before clamp:
     final expectedLeftLocal = (9 + 0.5) * cellW - (markerSize / 2);

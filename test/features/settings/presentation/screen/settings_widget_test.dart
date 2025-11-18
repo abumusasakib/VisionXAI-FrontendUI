@@ -3,11 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:vision_xai/features/settings/presentation/screen/settings_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:vision_xai/features/settings/presentation/cubit/settings_feature_cubit.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:vision_xai/features/settings/domain/entity/settings_entity.dart';
 import 'package:vision_xai/features/settings/domain/use_case/settings_uc.dart';
+import 'package:vision_xai/l10n/app_localizations.dart';
 
 class _FakeUC implements SettingsFeatureUC {
   SettingsEntity stored;
