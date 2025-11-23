@@ -140,15 +140,22 @@ class _AttentionViewState extends State<AttentionView> {
                 int? _selectedIdx;
                 if (topk != null && _selectedTokenIndex != null) {
                   _selectedIdx = _selectedTokenIndex!;
-                  final colorMap = widget.entity.attributes['attention_color_map'];
-                  final token = tokens.length > _selectedIdx ? tokens[_selectedIdx] : null;
+                  final colorMap =
+                      widget.entity.attributes['attention_color_map'];
+                  final token = tokens.length > _selectedIdx
+                      ? tokens[_selectedIdx]
+                      : null;
                   if (colorMap is Map && token != null) {
-                    _selectedTokenColor = _parseHexColor(colorMap[token] as String?);
+                    _selectedTokenColor =
+                        _parseHexColor(colorMap[token] as String?);
                   }
                   if (_selectedTokenColor == null) {
-                    final colorsList = widget.entity.attributes['attention_colors'];
-                    if (colorsList is List && colorsList.length > _selectedIdx) {
-                      _selectedTokenColor = _parseHexColor(colorsList[_selectedIdx] as String?);
+                    final colorsList =
+                        widget.entity.attributes['attention_colors'];
+                    if (colorsList is List &&
+                        colorsList.length > _selectedIdx) {
+                      _selectedTokenColor =
+                          _parseHexColor(colorsList[_selectedIdx] as String?);
                     }
                   }
                 }
@@ -160,13 +167,53 @@ class _AttentionViewState extends State<AttentionView> {
                     ),
                     if (topk != null && _selectedIdx != null)
                       ...markersWidget(topk, _selectedIdx, width, height,
-                          gridRows: gridRows, gridCols: gridCols, color: _selectedTokenColor),
+                          gridRows: gridRows,
+                          gridCols: gridCols,
+                          color: _selectedTokenColor),
                   ],
                 );
               },
             ),
           ),
           const SizedBox(height: 8),
+          // Legend row: show color swatches aligned with tokens when available
+          Builder(builder: (context) {
+            final colorsList = widget.entity.attributes['attention_colors'];
+            final colorMap = widget.entity.attributes['attention_color_map'];
+            if ((colorsList is List && colorsList.isNotEmpty) || (colorMap is Map && colorMap.isNotEmpty)) {
+              return Padding(
+                key: const Key('attention-legend'),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List<Widget>.generate(tokens.length, (i) {
+                      final tok = tokens.length > i ? tokens[i] : null;
+                      Color? col;
+                      if (colorMap is Map && tok != null) {
+                        col = _parseHexColor(colorMap[tok] as String?);
+                      }
+                      if (col == null && colorsList is List && colorsList.length > i) {
+                        col = _parseHexColor(colorsList[i] as String?);
+                      }
+                      col ??= Colors.grey;
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Row(
+                          children: [
+                            Container(width: 14, height: 14, decoration: BoxDecoration(color: col, borderRadius: BorderRadius.circular(3.0), border: Border.all(color: Colors.black12))),
+                            const SizedBox(width: 6),
+                            Text(tok ?? '—'),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          }),
         ],
         SizedBox(
           height: 48,
