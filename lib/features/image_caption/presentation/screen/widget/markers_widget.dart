@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:vision_xai/features/image_caption/data/model/topk_item.dart';
 
 List<Widget> markersWidget(
-    List<List<TopKItem>> topk, int tokenIndex, double width, double height,
-    {int? gridRows, int? gridCols}) {
+  List<List<TopKItem>> topk, int tokenIndex, double width, double height,
+  {int? gridRows, int? gridCols, Color? color}) {
   if (tokenIndex >= topk.length) return [];
   final items = topk[tokenIndex];
   if (items.isEmpty) return [];
@@ -37,7 +37,7 @@ List<Widget> markersWidget(
         width: markerSize,
         height: markerSize,
         decoration: BoxDecoration(
-          color: Colors.red.withOpacity(opacity),
+          color: (color ?? Colors.red).withOpacity(opacity),
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 1.0),
         ),

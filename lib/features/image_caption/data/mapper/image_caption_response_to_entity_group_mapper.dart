@@ -48,6 +48,9 @@ class ImageCaptionResponseToEntityGroupMapper
         'attention_topk_items': response.attentionTopk
             ?.map((outer) => outer.map((item) => item.toMap()).toList())
             .toList(),
+        // Color hints for UI rendering
+        'attention_colors': response.attentionColors,
+        'attention_color_map': response.attentionColorMap,
       };
       final model = _jsonToModelMapper.map(bodyMap);
       final entity = _modelToEntityMapper.map(model);
@@ -75,6 +78,14 @@ class ImageCaptionResponseToEntityGroupMapper
         enriched['attention_topk_items'] = response.attentionTopk!
             .map((outer) => outer.map((item) => item.toMap()).toList())
             .toList();
+      }
+
+      // Expose color hints directly for UI use: list and map forms
+      if (response.attentionColors != null) {
+        enriched['attention_colors'] = response.attentionColors;
+      }
+      if (response.attentionColorMap != null) {
+        enriched['attention_color_map'] = response.attentionColorMap;
       }
 
       // Expose both typed and primitive forms of the attention grid so

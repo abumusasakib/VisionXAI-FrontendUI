@@ -19,6 +19,8 @@ class ImageCaptionResponseDto {
   final String? attentionImage; // legacy key
   final String? attentionImageBytes; // preferred key
   final List<double>? attentionMeans;
+  final List<String>? attentionColors;
+  final Map<String, String>? attentionColorMap;
   final List<List<TopKItem>>? attentionTopk;
   final AttentionGrid? attentionGrid;
   final Map<String, dynamic>? attentionShape;
@@ -34,6 +36,8 @@ class ImageCaptionResponseDto {
     this.tokenScores,
     this.attentionImage,
     this.attentionImageBytes,
+    this.attentionColors,
+    this.attentionColorMap,
     this.attentionMeans,
     this.attentionGrid,
     this.attentionShape,
@@ -120,6 +124,12 @@ class ImageCaptionResponseDto {
       tokenScores: tokenScores,
       attentionImage: json['attention_image'] as String?,
       attentionImageBytes: attentionImageBytes,
+      attentionColors: (json['attention_colors'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList(),
+      attentionColorMap: (json['attention_color_map'] is Map)
+        ? Map<String, String>.from(json['attention_color_map'] as Map)
+        : null,
       attentionMeans: attentionMeans,
       attentionGrid: grid,
       attentionShape: (json['attention_shape'] is Map)
@@ -162,6 +172,8 @@ class ImageCaptionResponseDto {
         'token_scores': tokenScores,
         'attention_image': attentionImage,
         'attention_image_bytes': attentionImageBytes,
+        'attention_colors': attentionColors,
+        'attention_color_map': attentionColorMap,
         'attention_grid': attentionGrid?.toList(),
         'attention_shape': attentionShape,
         'attention_means': attentionMeans,

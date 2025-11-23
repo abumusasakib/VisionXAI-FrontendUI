@@ -19,6 +19,20 @@ class AttentionView extends StatefulWidget {
 class _AttentionViewState extends State<AttentionView> {
   int? _selectedTokenIndex;
 
+  Color? _parseHexColor(String? hex) {
+    if (hex == null) return null;
+    try {
+      final cleaned = hex.replaceFirst('#', '');
+      if (cleaned.length == 6) {
+        return Color(int.parse('0xff$cleaned'));
+      }
+      if (cleaned.length == 8) {
+        return Color(int.parse('0x$cleaned'));
+      }
+    } catch (_) {}
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final tokens =
@@ -121,15 +135,32 @@ class _AttentionViewState extends State<AttentionView> {
               builder: (context, constraints) {
                 final width = constraints.maxWidth;
                 final height = constraints.maxHeight;
+                // compute marker color for the selected token (if any)
+                Color? _selectedTokenColor;
+                int? _selectedIdx;
+                if (topk != null && _selectedTokenIndex != null) {
+                  _selectedIdx = _selectedTokenIndex!;
+                  final colorMap = widget.entity.attributes['attention_color_map'];
+                  final token = tokens.length > _selectedIdx ? tokens[_selectedIdx] : null;
+                  if (colorMap is Map && token != null) {
+                    _selectedTokenColor = _parseHexColor(colorMap[token] as String?);
+                  }
+                  if (_selectedTokenColor == null) {
+                    final colorsList = widget.entity.attributes['attention_colors'];
+                    if (colorsList is List && colorsList.length > _selectedIdx) {
+                      _selectedTokenColor = _parseHexColor(colorsList[_selectedIdx] as String?);
+                    }
+                  }
+                }
+
                 return Stack(
                   children: [
                     Positioned.fill(
                       child: imageWidgetFromBytes(context, imageBytes),
                     ),
-                    if (topk != null && _selectedTokenIndex != null)
-                      ...markersWidget(
-                          topk, _selectedTokenIndex!, width, height,
-                          gridRows: gridRows, gridCols: gridCols),
+                    if (topk != null && _selectedIdx != null)
+                      ...markersWidget(topk, _selectedIdx, width, height,
+                          gridRows: gridRows, gridCols: gridCols, color: _selectedTokenColor),
                   ],
                 );
               },
@@ -147,6 +178,21 @@ class _AttentionViewState extends State<AttentionView> {
               final score =
                   tokenScores.length > index ? tokenScores[index] : null;
               final selected = _selectedTokenIndex == index;
+              // Determine color for this token: prefer explicit color map,
+              // otherwise use the positional attention_colors list.
+              Color? tokenColor;
+              final colorMap = widget.entity.attributes['attention_color_map'];
+              if (colorMap is Map) {
+                final hex = colorMap[token] as String?;
+                tokenColor = _parseHexColor(hex);
+              }
+              if (tokenColor == null) {
+                final colorsList = widget.entity.attributes['attention_colors'];
+                if (colorsList is List && colorsList.length > index) {
+                  tokenColor = _parseHexColor(colorsList[index] as String?);
+                }
+              }
+
               return ChoiceChip(
                 label: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -160,6 +206,8 @@ class _AttentionViewState extends State<AttentionView> {
                   ],
                 ),
                 selected: selected,
+                backgroundColor: tokenColor,
+                selectedColor: tokenColor?.withOpacity(0.9),
                 onSelected: (_) {
                   setState(() {
                     _selectedTokenIndex = selected ? null : index;
