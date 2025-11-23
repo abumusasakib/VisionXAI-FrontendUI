@@ -213,6 +213,29 @@ class AppLocalizationsBn extends AppLocalizations {
   String get savePreset => 'প্রিসেট সংরক্ষণ করুন';
 
   @override
+  String get generate => 'তৈরি করুন';
+
+  @override
+  String get pickFromFiles => 'ফাইল থেকে নির্বাচন করুন';
+
+  @override
+  String get pickFromGallery => 'গ্যালারি থেকে নির্বাচন করুন';
+
+  @override
+  String get localFilesNotSupported => 'ওয়েবে লোকাল ফাইল সমর্থিত নয়';
+
+  @override
+  String paletteGenerationFailed(Object error) {
+    return 'প্যালেট তৈরি ব্যর্থ হয়েছে: $error';
+  }
+
+  @override
+  String get generateFromImage => 'ছবি থেকে তৈরি করুন';
+
+  @override
+  String get generatingPalette => 'প্যালেট তৈরি করা হচ্ছে...';
+
+  @override
   String get deletePresetTitle => 'প্রিসেট মুছে ফেলবেন?';
 
   @override

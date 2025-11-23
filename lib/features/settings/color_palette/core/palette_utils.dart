@@ -14,6 +14,21 @@ Color colorFromHex(String hex) {
   }
 }
 
+/// Build a palette map from a hex color string `#RRGGBB`.
+/// Returns a map with keys: `primary`, `secondary`, `background` (Colors).
+Map<String, Color> buildPaletteFromHex(String hex,
+    {double rotationDegrees = 137.5, double desaturateFraction = 0.6}) {
+  return PaletteManager.buildPaletteFromHex(hex,
+      rotationDegrees: rotationDegrees, desaturateFraction: desaturateFraction);
+}
+
+/// Build a palette map from a `Color` instance.
+Map<String, Color> buildPaletteFromColor(Color color,
+    {double rotationDegrees = 137.5, double desaturateFraction = 0.6}) {
+  return PaletteManager.buildPaletteFromBackgroundColor(color,
+      rotationDegrees: rotationDegrees, desaturateFraction: desaturateFraction);
+}
+
 String? hexValidator(String? v) {
   if (v == null) return 'Invalid hex';
   final normalized = v.trim();

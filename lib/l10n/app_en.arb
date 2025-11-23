@@ -281,13 +281,42 @@
   "@savePreset": {
     "description": "Label for the save preset action in the palette settings section."
   },
+  "generate": "Generate",
+  "@generate": {
+    "description": "Label for a generic generate action (used for short generate buttons)."
+  },
+  "generateFromImage": "Generate from Image",
+  "@generateFromImage": {
+    "description": "Label for the generate-from-image action."
+  },
+  "pickFromFiles": "Pick from files",
+  "@pickFromFiles": {
+    "description": "Label for choosing files from the device file system."
+  },
+  "pickFromGallery": "Pick from gallery",
+  "@pickFromGallery": {
+    "description": "Label for choosing an image from the gallery."
+  },
+  "localFilesNotSupported": "Local files not supported on web",
+  "@localFilesNotSupported": {
+    "description": "Message shown when local files are not supported (web)."
+  },
+  "paletteGenerationFailed": "Failed to generate palette: {error}",
+  "@paletteGenerationFailed": {
+    "description": "Error shown when palette generation fails.",
+    "placeholders": { "error": { "description": "The error message." } }
+  },
+  "generatingPalette": "Generating Palette...",
+  "@generatingPalette": {
+    "description": "Text shown while the application generates a color palette from an image."
+  },
   "deletePresetTitle": "Delete Preset?",
   "@deletePresetTitle": {
     "description": "Label for the delete preset title in the palette settings section."
   },
   "deletePresetMessage": "Delete preset {presetName}?",
   "@deletePresetMessage": {
-    "description": "Error message when the server returns a bad response.",
+    "description": "Message when the user is prompted to delete a preset.",
     "placeholders": {
       "presetName": {
         "description": "The name of the preset to be deleted."

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/palette_manager.dart';
 import '../../domain/repository/palette_repo.dart';
-import '../datasource/palette_local_data_source.dart';
+import '../datasource/local/palette_local_data_source.dart';
 
 class PaletteRepoImpl implements PaletteRepo {
   final PaletteLocalDataSource _local;

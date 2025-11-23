@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_state.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
-import 'package:vision_xai/features/settings/color_palette/data/datasource/palette_local_data_source.dart';
+import 'package:vision_xai/features/settings/color_palette/data/datasource/local/palette_local_data_source.dart';
 
 class PaletteSettingsCubit extends Cubit<PaletteSettingsState> {
   final PaletteCubit _paletteCubit;

@@ -25,4 +25,19 @@ class PaletteCubit extends Cubit<PaletteState> {
       backgroundColor: palette['background'] ?? const Color(0xFFFEFDFC),
     ));
   }
+
+  /// Generate palette from an arbitrary [ImageProvider]. Returns the
+  /// generated palette map and updates the cubit state so listeners can
+  /// react to the new colors.
+  Future<Map<String, Color>> generateFromImage(ImageProvider image) async {
+    final palette = await _useCase.call(image);
+
+    emit(PaletteState(
+      primaryColor: palette['primary'] ?? const Color(0xFF089BB7),
+      secondaryColor: palette['secondary'] ?? const Color(0xFF0FC0B8),
+      backgroundColor: palette['background'] ?? const Color(0xFFFEFDFC),
+    ));
+
+    return palette;
+  }
 }

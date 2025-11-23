@@ -211,13 +211,42 @@
   "@savePreset": {
     "description": "Label for the save preset action in the palette settings section."
   },
+  "generate": "তৈরি করুন",
+  "@generate": {
+    "description": "Label for a generic generate action (used for short generate buttons)."
+  },
+  "generateFromImage": "ছবি থেকে তৈরি করুন",
+  "@generateFromImage": {
+    "description": "Label for the generate-from-image action."
+  },
+  "pickFromFiles": "ফাইল থেকে নির্বাচন করুন",
+  "@pickFromFiles": {
+    "description": "Label for choosing files from the device file system."
+  },
+  "pickFromGallery": "গ্যালারি থেকে নির্বাচন করুন",
+  "@pickFromGallery": {
+    "description": "Label for choosing an image from the gallery."
+  },
+  "localFilesNotSupported": "ওয়েবে লোকাল ফাইল সমর্থিত নয়",
+  "@localFilesNotSupported": {
+    "description": "Message shown when local files are not supported (web)."
+  },
+  "paletteGenerationFailed": "প্যালেট তৈরি ব্যর্থ হয়েছে: {error}",
+  "@paletteGenerationFailed": {
+    "description": "Error shown when palette generation fails.",
+    "placeholders": { "error": { "description": "The error message." } }
+  },
+  "generatingPalette": "প্যালেট তৈরি করা হচ্ছে...",
+  "@generatingPalette": {
+    "description": "Text shown while the application generates a color palette from an image."
+  },
   "deletePresetTitle": "প্রিসেট মুছে ফেলবেন?",
   "@deletePresetTitle": {
     "description": "Label for the delete preset title in the palette settings section."
   },
   "deletePresetMessage": "প্রিসেট {presetName} মুছে ফেলবেন?",
   "@deletePresetMessage": {
-    "description": "Error message when the server returns a bad response.",
+    "description": "Message when the user is prompted to delete a preset.",
     "placeholders": {
       "presetName": {
         "description": "The name of the preset to be deleted."

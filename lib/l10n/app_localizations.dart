@@ -482,6 +482,44 @@ abstract class AppLocalizations {
   /// **'Save Preset'**
   String get savePreset;
 
+  /// Label for a generic generate action (used for short generate buttons).
+  ///
+  /// In en, this message translates to:
+  /// **'Generate'**
+  String get generate;
+
+  /// Label for the generate-from-image action.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate from Image'**
+  String get generateFromImage;
+
+  /// Text shown while the application generates a color palette from an image.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating Palette...'**
+  String get generatingPalette;
+
+  /// Label for choosing files from the device file system.
+  ///
+  /// In en: 'Pick from files'
+  String get pickFromFiles;
+
+  /// Label for choosing an image from the gallery.
+  ///
+  /// In en: 'Pick from gallery'
+  String get pickFromGallery;
+
+  /// Message shown when local files are not supported (web).
+  ///
+  /// In en: 'Local files not supported on web'
+  String get localFilesNotSupported;
+
+  /// Error shown when palette generation fails.
+  ///
+  /// In en: 'Failed to generate palette: {error}'
+  String paletteGenerationFailed(Object error);
+
   /// Label for the delete preset title in the palette settings section.
   ///
   /// In en, this message translates to:

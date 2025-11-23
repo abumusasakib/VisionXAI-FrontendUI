@@ -9,6 +9,7 @@ import 'package:vision_xai/core/di/service_locator.dart';
 import 'package:vision_xai/l10n/app_localizations.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 import 'package:vision_xai/core/routes/routes.dart';
+import 'package:vision_xai/core/services/global_ui_service.dart';
 import 'package:provider/provider.dart';
 import 'package:arb_utils/state_managers/l10n_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -103,6 +104,7 @@ class _MyAppState extends State<MyApp> {
               child: BlocBuilder<PaletteCubit, PaletteState>(
                 builder: (context, paletteState) {
                   return MaterialApp.router(
+                    scaffoldMessengerKey: GlobalUiService.scaffoldMessengerKey,
                     onGenerateTitle: (cxt) => cxt.tr.appTitle,
                     locale: context.watch<ProviderL10n>().locale,
                     localizationsDelegates: const [

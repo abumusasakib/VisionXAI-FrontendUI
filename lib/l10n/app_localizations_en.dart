@@ -213,6 +213,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get savePreset => 'Save Preset';
 
   @override
+  String get generate => 'Generate';
+
+  @override
+  String get generateFromImage => 'Generate from Image';
+
+  @override
+  String get generatingPalette => 'Generating Palette...';
+
+  @override
+  String get pickFromFiles => 'Pick from files';
+
+  @override
+  String get pickFromGallery => 'Pick from gallery';
+
+  @override
+  String get localFilesNotSupported => 'Local files not supported on web';
+
+  @override
+  String paletteGenerationFailed(Object error) {
+    return 'Failed to generate palette: $error';
+  }
+
+  @override
   String get deletePresetTitle => 'Delete Preset?';
 
   @override

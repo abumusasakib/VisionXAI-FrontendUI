@@ -78,4 +78,52 @@ class PaletteManager {
     final Color color = Color(colorValue);
     return getWebSafeColor(color);
   }
+
+  /// Build a palette from a provided background [color].
+  ///
+  /// Algorithm:
+  /// 1. Primary: rotate hue by [rotationDegrees] (default 137.5°) using HSL.
+  /// 2. Secondary: desaturate the background by [desaturateFraction]
+  ///    (default 0.6 means reduce saturation to 40% of original).
+  /// 3. Background: the provided color (web-safe adjusted on web).
+  static Map<String, Color> buildPaletteFromBackgroundColor(Color color,
+      {double rotationDegrees = 137.5, double desaturateFraction = 0.6}) {
+    // Use web-safe color for web targets
+    final bg = getWebSafeColor(color);
+
+    // Convert to HSL for hue rotation and saturation change
+    final hsl = HSLColor.fromColor(bg);
+
+    // Rotate hue
+    final double newHue = (hsl.hue + rotationDegrees) % 360.0;
+    final primaryHsl = hsl.withHue(newHue);
+
+    // Desaturate background to produce secondary color
+    final double newSaturation =
+        (hsl.saturation * (1.0 - desaturateFraction)).clamp(0.0, 1.0);
+    final secondaryHsl = hsl.withSaturation(newSaturation);
+
+    return {
+      'primary': primaryHsl.toColor(),
+      'secondary': secondaryHsl.toColor(),
+      'background': bg,
+    };
+  }
+
+  /// Build palette from a hex color string like `#RRGGBB`.
+  static Map<String, Color> buildPaletteFromHex(String hex,
+      {double rotationDegrees = 137.5, double desaturateFraction = 0.6}) {
+    try {
+      final Color bg = getWebSafeColorFromHex(hex);
+      return buildPaletteFromBackgroundColor(bg,
+          rotationDegrees: rotationDegrees,
+          desaturateFraction: desaturateFraction);
+    } catch (_) {
+      return {
+        'primary': fallbackPrimary,
+        'secondary': fallbackSecondary,
+        'background': fallbackBackground,
+      };
+    }
+  }
 }
