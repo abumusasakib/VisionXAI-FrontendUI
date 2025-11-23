@@ -19,8 +19,8 @@ void main() {
     ));
 
     // Show a snack
-    service.showSnackBar(capturedContext, 'hello-snack',
-        backgroundColor: Colors.green);
+    service.showSnackBar('hello-snack',
+        context: capturedContext, backgroundColor: Colors.green);
 
     // Pump to allow the SnackBar animation to start
     await tester.pump();

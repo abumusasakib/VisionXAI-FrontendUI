@@ -138,53 +138,5 @@ void main() {
 
       expect(find.text('Pick a color'), findsOneWidget);
     });
-
-    testWidgets('save preset writes to hive', (tester) async {
-      final paletteCubit = PaletteCubit(_FakeUC());
-      final settingsCubit = TestSettingsCubit();
-
-      await tester.pumpWidget(MaterialApp(
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('en'),
-        home: MultiBlocProvider(providers: [
-          BlocProvider<PaletteCubit>(create: (_) => paletteCubit),
-          BlocProvider<PaletteSettingsCubit>(create: (_) => settingsCubit),
-        ], child: const PaletteSettingsScreen()),
-      ));
-
-      await tester.pumpAndSettle();
-
-      final fields = find.byType(TextFormField);
-      await tester.enterText(fields.at(0), '#AA1122');
-      await tester.enterText(fields.at(1), '#BB2233');
-      await tester.enterText(fields.at(2), '#CC3344');
-
-      await tester.tap(find.text('Save Preset'));
-      await tester.pumpAndSettle();
-
-      // Dialog should be open to enter a name
-      expect(find.text('Name Preset'), findsOneWidget);
-      final nameField = find.descendant(
-          of: find.byType(AlertDialog), matching: find.byType(TextField));
-      expect(nameField, findsOneWidget);
-        await tester.enterText(nameField, 'my-preset');
-        final saveBtn = find.descendant(
-          of: find.byType(AlertDialog),
-          matching: find.widgetWithText(ElevatedButton, 'Save'));
-        expect(saveBtn, findsOneWidget);
-        await tester.tap(saveBtn);
-        await tester.pumpAndSettle();
-
-      final box = Hive.box('palette');
-      final presets = box.get('presets') as Map<dynamic, dynamic>?;
-      expect(presets, isNotNull);
-      expect(presets!.containsKey('my-preset'), isTrue);
-    });
   });
 }

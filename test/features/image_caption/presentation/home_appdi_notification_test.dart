@@ -106,7 +106,8 @@ void main() {
     expect(scaffoldFinder, findsOneWidget);
     final scaffoldContext = tester.element(scaffoldFinder);
 
-    notificationService.showSnackBar(scaffoldContext, 'hello-from-home');
+    notificationService.showSnackBar('hello-from-home',
+        context: scaffoldContext);
 
     // Allow the SnackBar animation to appear
     await tester.pump();
