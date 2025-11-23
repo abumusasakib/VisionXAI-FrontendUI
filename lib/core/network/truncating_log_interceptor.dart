@@ -58,8 +58,19 @@ class TruncatingLogInterceptor extends Interceptor {
       if (data is String) {
         return _truncateString(data);
       }
-      // For Map/List/other JSON-like objects
+
+      // For Map/List/other JSON-like objects, produce a compact summary
+      if (data is Map || data is List) {
+        return _summarizeJsonLike(data);
+      }
+
+      // Fallback: encode and truncate
       final encoded = jsonEncode(data);
+      // If encoded is very large and likely contains large embedded strings
+      // prefer a key/value summary instead of dumping the full JSON.
+      if (encoded.length > maxBodyChars && (data is Map || data is List)) {
+        return _summarizeJsonLike(data);
+      }
       return _truncateString(encoded);
     } catch (e) {
       return 'Unprintable body (${e.runtimeType})';
@@ -83,11 +94,57 @@ class TruncatingLogInterceptor extends Interceptor {
         return 'Binary-like response (${data.runtimeType})';
       }
       if (data is String) return _truncateString(data);
+
+      if (data is Map || data is List) {
+        return _summarizeJsonLike(data);
+      }
+
       final encoded = jsonEncode(data);
+      if (encoded.length > maxBodyChars && (data is Map || data is List)) {
+        return _summarizeJsonLike(data);
+      }
       return _truncateString(encoded);
     } catch (e) {
       return 'Unprintable response body (${e.runtimeType})';
     }
+  }
+
+  String _summarizeJsonLike(dynamic data) {
+    try {
+      if (data is Map) {
+        final parts = <String>[];
+        data.forEach((key, value) {
+          parts.add('$key: ${_briefValueSummary(value)}');
+        });
+        return 'JSON object: {${parts.join(', ')}}';
+      }
+      if (data is List) {
+        // Show length and a brief summary of first few items
+        final len = data.length;
+        final items = data.take(3).map((v) => _briefValueSummary(v)).join(', ');
+        return 'JSON array: length=$len, sample=[$items]';
+      }
+      return _truncateString(jsonEncode(data));
+    } catch (e) {
+      return 'Unprintable JSON-like body (${e.runtimeType})';
+    }
+  }
+
+  String _briefValueSummary(dynamic v) {
+    if (v == null) return 'null';
+    if (v is String) {
+      final l = v.length;
+      if (l > 128) return 'String($l chars)';
+      return '"${_truncateString(v)}"';
+    }
+    if (v is num || v is bool) return v.toString();
+    if (v is Map) return 'Object(${v.length} keys)';
+    if (v is List) return 'Array(len=${v.length})';
+    if (v is Uint8List || v is List<int>) {
+      final len = v is Uint8List ? v.lengthInBytes : (v as List<int>).length;
+      return 'Binary($len bytes)';
+    }
+    return v.runtimeType.toString();
   }
 
   @override
