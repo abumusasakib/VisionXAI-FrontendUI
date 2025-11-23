@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:locale_names/locale_names.dart';
 import 'package:vision_xai/core/routes/app_routes.dart';
 import 'package:vision_xai/features/settings/domain/entity/settings_entity.dart';
 import 'package:vision_xai/features/settings/presentation/cubit/settings_feature_cubit.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
+import 'package:vision_xai/features/settings/core/utils/settings_utils.dart';
 
 class SettingsFeatureScreen extends StatefulWidget {
   const SettingsFeatureScreen({super.key});
@@ -15,10 +15,6 @@ class SettingsFeatureScreen extends StatefulWidget {
 }
 
 class _SettingsFeatureScreenState extends State<SettingsFeatureScreen> {
-  /// Get the display name of a language from a Locale instance
-  String getLanguageNameFromLocale(Locale locale) =>
-      locale.nativeDisplayLanguage;
-
   @override
   Widget build(BuildContext context) {
     // The SettingsFeatureCubit is accessed by sub-screens when needed.
@@ -63,7 +59,8 @@ class _SettingsFeatureScreenState extends State<SettingsFeatureScreen> {
                   children: [
                     Text('${context.tr.ip}: ${state.ip}'),
                     Text('${context.tr.port}: ${state.port}'),
-                    Text('${context.tr.language}: ${state.locale}'),
+                    Text(
+                        '${context.tr.language}: ${getLanguageNameFromLocaleId(state.locale)}'),
                   ],
                 );
               },

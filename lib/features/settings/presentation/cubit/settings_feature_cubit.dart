@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import '../../domain/entity/settings_entity.dart';
 import '../../domain/use_case/settings_uc.dart';
 import 'package:vision_xai/core/utils/error_message_mapper.dart';
+import 'package:vision_xai/l10n/localization_extension.dart';
 
 class SettingsFeatureCubit extends Cubit<SettingsEntity?> {
   final SettingsFeatureUC _useCase;
@@ -25,13 +26,13 @@ class SettingsFeatureCubit extends Cubit<SettingsEntity?> {
     // Use runWithErrorHandling to centralize error mapping and optional
     // SnackBar display. We rethrow on error so callers observe the
     // original exception as before.
+    final tr = context.tr;
     try {
       await runWithErrorHandling(() => load(),
-          context: context, rethrowOnError: true);
+          localizations: tr, rethrowOnError: true);
     } catch (e, st) {
       // Preserve localized logging for diagnostics.
-      // ignore: use_build_context_synchronously
-      final message = mapErrorToMessage(e, context);
+      final message = mapErrorToMessage(e, tr);
       developer.log('Settings load failed: $message',
           name: 'SettingsFeatureCubit', error: e, stackTrace: st);
       rethrow;
@@ -46,12 +47,12 @@ class SettingsFeatureCubit extends Cubit<SettingsEntity?> {
   /// Variant of `save` that maps errors to localized messages and logs them.
   Future<void> saveWithContext(
       SettingsEntity entity, BuildContext context) async {
+    final tr = context.tr;
     try {
       await runWithErrorHandling(() => save(entity),
-          context: context, rethrowOnError: true);
+          localizations: tr, rethrowOnError: true);
     } catch (e, st) {
-      // ignore: use_build_context_synchronously
-      final message = mapErrorToMessage(e, context);
+      final message = mapErrorToMessage(e, tr);
       developer.log('Settings save failed: $message',
           name: 'SettingsFeatureCubit', error: e, stackTrace: st);
       rethrow;
