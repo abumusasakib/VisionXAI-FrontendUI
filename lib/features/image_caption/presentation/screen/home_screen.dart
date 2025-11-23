@@ -80,7 +80,7 @@ class HomeScreen extends StatelessWidget {
                 final msg = state.infoMessage!;
                 if (context.mounted) {
                   try {
-                    ns.showSnackBar(context, msg,
+                    ns.showSnackBar(msg,
                         duration: const Duration(milliseconds: 2500));
                   } catch (_) {}
                 }

@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:vision_xai/core/services/global_ui_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vision_xai/features/image_caption/presentation/screen/home_screen.dart';
 import 'package:vision_xai/core/routes/app_routes.dart';
@@ -11,6 +12,7 @@ import 'package:vision_xai/features/settings/color_palette/presentation/cubit/pa
 import 'package:vision_xai/core/di/app_di.dart';
 
 GoRouter createRouter(AppDi appDi) => GoRouter(
+      navigatorKey: GlobalUiService.navigatorKey,
       initialLocation: AppRoutes.home,
       routes: [
         GoRoute(

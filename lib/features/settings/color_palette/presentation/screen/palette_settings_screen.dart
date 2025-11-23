@@ -9,6 +9,7 @@ import 'package:vision_xai/features/settings/color_palette/presentation/screen/w
 import 'package:vision_xai/features/settings/color_palette/presentation/screen/widgets/action_buttons.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/screen/widgets/presets_list.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
+import 'package:vision_xai/core/services/notification_service.dart';
 
 class PaletteSettingsScreen extends StatefulWidget {
   const PaletteSettingsScreen({super.key});
@@ -55,16 +56,10 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
     return BlocListener<PaletteSettingsCubit, PaletteSettingsState>(
       listener: (ctx, state) {
         if (state.message != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message!),
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              margin: const EdgeInsets.all(16),
-            ),
-          );
+          // Use global notification service so the listener doesn't need
+          // to depend on ScaffoldMessenger directly.
+          defaultNotificationService.showSnackBar(state.message!,
+              duration: const Duration(seconds: 3));
         }
         if (state.overrides != null) {
           final o = state.overrides!;

@@ -78,24 +78,23 @@ class _IpSettingsScreenState extends State<IpSettingsScreen> {
                           port: port,
                           locale: cubit.state?.locale ?? 'en');
                       final successMsg = context.tr.ipPortUpdated;
+                      final tr = context.tr;
                       final result = await runWithErrorHandling<void>(
                           () => cubit.save(entity),
                           showSnackOnError: true,
                           notificationService: ns,
-                          context: context,
+                          localizations: tr,
                           successMessage: successMsg,
                           showSuccessOnSuccess: true);
                       if (result.isSuccess) {
                         // Close only when the widget is still mounted
-                        if (context.mounted) {
-                          Navigator.of(context).pop();
-                        }
+                        if (!mounted) return;
+                        Navigator.of(this.context).pop();
                       }
                     } else {
-                      ns.showSnackBar(
-                        context,
-                        context.tr.enterIpAndPort,
-                      );
+                      // Use global messenger to avoid holding BuildContext
+                      // across any future async operations.
+                      ns.showSnackBar(context.tr.enterIpAndPort);
                     }
                   },
                   icon: const Icon(Icons.file_upload_outlined),

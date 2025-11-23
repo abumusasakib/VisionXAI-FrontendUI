@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_cubit.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/screen/widgets/generate_image_button.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/screen/widgets/generate_from_hex_button.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 
 class ActionButtons extends StatelessWidget {
@@ -173,6 +175,18 @@ class ActionButtons extends StatelessWidget {
                     ),
                     elevation: 0,
                   ),
+                ),
+                // Generate from Background Button
+                GenerateFromHexButton(
+                  primaryController: primaryController,
+                  secondaryController: secondaryController,
+                  backgroundController: backgroundController,
+                ),
+                // Generate from Image Button
+                GenerateImageButton(
+                  primaryController: primaryController,
+                  secondaryController: secondaryController,
+                  backgroundController: backgroundController,
                 ),
               ],
             ),

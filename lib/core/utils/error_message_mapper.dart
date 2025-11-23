@@ -4,7 +4,9 @@ import 'dart:developer' as developer;
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:vision_xai/core/constants/string_res.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
+import 'package:vision_xai/l10n/app_localizations.dart';
 import 'result.dart';
 import '../services/notification_service.dart';
 
@@ -14,7 +16,7 @@ import '../services/notification_service.dart';
 Future<Result<T>> runWithErrorHandling<T>(Future<T> Function() action,
     {bool showSnackOnError = false,
     NotificationService? notificationService,
-    BuildContext? context,
+    AppLocalizations? localizations,
     bool rethrowOnError = false,
     String? successMessage,
     bool showSuccessOnSuccess = false}) async {
@@ -24,21 +26,24 @@ Future<Result<T>> runWithErrorHandling<T>(Future<T> Function() action,
     if (showSuccessOnSuccess && successMessage != null) {
       try {
         final ns = notificationService ?? defaultNotificationService;
-        // ignore: use_build_context_synchronously
-        ns.showSnackBar(context, successMessage);
+
+        // Use global messenger by passing null; this avoids using
+        // BuildContext across async gaps.
+        ns.showSnackBar(successMessage);
       } catch (_) {}
     }
     return Result.success(value);
   } catch (e, st) {
-    // ignore: use_build_context_synchronously
-    final msg = mapErrorToMessage(e, context);
+    final msg = mapErrorToMessage(e, localizations);
 
     // Optionally show a SnackBar using the provided NotificationService
     if (showSnackOnError) {
       try {
         final ns = notificationService ?? defaultNotificationService;
-        // ignore: use_build_context_synchronously
-        ns.showSnackBar(context, msg);
+
+        // Use global messenger by passing null to avoid BuildContext usage
+        // after awaiting the action.
+        ns.showSnackBar(msg);
       } catch (_) {}
     }
 
@@ -54,10 +59,11 @@ Future<Result<T>> runWithErrorHandling<T>(Future<T> Function() action,
 /// Convenience helper to show an error SnackBar for [error]. If [context]
 /// is null this becomes a no-op.
 void showErrorSnackBar(BuildContext? context, Object error) {
-  if (context == null) return;
-  final msg = mapErrorToMessage(error, context);
+  final localizations = context?.tr;
+  final msg = mapErrorToMessage(error, localizations);
   try {
-    defaultNotificationService.showSnackBar(context, msg);
+    // Use the global messenger to avoid requiring a BuildContext.
+    defaultNotificationService.showSnackBar(msg);
   } catch (_) {}
 }
 
@@ -65,57 +71,49 @@ void showErrorSnackBar(BuildContext? context, Object error) {
 ///
 /// Use `mapErrorToMessage(error, context)` when handling exceptions in Cubits
 /// or repositories.
-String mapDioExceptionToMessage(DioException e, BuildContext? context) {
-  // Fallback English messages when no BuildContext is available.
-  const fallbackTimeout = 'Connection timed out';
-  const fallbackBadResponse = 'Bad response from server';
-  const fallbackCancelled = 'Request cancelled';
-  const fallbackNoInternet = 'No internet or server unreachable';
-  const fallbackUnknown = 'Unknown error';
-
-  final tr = context?.tr;
-
+String mapDioExceptionToMessage(DioException e, AppLocalizations? tr) {
   if (e.type == DioExceptionType.connectionTimeout ||
       e.type == DioExceptionType.sendTimeout ||
       e.type == DioExceptionType.receiveTimeout) {
-    return tr?.connectionTimeout ?? fallbackTimeout;
+    return tr?.connectionTimeout ?? StringRes.timeout;
   }
 
   if (e.type == DioExceptionType.badResponse) {
     return tr?.badResponse(e.response?.statusCode?.toString() ?? '') ??
-        fallbackBadResponse;
+        StringRes.badResponse;
   }
 
   if (e.type == DioExceptionType.cancel) {
-    return tr?.requestCancelled ?? fallbackCancelled;
+    return tr?.requestCancelled ?? StringRes.requestCancelled;
   }
 
   if (e.type == DioExceptionType.connectionError ||
       e.error is SocketException) {
-    return tr?.noInternetOrServerUnreachable ?? fallbackNoInternet;
+    return tr?.noInternetOrServerUnreachable ??
+        StringRes.noInternetOrServerUnreachable;
   }
 
-  return tr?.unknownError ?? fallbackUnknown;
+  return tr?.unknownError ?? StringRes.unknownError;
 }
 
 /// Generic mapping for arbitrary errors. Recognizes DioException and common
 /// IO/Timeout exceptions and falls back to an unknown error message.
-String mapErrorToMessage(Object error, BuildContext? context) {
-  if (error is DioException) return mapDioExceptionToMessage(error, context);
+String mapErrorToMessage(Object error, AppLocalizations? tr) {
+  if (error is DioException) return mapDioExceptionToMessage(error, tr);
 
   if (error is SocketException) {
-    return context?.tr.noInternetOrServerUnreachable ??
-        'No internet or server unreachable';
+    return tr?.noInternetOrServerUnreachable ??
+        StringRes.noInternetOrServerUnreachable;
   }
 
   if (error is TimeoutException) {
-    return context?.tr.connectionTimeout ?? 'Connection timed out';
+    return tr?.connectionTimeout ?? StringRes.timeout;
   }
 
   if (error is HttpException) {
-    return context?.tr.noInternetOrServerUnreachable ??
-        'No internet or server unreachable';
+    return tr?.noInternetOrServerUnreachable ??
+        StringRes.noInternetOrServerUnreachable;
   }
 
-  return context?.tr.unknownError ?? 'Unknown error';
+  return tr?.unknownError ?? StringRes.unknownError;
 }

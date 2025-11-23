@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vision_xai/features/settings/color_palette/core/palette_utils.dart';
+import 'package:vision_xai/core/services/notification_service.dart';
 
 typedef PickColorCallback = Future<void> Function(
     BuildContext context, TextEditingController controller);
@@ -84,11 +85,11 @@ class _HexFieldState extends State<HexField> {
                 ],
                 onSelected: (v) async {
                   if (v == 'copy') {
-                    // Capture messenger synchronously to avoid using context after await
-                    final messenger = ScaffoldMessenger.of(context);
+                    // Use the global notification service so we don't rely on
+                    // `BuildContext` after awaiting the clipboard call.
                     await Clipboard.setData(ClipboardData(text: _ctrl.text));
-                    messenger
-                        .showSnackBar(const SnackBar(content: Text('Copied')));
+                    defaultNotificationService.showSnackBar('Copied',
+                        duration: const Duration(seconds: 2));
                   } else if (v == 'paste') {
                     final data = await Clipboard.getData('text/plain');
                     if (data?.text != null) _ctrl.text = data!.text!;

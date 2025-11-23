@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vision_xai/core/constants/string_res.dart';
 import 'package:vision_xai/core/utils/error_message_mapper.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
 import '../../../../../core/common/client/tts_client.dart';
@@ -131,7 +132,16 @@ class HomeCubit extends Cubit<HomeState> {
       return;
     }
 
-    emit(state.copyWith(isLoading: true, errorMessage: null));
+    // Stop any ongoing TTS and clear any existing caption/result before
+    // starting a new generation to avoid overlapping audio and stale UI.
+    try {
+      await _ttsClient.stop();
+    } catch (_) {}
+    emit(state.copyWith(
+        isSpeaking: false,
+        isLoading: true,
+        errorMessage: null,
+        testOutput: ''));
 
     // Wrap the upload+generation flow so we return a Result and optionally
     // show a SnackBar on error (handled inside runWithErrorHandling).
@@ -173,15 +183,16 @@ class HomeCubit extends Cubit<HomeState> {
           throw err;
         },
         unKnown: (_) {
-          throw Exception(context.tr.captionMissing);
+          throw Exception(StringRes.errorOccurred);
         },
       );
-    },
-        showSnackOnError: true,
-        notificationService: _notificationService,
-        context: context);
+    }, showSnackOnError: false, notificationService: _notificationService);
 
     if (!result.isSuccess) {
+      // Show a SnackBar for the failure using the global messenger
+      try {
+        _notificationService.showSnackBar(result.errorMessage ?? '');
+      } catch (_) {}
       // Ensure UI reflects error
       emit(state.copyWith(errorMessage: result.errorMessage, isLoading: false));
     }

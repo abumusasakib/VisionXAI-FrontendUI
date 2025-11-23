@@ -10,7 +10,7 @@ import 'package:dio/dio.dart';
 
 // Color palette feature deps
 import 'package:vision_xai/features/settings/color_palette/data/repository/palette_repo_impl.dart';
-import 'package:vision_xai/features/settings/color_palette/data/datasource/palette_local_data_source.dart';
+import 'package:vision_xai/features/settings/color_palette/data/datasource/local/palette_local_data_source.dart';
 import 'package:vision_xai/features/settings/color_palette/domain/use_case/palette_uc.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
 
