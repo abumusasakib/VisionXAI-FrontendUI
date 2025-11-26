@@ -102,4 +102,105 @@ void main() {
     final expected = expectedBase.withOpacity(0.35 + 0.8 * 0.6);
     expect(markerColor, equals(expected));
   });
+
+  testWidgets('Color parsing handles 6/8-length/no-hash/invalid and fallbacks',
+      (tester) async {
+    const b64 =
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=';
+    final bytes = base64Decode(b64);
+
+    final entity = ImageCaptionEntity(attributes: {
+      'tokens': const ['t0', 't1', 't2', 't3'],
+      'token_scores': const [1.0, 0.5, 0.2, 0.9],
+      'attention_image_bytes': Uint8List.fromList(bytes),
+      'attention_topk_items': const [
+        [
+          {'row': 0, 'col': 0, 'score': 1.0}
+        ],
+        [
+          {'row': 0, 'col': 1, 'score': 0.5}
+        ],
+        [
+          {'row': 0, 'col': 2, 'score': 0.2}
+        ],
+        [
+          {'row': 0, 'col': 3, 'score': 0.9}
+        ]
+      ],
+      // various formats
+      'attention_colors': const ['ff0000', '#80ff0000', 'BADHEX', '00ff00'],
+    });
+
+    await tester.pumpWidget(
+        MaterialApp(home: Scaffold(body: AttentionView(entity: entity))));
+    await tester.pumpAndSettle();
+
+    final legendFinder = find.byKey(const Key('attention-legend'));
+    expect(legendFinder, findsOneWidget);
+
+    // Expected parsed colors
+    const expected0 = Color(0xffff0000); // 'ff0000' -> 0xffff0000
+    const expected1 = Color(0x80ff0000); // '#80ff0000' -> 0x80ff0000
+    const expected2 = Colors.grey; // 'BADHEX' -> fallback
+    const expected3 = Color(0xff00ff00); // '00ff00' -> 0xff00ff00
+
+    WidgetPredicate matchColor(Color c) => (Widget w) {
+          if (w is Container) {
+            final dec = w.decoration;
+            if (dec is BoxDecoration) {
+              return dec.color == c;
+            }
+          }
+          return false;
+        };
+
+    expect(find.descendant(of: legendFinder, matching: find.byWidgetPredicate(matchColor(expected0))), findsWidgets);
+    expect(find.descendant(of: legendFinder, matching: find.byWidgetPredicate(matchColor(expected1))), findsWidgets);
+    expect(find.descendant(of: legendFinder, matching: find.byWidgetPredicate(matchColor(expected2))), findsWidgets);
+    expect(find.descendant(of: legendFinder, matching: find.byWidgetPredicate(matchColor(expected3))), findsWidgets);
+  });
+
+  testWidgets('Missing colors fallback to grey for tokens beyond list length',
+      (tester) async {
+    const b64 =
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=';
+    final bytes = base64Decode(b64);
+
+    final entity = ImageCaptionEntity(attributes: {
+      'tokens': const ['x', 'y', 'z'],
+      'token_scores': const [1.0, 1.0, 1.0],
+      'attention_image_bytes': Uint8List.fromList(bytes),
+      'attention_topk_items': const [
+        [
+          {'row': 0, 'col': 0, 'score': 1.0}
+        ],
+        [
+          {'row': 0, 'col': 1, 'score': 1.0}
+        ],
+        [
+          {'row': 0, 'col': 2, 'score': 1.0}
+        ]
+      ],
+      'attention_colors': const ['#123456'],
+    });
+
+    await tester.pumpWidget(
+        MaterialApp(home: Scaffold(body: AttentionView(entity: entity))));
+    await tester.pumpAndSettle();
+
+    final legendFinder = find.byKey(const Key('attention-legend'));
+    expect(legendFinder, findsOneWidget);
+
+    // Only one provided color, other tokens should show grey swatches
+    final greyFinder = find.descendant(
+        of: legendFinder,
+        matching: find.byWidgetPredicate((w) {
+          if (w is Container) {
+            final dec = w.decoration;
+            if (dec is BoxDecoration) return dec.color == Colors.grey;
+          }
+          return false;
+        }));
+    expect(greyFinder, findsWidgets);
+  });
 }
