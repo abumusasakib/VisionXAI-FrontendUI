@@ -11,24 +11,29 @@ class PaletteRepoImpl implements PaletteRepo {
 
   @override
   Future<Map<String, Color>> generatePalette(ImageProvider image) async {
-    // Check for user overrides stored locally first.
+    // Only honor user overrides when requesting the default app icon palette.
+    // When generating from an arbitrary image (user-picked), we should always
+    // compute a fresh palette and ignore previously saved overrides so the
+    // generated colors reflect the image contents.
     try {
-      final overrides = await _local.getOverrides();
-      if (overrides != null) {
-        final Map<String, Color> map = {};
-        if (overrides.containsKey('primary')) {
-          map['primary'] =
-              PaletteManager.getWebSafeColorFromHex(overrides['primary']!);
+      if (image is AssetImage && image.assetName == 'assets/icon/icon.png') {
+        final overrides = await _local.getOverrides();
+        if (overrides != null) {
+          final Map<String, Color> map = {};
+          if (overrides.containsKey('primary')) {
+            map['primary'] =
+                PaletteManager.getWebSafeColorFromHex(overrides['primary']!);
+          }
+          if (overrides.containsKey('secondary')) {
+            map['secondary'] =
+                PaletteManager.getWebSafeColorFromHex(overrides['secondary']!);
+          }
+          if (overrides.containsKey('background')) {
+            map['background'] =
+                PaletteManager.getWebSafeColorFromHex(overrides['background']!);
+          }
+          if (map.isNotEmpty) return map;
         }
-        if (overrides.containsKey('secondary')) {
-          map['secondary'] =
-              PaletteManager.getWebSafeColorFromHex(overrides['secondary']!);
-        }
-        if (overrides.containsKey('background')) {
-          map['background'] =
-              PaletteManager.getWebSafeColorFromHex(overrides['background']!);
-        }
-        if (map.isNotEmpty) return map;
       }
     } catch (_) {
       // If anything goes wrong reading overrides, fall back to dynamic generation.

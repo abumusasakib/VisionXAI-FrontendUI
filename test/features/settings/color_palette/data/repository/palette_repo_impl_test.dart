@@ -31,9 +31,11 @@ void main() {
         'background': '#778899',
       };
       await box.putAll(overrides);
-
       final repo = PaletteRepoImpl();
-      final result = await repo.generatePalette(MemoryImage(Uint8List(0)));
+      // When requesting the default app icon palette (asset), overrides
+      // should be consulted and returned.
+      final result =
+          await repo.generatePalette(const AssetImage('assets/icon/icon.png'));
 
       expect(result['primary'],
           equals(PaletteManager.getWebSafeColorFromHex('#112233')));
@@ -41,6 +43,26 @@ void main() {
           equals(PaletteManager.getWebSafeColorFromHex('#445566')));
       expect(result['background'],
           equals(PaletteManager.getWebSafeColorFromHex('#778899')));
+    });
+
+    test('ignores overrides for arbitrary images', () async {
+      final box = Hive.box('palette');
+      final overrides = {
+        'primary': '#112233',
+        'secondary': '#445566',
+        'background': '#778899',
+      };
+      await box.putAll(overrides);
+
+      final repo = PaletteRepoImpl();
+      // Use a non-asset image (MemoryImage) to simulate user-picked image.
+      final result = await repo.generatePalette(MemoryImage(Uint8List(0)));
+
+      // PaletteManager will fall back when the image can't be loaded; ensure
+      // we did NOT return the user overrides.
+      expect(result['primary'], equals(PaletteManager.fallbackPrimary));
+      expect(result['secondary'], equals(PaletteManager.fallbackSecondary));
+      expect(result['background'], equals(PaletteManager.fallbackBackground));
     });
   });
 }
