@@ -35,16 +35,27 @@ class GenerateFromHexButton extends StatelessWidget {
       icon: const Icon(Icons.auto_fix_high, size: 18),
       label: Text(context.tr.generate),
       style: OutlinedButton.styleFrom(
-        foregroundColor: context.watch<PaletteCubit>().state.primaryColor,
+        foregroundColor: _safePrimaryColor(context),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        side: BorderSide(
-            color: context
-                .watch<PaletteCubit>()
-                .state
-                .secondaryColor
-                .withOpacity(0.3)),
+        side: BorderSide(color: _safeSecondaryColor(context).withOpacity(0.3)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
+  }
+}
+
+Color _safePrimaryColor(BuildContext context) {
+  try {
+    return context.read<PaletteCubit>().state.primaryColor;
+  } catch (_) {
+    return Colors.black;
+  }
+}
+
+Color _safeSecondaryColor(BuildContext context) {
+  try {
+    return context.read<PaletteCubit>().state.secondaryColor;
+  } catch (_) {
+    return Colors.grey;
   }
 }

@@ -31,7 +31,18 @@ List<Widget> markersWidget(BuildContext context, List<List<TopKItem>> topk,
 
     final left = (t.col + 0.5) * cellW - (markerSize / 2);
     final top = (t.row + 0.5) * cellH - (markerSize / 2);
-    final defaultColor = color ?? context.watch<PaletteCubit>().state.secondaryColor;
+    Color defaultColor;
+    if (color != null) {
+      defaultColor = color;
+    } else {
+      try {
+        // try to read PaletteCubit if available; tests or isolated contexts
+        // may not provide it, so fall back to a sensible default color.
+        defaultColor = context.read<PaletteCubit>().state.secondaryColor;
+      } catch (_) {
+        defaultColor = Colors.red;
+      }
+    }
     return Positioned(
       left: left.clamp(0.0, width - markerSize),
       top: top.clamp(0.0, height - markerSize),

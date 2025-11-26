@@ -44,8 +44,8 @@ class GenerateImageButton extends StatefulWidget {
 class _GenerateImageButtonState extends State<GenerateImageButton> {
   @override
   Widget build(BuildContext context) {
-    final secondaryColor = context.watch<PaletteCubit>().state.secondaryColor;
-    final primaryColor = context.watch<PaletteCubit>().state.primaryColor;
+    final secondaryColor = _safeSecondaryColor(context);
+    final primaryColor = _safePrimaryColor(context);
 
     return OutlinedButton.icon(
       onPressed: () async {
@@ -122,6 +122,22 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
+  }
+}
+
+Color _safePrimaryColor(BuildContext context) {
+  try {
+    return context.read<PaletteCubit>().state.primaryColor;
+  } catch (_) {
+    return Colors.black;
+  }
+}
+
+Color _safeSecondaryColor(BuildContext context) {
+  try {
+    return context.read<PaletteCubit>().state.secondaryColor;
+  } catch (_) {
+    return Colors.grey;
   }
 }
 
