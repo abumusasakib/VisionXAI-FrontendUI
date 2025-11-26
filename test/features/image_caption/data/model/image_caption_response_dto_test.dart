@@ -111,5 +111,38 @@ void main() {
       final dto = ImageCaptionResponseDto.fromMap({});
       expect(dto.caption, '');
     });
+
+    test('gracefully handles malformed attention_topk and topk_items', () {
+      // malformed nested lists (inner entries not length 3)
+      final raw1 = {
+        'attention_topk': [
+          [
+            [0, 1], // missing score
+          ]
+        ]
+      };
+
+      final dto1 = ImageCaptionResponseDto.fromMap(raw1);
+      // parsing should not throw and topk becomes null
+      expect(dto1.attentionTopk, isNull);
+
+      // malformed topk_items maps (missing keys)
+      final raw2 = {
+        'attention_topk_items': [
+          [
+            {'r': 0, 'c': 1} // wrong keys
+          ]
+        ]
+      };
+
+      final dto2 = ImageCaptionResponseDto.fromMap(raw2);
+      expect(dto2.attentionTopk, isNull);
+    });
+
+    test('gracefully handles malformed attention_grid', () {
+      final raw = {'attention_grid': ['not', 'ints']};
+      final dto = ImageCaptionResponseDto.fromMap(raw);
+      expect(dto.attentionGrid, isNull);
+    });
   });
 }
