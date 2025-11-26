@@ -125,11 +125,11 @@ class ImageCaptionResponseDto {
       attentionImage: json['attention_image'] as String?,
       attentionImageBytes: attentionImageBytes,
       attentionColors: (json['attention_colors'] as List<dynamic>?)
-        ?.map((e) => e as String)
-        .toList(),
+          ?.map((e) => e as String)
+          .toList(),
       attentionColorMap: (json['attention_color_map'] is Map)
-        ? Map<String, String>.from(json['attention_color_map'] as Map)
-        : null,
+          ? Map<String, String>.from(json['attention_color_map'] as Map)
+          : null,
       attentionMeans: attentionMeans,
       attentionGrid: grid,
       attentionShape: (json['attention_shape'] is Map)

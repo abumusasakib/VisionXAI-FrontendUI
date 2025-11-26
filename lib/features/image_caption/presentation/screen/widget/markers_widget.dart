@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vision_xai/features/image_caption/data/model/topk_item.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
 
-List<Widget> markersWidget(
-    List<List<TopKItem>> topk, int tokenIndex, double width, double height,
-    {int? gridRows, int? gridCols, Color? color}) {
+List<Widget> markersWidget(BuildContext context, List<List<TopKItem>> topk,
+  int tokenIndex, double width, double height,
+  {int? gridRows, int? gridCols, Color? color}) {
   if (tokenIndex >= topk.length) return [];
   final items = topk[tokenIndex];
   if (items.isEmpty) return [];
@@ -29,6 +31,7 @@ List<Widget> markersWidget(
 
     final left = (t.col + 0.5) * cellW - (markerSize / 2);
     final top = (t.row + 0.5) * cellH - (markerSize / 2);
+    final defaultColor = color ?? context.watch<PaletteCubit>().state.secondaryColor;
     return Positioned(
       left: left.clamp(0.0, width - markerSize),
       top: top.clamp(0.0, height - markerSize),
@@ -37,7 +40,7 @@ List<Widget> markersWidget(
         width: markerSize,
         height: markerSize,
         decoration: BoxDecoration(
-          color: (color ?? Colors.red).withOpacity(opacity),
+          color: defaultColor.withOpacity(opacity),
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 1.0),
         ),

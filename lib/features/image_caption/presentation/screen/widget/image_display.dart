@@ -28,8 +28,8 @@ Widget imageDisplay(BuildContext context, HomeState state) {
   return Container(
     height: 200,
     decoration: BoxDecoration(
-      border: Border.all(color: Colors.black54, width: 2),
-      color: Colors.grey.shade200,
+      border: Border.all(color: Theme.of(context).dividerColor, width: 2),
+      color: Theme.of(context).colorScheme.surface,
       borderRadius: BorderRadius.circular(10),
     ),
     child: Center(

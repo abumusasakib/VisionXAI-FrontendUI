@@ -96,7 +96,10 @@ void main() {
     });
 
     test('fromJson accepts JSON string and map', () {
-      final map = {'caption': 'json', 'tokens': ['a', 'b']};
+      final map = {
+        'caption': 'json',
+        'tokens': ['a', 'b']
+      };
       final jsonStr = jsonEncode(map);
 
       final dtoFromJson = ImageCaptionResponseDto.fromJson(jsonStr);
@@ -140,7 +143,9 @@ void main() {
     });
 
     test('gracefully handles malformed attention_grid', () {
-      final raw = {'attention_grid': ['not', 'ints']};
+      final raw = {
+        'attention_grid': ['not', 'ints']
+      };
       final dto = ImageCaptionResponseDto.fromMap(raw);
       expect(dto.attentionGrid, isNull);
     });
