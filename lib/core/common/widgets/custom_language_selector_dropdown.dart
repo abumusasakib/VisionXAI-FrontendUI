@@ -69,8 +69,8 @@ class CustomLanguageSelectorDropdown extends StatelessWidget {
         onChanged: languageChangedHandler,
         isExpanded: true, // Adjust width
         elevation: 16,
-        style: const TextStyle(color: Colors.black),
-        dropdownColor: Colors.white,
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        dropdownColor: Theme.of(context).colorScheme.surface,
       ),
     );
   }
