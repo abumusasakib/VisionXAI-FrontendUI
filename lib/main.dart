@@ -125,6 +125,17 @@ class _MyAppState extends State<MyApp> {
                       appBarTheme: AppBarTheme(
                         backgroundColor: paletteState.primaryColor,
                         foregroundColor: Colors.white,
+                        // Use the palette secondary color for action icons in
+                        // the app bar so accents reflect user palette.
+                        actionsIconTheme:
+                            IconThemeData(color: paletteState.secondaryColor),
+                      ),
+                      tabBarTheme: TabBarTheme(
+                        indicator: UnderlineTabIndicator(
+                            borderSide: BorderSide(
+                                color: paletteState.secondaryColor,
+                                width: 2.0)),
+                        labelColor: paletteState.secondaryColor,
                       ),
                       buttonTheme: ButtonThemeData(
                         buttonColor: paletteState.secondaryColor,
@@ -154,6 +165,14 @@ class _MyAppState extends State<MyApp> {
                       ),
                       primaryIconTheme: const IconThemeData(
                         color: Colors.white,
+                      ),
+                      floatingActionButtonTheme: FloatingActionButtonThemeData(
+                        backgroundColor: paletteState.secondaryColor,
+                        foregroundColor: Colors.white,
+                      ),
+                      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                        selectedItemColor: paletteState.secondaryColor,
+                        unselectedItemColor: Colors.grey,
                       ),
                     ),
                     routerConfig: createRouter(appDi),

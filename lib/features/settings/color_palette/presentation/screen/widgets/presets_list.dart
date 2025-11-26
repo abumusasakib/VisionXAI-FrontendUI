@@ -31,7 +31,9 @@ class PresetsList extends StatelessWidget {
                 final entry = presets.entries.elementAt(i);
                 final name = entry.key;
                 final parts = entry.value;
-                Color p1 = Colors.white, p2 = Colors.white, p3 = Colors.white;
+                Color p1 = Theme.of(ctx2).colorScheme.surface,
+                    p2 = Theme.of(ctx2).colorScheme.surface,
+                    p3 = Theme.of(ctx2).colorScheme.surface;
                 try {
                   p1 = PaletteManager.getWebSafeColorFromHex(
                       parts['primary'] ?? '#FFFFFF');
@@ -50,7 +52,7 @@ class PresetsList extends StatelessWidget {
                     width: 220,
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
+                        border: Border.all(color: Theme.of(ctx).dividerColor),
                         borderRadius: BorderRadius.circular(8)),
                     child: Column(children: [
                       Row(children: [
@@ -61,16 +63,18 @@ class PresetsList extends StatelessWidget {
                         Container(width: 40, height: 40, color: p3),
                         const Spacer(),
                         IconButton(
-                            onPressed: () async {
-                              final settingsCubit =
-                                  ctx.read<PaletteSettingsCubit>();
-                              final confirm =
-                                  await showDeletePresetDialog(ctx, name);
-                              if (confirm == true) {
-                                await settingsCubit.deletePreset(name);
-                              }
-                            },
-                            icon: const Icon(Icons.delete, color: Colors.red))
+                          onPressed: () async {
+                            final settingsCubit =
+                                ctx.read<PaletteSettingsCubit>();
+                            final confirm =
+                                await showDeletePresetDialog(ctx, name);
+                            if (confirm == true) {
+                              await settingsCubit.deletePreset(name);
+                            }
+                          },
+                          icon: Icon(Icons.delete,
+                              color: Theme.of(ctx).colorScheme.error),
+                        )
                       ]),
                       const SizedBox(height: 6),
                       Align(

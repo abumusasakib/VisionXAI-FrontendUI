@@ -99,7 +99,11 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
                         Row(
                           children: [
                             Icon(Icons.palette,
-                                color: Colors.blue[700], size: 24),
+                                color: context
+                                    .watch<PaletteCubit>()
+                                    .state
+                                    .secondaryColor,
+                                size: 24),
                             const SizedBox(width: 8),
                             Text(
                               context.tr.colorConfiguration,

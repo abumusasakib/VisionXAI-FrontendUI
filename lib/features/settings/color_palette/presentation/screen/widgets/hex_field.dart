@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vision_xai/features/settings/color_palette/core/palette_utils.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
 
 typedef PickColorCallback = Future<void> Function(
@@ -102,7 +104,8 @@ class _HexFieldState extends State<HexField> {
         ),
         IconButton(
             onPressed: () => widget.onPickColor(context, _ctrl),
-            icon: const Icon(Icons.colorize, color: Colors.blue)),
+            icon: Icon(Icons.colorize,
+                color: context.watch<PaletteCubit>().state.secondaryColor)),
       ],
     );
   }

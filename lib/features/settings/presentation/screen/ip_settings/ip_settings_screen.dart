@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
 import 'package:provider/provider.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
 import 'package:vision_xai/core/utils/error_message_mapper.dart';
@@ -65,7 +66,8 @@ class _IpSettingsScreenState extends State<IpSettingsScreen> {
               children: [
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green.shade600,
+                    backgroundColor:
+                        context.watch<PaletteCubit>().state.secondaryColor,
                     elevation: 0,
                   ),
                   onPressed: () async {

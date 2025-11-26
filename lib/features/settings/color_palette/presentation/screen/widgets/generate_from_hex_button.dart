@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vision_xai/features/settings/color_palette/core/palette_utils.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
 
 class GenerateFromHexButton extends StatelessWidget {
   final TextEditingController primaryController;
@@ -33,9 +35,14 @@ class GenerateFromHexButton extends StatelessWidget {
       icon: const Icon(Icons.auto_fix_high, size: 18),
       label: Text(context.tr.generate),
       style: OutlinedButton.styleFrom(
-        foregroundColor: Colors.teal[700],
+        foregroundColor: context.watch<PaletteCubit>().state.primaryColor,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        side: BorderSide(color: Colors.teal[200]!),
+        side: BorderSide(
+            color: context
+                .watch<PaletteCubit>()
+                .state
+                .secondaryColor
+                .withOpacity(0.3)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );

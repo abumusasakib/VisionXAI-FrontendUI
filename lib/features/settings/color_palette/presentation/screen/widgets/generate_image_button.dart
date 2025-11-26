@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
 import 'package:vision_xai/core/services/bottom_sheet_service.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
 import 'package:vision_xai/core/services/progress_service.dart';
-import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 import 'package:vision_xai/features/settings/color_palette/core/palette_utils.dart';
 
@@ -44,6 +44,9 @@ class GenerateImageButton extends StatefulWidget {
 class _GenerateImageButtonState extends State<GenerateImageButton> {
   @override
   Widget build(BuildContext context) {
+    final secondaryColor = context.watch<PaletteCubit>().state.secondaryColor;
+    final primaryColor = context.watch<PaletteCubit>().state.primaryColor;
+
     return OutlinedButton.icon(
       onPressed: () async {
         // Capture localized strings and services early to avoid using
@@ -113,9 +116,9 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
       icon: const Icon(Icons.photo_library, size: 18),
       label: Text(context.tr.generateFromImage),
       style: OutlinedButton.styleFrom(
-        foregroundColor: Colors.indigo[700],
+        foregroundColor: primaryColor,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        side: BorderSide(color: Colors.indigo[200]!),
+        side: BorderSide(color: secondaryColor.withOpacity(0.3)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );

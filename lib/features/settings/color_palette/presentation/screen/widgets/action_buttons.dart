@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_cubit.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/screen/widgets/generate_image_button.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/screen/widgets/generate_from_hex_button.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
@@ -21,6 +22,7 @@ class ActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final secondaryColor = context.watch<PaletteCubit>().state.secondaryColor;
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -33,7 +35,7 @@ class ActionButtons extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.settings, color: Colors.green[700], size: 24),
+                Icon(Icons.settings, color: secondaryColor, size: 24),
                 const SizedBox(width: 8),
                 Text(
                   context.tr.actionsSection,
@@ -65,7 +67,7 @@ class ActionButtons extends StatelessWidget {
                   icon: const Icon(Icons.save, size: 18),
                   label: Text(context.tr.save),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[600],
+                    backgroundColor: secondaryColor,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
@@ -112,7 +114,7 @@ class ActionButtons extends StatelessWidget {
                         ),
                         title: Row(
                           children: [
-                            Icon(Icons.bookmark_add, color: Colors.purple[700]),
+                            Icon(Icons.bookmark_add, color: secondaryColor),
                             const SizedBox(width: 8),
                             Text(context.tr.presetNameAlertTitle),
                           ],
@@ -140,7 +142,7 @@ class ActionButtons extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () => Navigator.of(dctx).pop(true),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.purple[600],
+                              backgroundColor: secondaryColor,
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -164,7 +166,7 @@ class ActionButtons extends StatelessWidget {
                   icon: const Icon(Icons.bookmark_add, size: 18),
                   label: Text(context.tr.savePreset),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple[600],
+                    backgroundColor: secondaryColor,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
