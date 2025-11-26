@@ -35,8 +35,8 @@ void main() {
     final legendFinder = find.byKey(const Key('attention-legend'));
     expect(legendFinder, findsOneWidget);
 
-    // Tap the token chip to select it and show markers
-    await tester.tap(find.text('tok1'));
+    // Tap the token ChoiceChip to select it and show markers
+    await tester.tap(find.widgetWithText(ChoiceChip, 'tok1'));
     await tester.pumpAndSettle();
 
     // Marker should be rendered with key 'marker-0-0'
@@ -84,8 +84,8 @@ void main() {
     expect(find.text('a'), findsWidgets);
     expect(find.text('b'), findsWidgets);
 
-    // Select token 'b' and ensure its marker is rendered and colored correctly
-    await tester.tap(find.text('b'));
+    // Select token 'b' (the ChoiceChip) and ensure its marker is rendered and colored correctly
+    await tester.tap(find.widgetWithText(ChoiceChip, 'b'));
     await tester.pumpAndSettle();
 
     final markerFinder = find.byKey(const Key('marker-1-0'));
