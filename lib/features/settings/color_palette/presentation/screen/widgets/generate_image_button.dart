@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_cubit.dart';
 import 'package:vision_xai/core/services/bottom_sheet_service.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
 import 'package:vision_xai/core/services/progress_service.dart';
@@ -102,6 +103,31 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
             widget.primaryController.text = toHex(palette['primary']);
             widget.secondaryController.text = toHex(palette['secondary']);
             widget.backgroundController.text = toHex(palette['background']);
+            // If the user previously saved overrides, update them to the
+            // newly generated palette so that returning to this screen will
+            // show the image-derived colors instead of stale saved values.
+            try {
+              final settingsCubit = context.read<PaletteSettingsCubit>();
+              // If overrides already exist, preserve them by saving the
+              // newly generated palette as a named preset instead of
+              // overwriting the user's saved overrides.
+              if (settingsCubit.state.overrides != null) {
+                final presetName =
+                    'Generated from image ${DateTime.now().toIso8601String()}';
+                final colors = {
+                  'primary': widget.primaryController.text.toUpperCase(),
+                  'secondary': widget.secondaryController.text.toUpperCase(),
+                  'background': widget.backgroundController.text.toUpperCase(),
+                };
+                await settingsCubit.saveNamedPreset(presetName, colors);
+                // Notify the user that a preset was saved.
+                if (mounted) {
+                  notifier.showSnackBar('Saved palette as preset: $presetName');
+                }
+              }
+            } catch (_) {
+              // PaletteSettingsCubit not provided in this context — ignore.
+            }
           } finally {
             if (mounted) {
               ProgressService.hide(context);
