@@ -53,24 +53,51 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PaletteSettingsCubit, PaletteSettingsState>(
-      listener: (ctx, state) {
-        if (state.message != null) {
-          // Use global notification service so the listener doesn't need
-          // to depend on ScaffoldMessenger directly.
-          defaultNotificationService.showSnackBar(state.message!,
-              duration: const Duration(seconds: 3));
-        }
-        if (state.overrides != null) {
-          final o = state.overrides!;
-          primaryController.text =
-              (o['primary'] ?? primaryController.text).toString();
-          secondaryController.text =
-              (o['secondary'] ?? secondaryController.text).toString();
-          backgroundController.text =
-              (o['background'] ?? backgroundController.text).toString();
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<PaletteCubit, dynamic>(
+          // Listen to PaletteCubit so the settings card always shows the
+          // currently applied palette (e.g. when user generates from image).
+          listener: (ctx, paletteState) {
+            try {
+              final primaryHex = toHex(paletteState.primaryColor);
+              final secondaryHex = toHex(paletteState.secondaryColor);
+              final backgroundHex = toHex(paletteState.backgroundColor);
+              // Only update controllers if they differ to avoid stomping edits.
+              if (primaryController.text != primaryHex) {
+                primaryController.text = primaryHex;
+              }
+              if (secondaryController.text != secondaryHex) {
+                secondaryController.text = secondaryHex;
+              }
+              if (backgroundController.text != backgroundHex) {
+                backgroundController.text = backgroundHex;
+              }
+            } catch (_) {
+              // ignore: if paletteState shape changes in tests or is null
+            }
+          },
+        ),
+        BlocListener<PaletteSettingsCubit, PaletteSettingsState>(
+          listener: (ctx, state) {
+            if (state.message != null) {
+              // Use global notification service so the listener doesn't need
+              // to depend on ScaffoldMessenger directly.
+              defaultNotificationService.showSnackBar(state.message!,
+                  duration: const Duration(seconds: 3));
+            }
+            if (state.overrides != null) {
+              final o = state.overrides!;
+              primaryController.text =
+                  (o['primary'] ?? primaryController.text).toString();
+              secondaryController.text =
+                  (o['secondary'] ?? secondaryController.text).toString();
+              backgroundController.text =
+                  (o['background'] ?? backgroundController.text).toString();
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         backgroundColor: Colors.grey[50],
         appBar: AppBar(
