@@ -108,22 +108,26 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
             // show the image-derived colors instead of stale saved values.
             try {
               final settingsCubit = context.read<PaletteSettingsCubit>();
-              // If overrides already exist, preserve them by saving the
-              // newly generated palette as a named preset instead of
-              // overwriting the user's saved overrides.
-              if (settingsCubit.state.overrides != null) {
+              final existing = settingsCubit.state.overrides;
+              final newOverrides = {
+                'primary': widget.primaryController.text.toUpperCase(),
+                'secondary': widget.secondaryController.text.toUpperCase(),
+                'background': widget.backgroundController.text.toUpperCase(),
+              };
+              if (existing != null) {
+                // Save the previous overrides as a friendly named preset
+                // before replacing them.
+                final now = DateTime.now().toLocal();
+                String two(int n) => n.toString().padLeft(2, '0');
                 final presetName =
-                    'Generated from image ${DateTime.now().toIso8601String()}';
-                final colors = {
-                  'primary': widget.primaryController.text.toUpperCase(),
-                  'secondary': widget.secondaryController.text.toUpperCase(),
-                  'background': widget.backgroundController.text.toUpperCase(),
-                };
-                await settingsCubit.saveNamedPreset(presetName, colors);
-                // Notify the user that a preset was saved.
-                if (mounted) {
-                  notifier.showSnackBar('Saved palette as preset: $presetName');
-                }
+                    'Saved override - ${now.year}-${two(now.month)}-${two(now.day)} ${two(now.hour)}:${two(now.minute)}';
+                // existing is Map<String,String>
+                await settingsCubit.saveNamedPreset(presetName, existing);
+              }
+              // Overwrite the current overrides with the newly generated palette.
+              await settingsCubit.saveOverrides(newOverrides);
+              if (mounted) {
+                notifier.showSnackBar('Saved palette and updated overrides');
               }
             } catch (_) {
               // PaletteSettingsCubit not provided in this context — ignore.

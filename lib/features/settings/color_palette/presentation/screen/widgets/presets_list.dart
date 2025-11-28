@@ -50,38 +50,48 @@ class PresetsList extends StatelessWidget {
                   },
                   child: Container(
                     width: 220,
+                    height: 84,
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                         border: Border.all(color: Theme.of(ctx).dividerColor),
                         borderRadius: BorderRadius.circular(8)),
-                    child: Column(children: [
-                      Row(children: [
-                        Container(width: 40, height: 40, color: p1),
-                        const SizedBox(width: 6),
-                        Container(width: 40, height: 40, color: p2),
-                        const SizedBox(width: 6),
-                        Container(width: 40, height: 40, color: p3),
-                        const Spacer(),
-                        IconButton(
-                          onPressed: () async {
-                            final settingsCubit =
-                                ctx.read<PaletteSettingsCubit>();
-                            final confirm =
-                                await showDeletePresetDialog(ctx, name);
-                            if (confirm == true) {
-                              await settingsCubit.deletePreset(name);
-                            }
-                          },
-                          icon: Icon(Icons.delete,
-                              color: Theme.of(ctx).colorScheme.error),
-                        )
-                      ]),
-                      const SizedBox(height: 6),
-                      Align(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          Container(width: 40, height: 40, color: p1),
+                          const SizedBox(width: 6),
+                          Container(width: 40, height: 40, color: p2),
+                          const SizedBox(width: 6),
+                          Container(width: 40, height: 40, color: p3),
+                          const Spacer(),
+                          IconButton(
+                            onPressed: () async {
+                              final settingsCubit =
+                                  ctx.read<PaletteSettingsCubit>();
+                              final confirm =
+                                  await showDeletePresetDialog(ctx, name);
+                              if (confirm == true) {
+                                await settingsCubit.deletePreset(name);
+                              }
+                            },
+                            icon: Icon(Icons.delete,
+                                color: Theme.of(ctx).colorScheme.error),
+                          )
+                        ]),
+                        const SizedBox(height: 6),
+                        Align(
                           alignment: Alignment.centerLeft,
-                          child:
-                              Text(name, style: const TextStyle(fontSize: 12)))
-                    ]),
+                          child: Text(
+                            name,
+                            style: const TextStyle(fontSize: 12),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 );
               },
