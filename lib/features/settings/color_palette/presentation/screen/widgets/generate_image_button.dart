@@ -8,7 +8,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
-import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_cubit.dart';
 import 'package:vision_xai/core/services/bottom_sheet_service.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
 import 'package:vision_xai/core/services/progress_service.dart';
@@ -103,35 +102,6 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
             widget.primaryController.text = toHex(palette['primary']);
             widget.secondaryController.text = toHex(palette['secondary']);
             widget.backgroundController.text = toHex(palette['background']);
-            // If the user previously saved overrides, update them to the
-            // newly generated palette so that returning to this screen will
-            // show the image-derived colors instead of stale saved values.
-            try {
-              final settingsCubit = context.read<PaletteSettingsCubit>();
-              final existing = settingsCubit.state.overrides;
-              final newOverrides = {
-                'primary': widget.primaryController.text.toUpperCase(),
-                'secondary': widget.secondaryController.text.toUpperCase(),
-                'background': widget.backgroundController.text.toUpperCase(),
-              };
-              if (existing != null) {
-                // Save the previous overrides as a friendly named preset
-                // before replacing them.
-                final now = DateTime.now().toLocal();
-                String two(int n) => n.toString().padLeft(2, '0');
-                final presetName =
-                    'Saved override - ${now.year}-${two(now.month)}-${two(now.day)} ${two(now.hour)}:${two(now.minute)}';
-                // existing is Map<String,String>
-                await settingsCubit.saveNamedPreset(presetName, existing);
-              }
-              // Overwrite the current overrides with the newly generated palette.
-              await settingsCubit.saveOverrides(newOverrides);
-              if (mounted) {
-                notifier.showSnackBar('Saved palette and updated overrides');
-              }
-            } catch (_) {
-              // PaletteSettingsCubit not provided in this context — ignore.
-            }
           } finally {
             if (mounted) {
               ProgressService.hide(context);

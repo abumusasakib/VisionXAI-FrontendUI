@@ -186,7 +186,10 @@ class HomeCubit extends Cubit<HomeState> {
           throw Exception(StringRes.errorOccurred);
         },
       );
-    }, showSnackOnError: false, notificationService: _notificationService, localizations: context.tr);
+    },
+        showSnackOnError: false,
+        notificationService: _notificationService,
+        localizations: context.tr);
 
     if (!result.isSuccess) {
       // Show a SnackBar for the failure using the global messenger
