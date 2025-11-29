@@ -15,10 +15,12 @@ class SampleFeatureCubit extends Cubit<SampleFeatureState> {
   SampleFeatureCubit(this.useCase) : super(const SampleFeatureState.initial());
   final SampleFeatureUC useCase;
 
-  Future<void> call(Uint8List imageBytes, String filename, {CancelToken? cancelToken}) async {
+  Future<void> call(Uint8List imageBytes, String filename,
+      {CancelToken? cancelToken}) async {
     emit(const SampleFeatureState.loading());
 
-    final Either<Exception, dynamic> result = await useCase.call(imageBytes, filename, cancelToken: cancelToken);
+    final Either<Exception, dynamic> result =
+        await useCase.call(imageBytes, filename, cancelToken: cancelToken);
     result.fold(
       (failure) => emit(SampleFeatureState.failure(failure)),
       (entityGroup) {

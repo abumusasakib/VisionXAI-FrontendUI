@@ -18,8 +18,8 @@ class _FakeUC implements SettingsFeatureUC {
 
 void main() {
   test('SettingsFeatureCubit emits on load and save', () async {
-    final uc =
-        _FakeUC(const SettingsEntity(ip: '127.0.0.1', port: '8000', locale: 'en'));
+    final uc = _FakeUC(
+        const SettingsEntity(ip: '127.0.0.1', port: '8000', locale: 'en'));
     final cubit = SettingsFeatureCubit(uc);
 
     final emits = <SettingsEntity?>[];

@@ -84,7 +84,8 @@ class _NoOpTtsClient implements TtsClient {
 }
 
 void main() {
-  testWidgets('uploadAndGenerateCaption shows localized message on SocketException',
+  testWidgets(
+      'uploadAndGenerateCaption shows localized message on SocketException',
       (tester) async {
     final repo = _FakeRepo();
     final uc = ImageCaptionUC(repo);
@@ -118,7 +119,8 @@ void main() {
     await imgCapCubit.close();
   });
 
-  testWidgets('uploadAndGenerateCaption shows localized message on TimeoutException',
+  testWidgets(
+      'uploadAndGenerateCaption shows localized message on TimeoutException',
       (tester) async {
     // Fake repo that returns TimeoutException
     final repo = _FakeRepoTimeout();
@@ -141,14 +143,16 @@ void main() {
 
     await homeCubit.uploadAndGenerateCaption(ctx);
 
-    final expected = lookupAppLocalizations(const Locale('bn')).connectionTimeout;
+    final expected =
+        lookupAppLocalizations(const Locale('bn')).connectionTimeout;
     expect(notification.lastMessage, expected);
 
     await homeCubit.close();
     await imgCapCubit.close();
   });
 
-  testWidgets('uploadAndGenerateCaption shows localized message on Dio badResponse',
+  testWidgets(
+      'uploadAndGenerateCaption shows localized message on Dio badResponse',
       (tester) async {
     final repo = _FakeRepoBadResponse(500);
     final uc = ImageCaptionUC(repo);
@@ -170,7 +174,8 @@ void main() {
 
     await homeCubit.uploadAndGenerateCaption(ctx);
 
-    final expected = lookupAppLocalizations(const Locale('bn')).badResponse('500');
+    final expected =
+        lookupAppLocalizations(const Locale('bn')).badResponse('500');
     expect(notification.lastMessage, expected);
 
     await homeCubit.close();
@@ -199,7 +204,8 @@ void main() {
 
     await homeCubit.uploadAndGenerateCaption(ctx);
 
-    final expected = lookupAppLocalizations(const Locale('bn')).requestCancelled;
+    final expected =
+        lookupAppLocalizations(const Locale('bn')).requestCancelled;
     expect(notification.lastMessage, expected);
 
     await homeCubit.close();
@@ -225,8 +231,12 @@ class _FakeRepoBadResponse implements ImageCaptionRepo {
   Future<Either<Exception, ImageCaptionEntityGroup>> call(
       Uint8List imageBytes, String filename,
       {cancelToken}) async {
-    final resp = Response(statusCode: statusCode, requestOptions: RequestOptions(path: ''));
-    return left(DioException(requestOptions: RequestOptions(path: ''), type: DioExceptionType.badResponse, response: resp));
+    final resp = Response(
+        statusCode: statusCode, requestOptions: RequestOptions(path: ''));
+    return left(DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.badResponse,
+        response: resp));
   }
 }
 
@@ -235,6 +245,8 @@ class _FakeRepoCancel implements ImageCaptionRepo {
   Future<Either<Exception, ImageCaptionEntityGroup>> call(
       Uint8List imageBytes, String filename,
       {cancelToken}) async {
-    return left(DioException(requestOptions: RequestOptions(path: ''), type: DioExceptionType.cancel));
+    return left(DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.cancel));
   }
 }

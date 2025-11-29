@@ -9,5 +9,7 @@ import '../entity/sample_feature_entity_group.dart';
 /// project-specific Failure type.
 abstract class SampleFeatureRepo {
   /// Accepts raw image bytes and a filename to send to the remote API.
-  Future<Either<Exception, SampleFeatureEntityGroup>> call(Uint8List imageBytes, String filename, {CancelToken? cancelToken});
+  Future<Either<Exception, SampleFeatureEntityGroup>> call(
+      Uint8List imageBytes, String filename,
+      {CancelToken? cancelToken});
 }

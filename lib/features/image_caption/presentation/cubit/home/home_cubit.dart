@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vision_xai/core/constants/string_res.dart';
-import 'package:vision_xai/core/utils/error_message_mapper.dart';
+import 'package:vision_xai/core/services/error_handle/error_handling.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
 import '../../../../../core/common/client/tts_client.dart';
 import 'package:dio/dio.dart';
@@ -127,8 +127,10 @@ class HomeCubit extends Cubit<HomeState> {
   /// Uploads image bytes via the feature use-case (which uses Dio).
   /// The repository expects `Uint8List imageBytes` and `String filename`.
   Future<void> uploadAndGenerateCaption(BuildContext context) async {
+    final localizations = context.tr;
+
     if (state.imageFile == null) {
-      emit(state.copyWith(errorMessage: context.tr.noImageSelected));
+      emit(state.copyWith(errorMessage: localizations.noImageSelected));
       return;
     }
 
@@ -143,7 +145,7 @@ class HomeCubit extends Cubit<HomeState> {
         errorMessage: null,
         testOutput: ''));
 
-    // Wrap the upload+generation flow so we return a Result and optionally
+    // Wrap the upload+generation with error handling so we return a Result and
     // show a SnackBar on error (handled inside runWithErrorHandling).
     final result = await runWithErrorHandling<void>(() async {
       final xFile = state.imageFile!;
@@ -187,9 +189,9 @@ class HomeCubit extends Cubit<HomeState> {
         },
       );
     },
-        showSnackOnError: false,
+        showSnackOnError: true,
         notificationService: _notificationService,
-        localizations: context.tr);
+        localizations: localizations);
 
     if (!result.isSuccess) {
       // Show a SnackBar for the failure using the global messenger

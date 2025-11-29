@@ -1,11 +1,9 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vision_xai/core/utils/error_message_mapper.dart';
+import 'package:vision_xai/core/services/error_handle/error_handling.dart';
 
 void main() {
   group('error_message_mapper', () {
@@ -33,7 +31,7 @@ void main() {
     });
 
     test('mapErrorToMessage handles SocketException and TimeoutException', () {
-      final s = SocketException('failed');
+      const s = SocketException('failed');
       final t = TimeoutException('timed out');
       expect(mapErrorToMessage(s, null),
           equals('No internet or server unreachable'));
@@ -41,7 +39,7 @@ void main() {
     });
 
     test('runWithErrorHandling returns failure Result on thrown', () async {
-      Future<int> thrower() async => throw SocketException('no net');
+      Future<int> thrower() async => throw const SocketException('no net');
       final res = await runWithErrorHandling<int>(thrower);
       expect(res.isSuccess, isFalse);
       expect(res.errorMessage, equals('No internet or server unreachable'));

@@ -2,10 +2,10 @@ import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
+import 'package:vision_xai/core/services/error_handle/error_handling.dart';
 
 import '../../domain/entity/settings_entity.dart';
 import '../../domain/use_case/settings_uc.dart';
-import 'package:vision_xai/core/utils/error_message_mapper.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 
 class SettingsFeatureCubit extends Cubit<SettingsEntity?> {

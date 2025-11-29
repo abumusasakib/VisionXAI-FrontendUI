@@ -91,4 +91,16 @@ class PaletteSettingsCubit extends Cubit<PaletteSettingsState> {
       emit(state.copyWith(message: e.toString()));
     }
   }
+
+  /// Update the preview color for a particular field (identified by [key]).
+  /// Passing a null or empty [hex] will remove the preview for that key.
+  void updatePreviewColor(String key, String? hex) {
+    final current = Map<String, String>.from(state.previewColors ?? {});
+    if (hex == null || hex.trim().isEmpty) {
+      current.remove(key);
+    } else {
+      current[key] = hex.trim();
+    }
+    emit(state.copyWith(previewColors: current));
+  }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vision_xai/features/settings/color_palette/core/palette_utils.dart';
+import 'package:vision_xai/features/settings/color_palette/core/utils/palette_utils.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_cubit.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
 
 typedef PickColorCallback = Future<void> Function(
@@ -48,7 +49,18 @@ class _HexFieldState extends State<HexField> {
     }
   }
 
-  void _onTextChanged() => setState(() {});
+  void _onTextChanged() {
+    // Notify the PaletteSettingsCubit of the
+    // current controller text so other widgets can react to a preview value.
+    try {
+      final hex = _ctrl.text.trim();
+      // Use context.read here; initState/didUpdateWidget set up listeners
+      // synchronously so context is safe to use.
+      // If no PaletteSettingsCubit is provided, ignore.
+      final cubit = context.read<PaletteSettingsCubit?>();
+      cubit?.updatePreviewColor(widget.label, hex.isEmpty ? null : hex);
+    } catch (_) {}
+  }
 
   @override
   void dispose() {
@@ -58,9 +70,9 @@ class _HexFieldState extends State<HexField> {
     super.dispose();
   }
 
-  Color get _currentSwatch {
+  Color _swatchFrom(String? previewHex) {
     try {
-      final hex = _ctrl.text.trim();
+      final hex = previewHex ?? _ctrl.text.trim();
       if (hex.isEmpty) return widget.swatchColor;
       return colorFromHex(hex);
     } catch (_) {
@@ -72,7 +84,18 @@ class _HexFieldState extends State<HexField> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(width: 56, height: 56, color: _currentSwatch),
+        // Listen to previewColors from PaletteSettingsCubit; fall back to
+        // controller text when not present.
+        BlocBuilder<PaletteSettingsCubit, dynamic>(
+          builder: (context, state) {
+            final preview = (state is Map || state.previewColors != null)
+                ? (state.previewColors ?? <String, String>{})
+                : <String, String>{};
+            final previewHex = preview[widget.label];
+            return Container(
+                width: 56, height: 56, color: _swatchFrom(previewHex));
+          },
+        ),
         const SizedBox(width: 12),
         Expanded(
           child: TextFormField(
@@ -87,8 +110,6 @@ class _HexFieldState extends State<HexField> {
                 ],
                 onSelected: (v) async {
                   if (v == 'copy') {
-                    // Use the global notification service so we don't rely on
-                    // `BuildContext` after awaiting the clipboard call.
                     await Clipboard.setData(ClipboardData(text: _ctrl.text));
                     defaultNotificationService.showSnackBar('Copied',
                         duration: const Duration(seconds: 2));

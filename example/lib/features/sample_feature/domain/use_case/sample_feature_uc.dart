@@ -12,7 +12,10 @@ class SampleFeatureUC {
 
   const SampleFeatureUC(this.repository);
 
-  Future<Either<Exception, SampleFeatureEntityGroup>> call(Uint8List imageBytes, String filename, {CancelToken? cancelToken}) async {
-    return await repository.call(imageBytes, filename, cancelToken: cancelToken);
+  Future<Either<Exception, SampleFeatureEntityGroup>> call(
+      Uint8List imageBytes, String filename,
+      {CancelToken? cancelToken}) async {
+    return await repository.call(imageBytes, filename,
+        cancelToken: cancelToken);
   }
 }

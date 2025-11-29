@@ -98,7 +98,8 @@ void main() {
     await expectLaterFuture;
   });
 
-  test('ImageCaptionCubit.call returns failure state when repo fails', () async {
+  test('ImageCaptionCubit.call returns failure state when repo fails',
+      () async {
     final repo = _FailingRepo(Exception('network failure'));
     final uc = ImageCaptionUC(repo);
     final cubit = ImageCaptionCubit(uc);
@@ -107,13 +108,17 @@ void main() {
 
     final terminal = await cubit.call(bytes, 'file.jpg');
 
-    expect(terminal.maybeWhen(failure: (e) => e, orElse: () => null), isNotNull);
-    final failureObj = terminal.maybeWhen(failure: (e) => e, orElse: () => null);
+    expect(
+        terminal.maybeWhen(failure: (e) => e, orElse: () => null), isNotNull);
+    final failureObj =
+        terminal.maybeWhen(failure: (e) => e, orElse: () => null);
     expect(failureObj.toString(), contains('network failure'));
-    expect(cubit.state.maybeWhen(failure: (e) => e, orElse: () => null), isNotNull);
+    expect(cubit.state.maybeWhen(failure: (e) => e, orElse: () => null),
+        isNotNull);
   });
 
-  test('ImageCaptionCubit.call returns unknown state when repo yields unknown', () async {
+  test('ImageCaptionCubit.call returns unknown state when repo yields unknown',
+      () async {
     final repo = _UnknownRepo();
     final uc = ImageCaptionUC(repo);
     final cubit = ImageCaptionCubit(uc);
@@ -122,8 +127,10 @@ void main() {
 
     final terminal = await cubit.call(bytes, 'file.jpg');
 
-    expect(terminal.maybeWhen(unKnown: () => true, orElse: () => false), isTrue);
-    expect(cubit.state.maybeWhen(unKnown: () => true, orElse: () => false), isTrue);
+    expect(
+        terminal.maybeWhen(unKnown: () => true, orElse: () => false), isTrue);
+    expect(cubit.state.maybeWhen(unKnown: () => true, orElse: () => false),
+        isTrue);
   });
 
   test('ImageCaptionCubit.call returns terminal loaded state synchronously',

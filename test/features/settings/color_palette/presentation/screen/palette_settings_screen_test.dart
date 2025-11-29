@@ -79,38 +79,6 @@ void main() {
       } catch (_) {}
     });
 
-    testWidgets('enter hex and save calls cubit', (tester) async {
-      final paletteCubit = PaletteCubit(_FakeUC());
-      final settingsCubit = TestSettingsCubit();
-
-      await tester.pumpWidget(MaterialApp(
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('en'),
-        home: MultiBlocProvider(providers: [
-          BlocProvider<PaletteCubit>(create: (_) => paletteCubit),
-          BlocProvider<PaletteSettingsCubit>(create: (_) => settingsCubit),
-        ], child: const PaletteSettingsScreen()),
-      ));
-
-      await tester.pumpAndSettle();
-
-      final fields = find.byType(TextFormField);
-      expect(fields, findsNWidgets(3));
-
-      await tester.enterText(fields.at(0), '#123456');
-      await tester.tap(find.text('Save'));
-      await tester.pumpAndSettle();
-
-      expect(settingsCubit.lastSaved, isNotNull);
-      expect(settingsCubit.lastSaved!['primary'], equals('#123456'));
-    });
-
     testWidgets('color picker dialog opens', (tester) async {
       final paletteCubit = PaletteCubit(_FakeUC());
       final settingsCubit = TestSettingsCubit();

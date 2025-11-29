@@ -8,7 +8,7 @@ import 'package:vision_xai/core/constants/string_res.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 import 'package:vision_xai/l10n/app_localizations.dart';
 import 'result.dart';
-import '../services/notification_service.dart';
+import '../notification_service.dart';
 
 /// Runs [action] and returns a [Result]. If [showSnackOnError] is true and
 /// a valid [context] is provided, a SnackBar with the mapped message will be

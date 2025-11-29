@@ -12,7 +12,7 @@ import 'package:vision_xai/core/services/bottom_sheet_service.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
 import 'package:vision_xai/core/services/progress_service.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
-import 'package:vision_xai/features/settings/color_palette/core/palette_utils.dart';
+import 'package:vision_xai/features/settings/color_palette/core/utils/palette_utils.dart';
 
 class GenerateImageButton extends StatefulWidget {
   final TextEditingController primaryController;

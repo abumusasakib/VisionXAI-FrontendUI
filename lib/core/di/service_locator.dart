@@ -28,8 +28,10 @@ void setupServiceLocator() {
   if (!getIt.isRegistered<Dio>()) {
     getIt.registerLazySingleton<Dio>(() {
       final settingsBox = Hive.box('settings');
-      final ip = settingsBox.get('ip', defaultValue: IPDetails.defaultIP) as String;
-      final port = settingsBox.get('port', defaultValue: IPDetails.defaultPort) as String;
+      final ip =
+          settingsBox.get('ip', defaultValue: IPDetails.defaultIP) as String;
+      final port = settingsBox.get('port', defaultValue: IPDetails.defaultPort)
+          as String;
       final baseUrl = 'http://$ip:$port';
       final d = Dio(BaseOptions(
         baseUrl: baseUrl,

@@ -15,10 +15,12 @@ class SampleFeatureRemote {
 
   SampleFeatureRemote(this.dio, {this.baseUrl});
 
-  Future<SampleFeatureResponseDto> captionImage(MultipartFile image, {CancelToken? cancelToken}) async {
+  Future<SampleFeatureResponseDto> captionImage(MultipartFile image,
+      {CancelToken? cancelToken}) async {
     final form = FormData.fromMap({'image': image});
     final uri = (baseUrl ?? '') + '/caption';
     final response = await dio.post(uri, data: form, cancelToken: cancelToken);
-    return SampleFeatureResponseDto.fromJson(response.data as Map<String, dynamic>);
+    return SampleFeatureResponseDto.fromJson(
+        response.data as Map<String, dynamic>);
   }
 }

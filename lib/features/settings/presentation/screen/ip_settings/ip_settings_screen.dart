@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vision_xai/core/services/error_handle/error_handling.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
 import 'package:provider/provider.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
-import 'package:vision_xai/core/utils/error_message_mapper.dart';
 
 import '../../cubit/settings_feature_cubit.dart';
 import '../../../domain/entity/settings_entity.dart';

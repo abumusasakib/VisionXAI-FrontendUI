@@ -6,6 +6,7 @@ class StringRes {
   static const String timeout = 'Connection timed out';
   static const String badResponse = 'Bad response from server';
   static const String requestCancelled = 'Request cancelled';
-  static const String noInternetOrServerUnreachable = 'No internet or server unreachable';
+  static const String noInternetOrServerUnreachable =
+      'No internet or server unreachable';
   static const String unknownError = 'Unknown error';
 }

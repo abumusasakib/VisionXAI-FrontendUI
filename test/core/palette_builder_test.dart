@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
-import 'package:vision_xai/features/settings/color_palette/core/palette_utils.dart';
+import 'package:vision_xai/features/settings/color_palette/core/utils/palette_utils.dart';
 
 double _hueDiff(double a, double b) {
   final diff = (a - b).abs();
