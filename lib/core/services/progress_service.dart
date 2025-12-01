@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 /// Simple service to show a modal, non-dismissible progress indicator.
 ///
@@ -11,8 +12,11 @@ import 'package:flutter/material.dart';
 class ProgressService {
   /// Shows a blocking progress dialog. Optional [message] and [size]
   /// parameters control the displayed message and dialog size.
-  static void show(BuildContext context,
-      {String? message, double size = 84, Widget? child}) {
+  /// Shows a blocking progress dialog and awaits one frame before
+  /// returning so callers can start long-running work after the dialog
+  /// is painted and the progress indicator begins animating.
+  static Future<void> show(BuildContext context,
+      {String? message, double size = 84, Widget? child}) async {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -30,6 +34,16 @@ class ProgressService {
         child: child,
       ),
     );
+
+    // Wait until the current frame completes so the dialog is actually
+    // rendered and the CircularProgressIndicator animation can start.
+    try {
+      await SchedulerBinding.instance.endOfFrame;
+    } catch (_) {
+      // If scheduler isn't available for some reason, fall back to a short
+      // delay to allow the event loop to process the showDialog work.
+      await Future.delayed(const Duration(milliseconds: 16));
+    }
   }
 
   /// Hides the progress dialog if present. Safe to call even if no dialog
