@@ -89,9 +89,12 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
 
           if (provider == null) return;
 
-          // Show a blocking progress indicator while generating the palette.
-          if (!mounted) return;
-          ProgressService.show(context,
+            // Show a blocking progress indicator while generating the palette.
+            // Await the show call so the dialog is painted and the
+            // CircularProgressIndicator starts animating before starting
+            // potentially heavy synchronous work.
+            if (!mounted) return;
+            await ProgressService.show(context,
               message: tr.generatingPalette, size: 84);
           try {
             final Map<String, dynamic> palette = widget.generate != null
