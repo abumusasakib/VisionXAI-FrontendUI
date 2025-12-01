@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:vision_xai/core/constants/ip_details.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
-import 'package:vision_xai/core/network/truncating_log_interceptor.dart';
+import 'package:vision_xai/core/network/concise_log_interceptor.dart';
 import 'package:dio/dio.dart';
 
 // Color palette feature deps
@@ -39,7 +39,7 @@ void setupServiceLocator() {
         sendTimeout: const Duration(seconds: 90),
         receiveTimeout: const Duration(seconds: 90),
       ));
-      d.interceptors.add(TruncatingLogInterceptor(
+      d.interceptors.add(ConciseLogInterceptor(
         maxBodyChars: 1024,
         logPrint: (obj) => log(obj.toString(), name: 'Dio'),
       ));

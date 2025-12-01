@@ -6,7 +6,7 @@ import 'package:vision_xai/features/image_caption/presentation/screen/widget/tok
 import '../../../domain/entity/image_caption_entity.dart';
 import 'image_with_markers_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../cubit/attention_view_cubit.dart';
+import '../../cubit/attention_view/attention_view_cubit.dart';
 
 /// Attention view widget
 class AttentionView extends StatelessWidget {

@@ -6,11 +6,11 @@ import 'package:dio/dio.dart';
 
 /// A Dio interceptor that logs requests/responses like [LogInterceptor]
 /// but truncates large bodies and logs summaries for binary payloads.
-class TruncatingLogInterceptor extends Interceptor {
+class ConciseLogInterceptor extends Interceptor {
   final int maxBodyChars;
   final void Function(Object object) logPrint;
 
-  TruncatingLogInterceptor(
+  ConciseLogInterceptor(
       {this.maxBodyChars = 1024, void Function(Object)? logPrint})
       : logPrint = logPrint ?? ((o) => log(o.toString(), name: 'Dio'));
 
