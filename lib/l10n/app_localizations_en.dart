@@ -219,9 +219,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get generateFromImage => 'Generate from Image';
 
   @override
-  String get generatingPalette => 'Generating Palette...';
-
-  @override
   String get pickFromFiles => 'Pick from files';
 
   @override
@@ -234,6 +231,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String paletteGenerationFailed(Object error) {
     return 'Failed to generate palette: $error';
   }
+
+  @override
+  String get generatingPalette => 'Generating Palette...';
 
   @override
   String get deletePresetTitle => 'Delete Preset?';

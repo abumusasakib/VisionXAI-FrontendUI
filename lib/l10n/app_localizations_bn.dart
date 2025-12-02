@@ -216,6 +216,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get generate => 'তৈরি করুন';
 
   @override
+  String get generateFromImage => 'ছবি থেকে তৈরি করুন';
+
+  @override
   String get pickFromFiles => 'ফাইল থেকে নির্বাচন করুন';
 
   @override
@@ -228,9 +231,6 @@ class AppLocalizationsBn extends AppLocalizations {
   String paletteGenerationFailed(Object error) {
     return 'প্যালেট তৈরি ব্যর্থ হয়েছে: $error';
   }
-
-  @override
-  String get generateFromImage => 'ছবি থেকে তৈরি করুন';
 
   @override
   String get generatingPalette => 'প্যালেট তৈরি করা হচ্ছে...';

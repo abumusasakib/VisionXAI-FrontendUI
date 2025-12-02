@@ -50,6 +50,6 @@ void main() {
             'Secondary lightness differs by more than $lightTol: ${(sHsl.lightness - eSHsl.lightness).abs()}');
 
     // Background should be exact (we pass hex through)
-    expect(background.value, expectedBackground.value);
+    expect(background, expectedBackground);
   });
 }

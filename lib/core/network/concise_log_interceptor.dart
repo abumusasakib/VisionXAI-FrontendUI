@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 
-/// A Dio interceptor that logs requests/responses like [LogInterceptor]
+/// A Dio interceptor that logs requests/responses like [Interceptor]
 /// but truncates large bodies and logs summaries for binary payloads.
 class ConciseLogInterceptor extends Interceptor {
   final int maxBodyChars;
