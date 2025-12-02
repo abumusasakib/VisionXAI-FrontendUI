@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:ui' as ui;
@@ -99,7 +101,7 @@ class PaletteManager {
         }
       } catch (e) {
         // Image decode / worker failed — return hardcoded fallbacks
-        debugPrint('Palette generation error (fast path): $e');
+        log('Palette generation error (fast path): $e', name: 'PaletteManager', level: 900);
         return {
           'primary': fallbackPrimary,
           'secondary': fallbackSecondary,
@@ -107,7 +109,7 @@ class PaletteManager {
         };
       }
     } catch (e) {
-      debugPrint('Palette generation error: $e');
+      log('Palette generation error: $e', name: 'PaletteManager', level: 900);
       return {
         'primary': fallbackPrimary,
         'secondary': fallbackSecondary,
@@ -258,7 +260,7 @@ class PaletteManager {
 
       return scheme;
     } catch (e) {
-      debugPrint('generateColorScheme failed: $e');
+      log('generateColorScheme failed: $e', name: 'PaletteManager', level: 900);
       // Fallback to a seed-based scheme
       return ColorScheme.fromSeed(
           seedColor: fallbackPrimary, brightness: brightness);
