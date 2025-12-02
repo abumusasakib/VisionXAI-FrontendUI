@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:ui' as ui;
 import 'package:vision_xai/features/settings/color_palette/core/palette_manager.dart';
+import 'package:vision_xai/features/settings/color_palette/core/utils/palette_utils.dart';
 
 // Simple in-memory ImageProvider for tests that produces a 1x1 image with a
 // solid color.
@@ -41,6 +42,62 @@ void main() {
     expect(result['primary'], PaletteManager.fallbackPrimary);
     expect(result['secondary'], PaletteManager.fallbackSecondary);
     expect(result['background'], PaletteManager.fallbackBackground);
+  });
+
+  double hueDiff(double a, double b) {
+    final diff = (a - b).abs();
+    return diff > 180 ? 360 - diff : diff;
+  }
+
+  test('palette builder produces colors close to expected for #FFA500', () {
+    final palette = buildPaletteFromHex('#FFA500');
+    final primary = palette['primary']!;
+    final secondary = palette['secondary']!;
+    final background = palette['background']!;
+
+    // Expected values computed from the algorithm to avoid hard-coded
+    // constants that depend on the implementation details. This test now
+    // verifies the builder follows the documented algorithm.
+    const expectedBackground = Color(0xFFFFA500);
+    final bgHsl = HSLColor.fromColor(expectedBackground);
+    final expectedPrimaryHsl =
+        bgHsl.withSaturation((bgHsl.saturation * (1.0 - 0.6)).clamp(0.0, 1.0));
+    final expectedSecondaryHsl = bgHsl.withHue((bgHsl.hue + 137.5) % 360.0);
+    final expectedPrimary = expectedPrimaryHsl.toColor();
+    final expectedSecondary = expectedSecondaryHsl.toColor();
+
+    final pHsl = HSLColor.fromColor(primary);
+    final sHsl = HSLColor.fromColor(secondary);
+    final ePHsl = HSLColor.fromColor(expectedPrimary);
+    final eSHsl = HSLColor.fromColor(expectedSecondary);
+
+    // Tolerances: hue in degrees, saturation/lightness in fraction
+    const hueTol = 4.0; // degrees
+    const satTol = 0.12; // 12% absolute
+    const lightTol = 0.16; // 16% absolute
+
+    expect(hueDiff(pHsl.hue, ePHsl.hue) <= hueTol, isTrue,
+        reason:
+            'Primary hue differs by more than $hueTol degrees: ${hueDiff(pHsl.hue, ePHsl.hue)}');
+    expect((pHsl.saturation - ePHsl.saturation).abs() <= satTol, isTrue,
+        reason:
+            'Primary saturation differs by more than $satTol: ${(pHsl.saturation - ePHsl.saturation).abs()}');
+    expect((pHsl.lightness - ePHsl.lightness).abs() <= lightTol, isTrue,
+        reason:
+            'Primary lightness differs by more than $lightTol: ${(pHsl.lightness - ePHsl.lightness).abs()}');
+
+    // Secondary: hue should match the rotated hue within tolerance and
+    // saturation should be similar; lightness may be adjusted to improve
+    // contrast so we avoid a strict lightness assertion here.
+    expect(hueDiff(sHsl.hue, eSHsl.hue) <= hueTol, isTrue,
+        reason:
+            'Secondary hue differs by more than $hueTol degrees: ${hueDiff(sHsl.hue, eSHsl.hue)}');
+    expect((sHsl.saturation - eSHsl.saturation).abs() <= satTol, isTrue,
+        reason:
+            'Secondary saturation differs by more than $satTol: ${(sHsl.saturation - eSHsl.saturation).abs()}');
+
+    // Background should be exact (we pass hex through)
+    expect(background, expectedBackground);
   });
 
   test('getWebSafeColorFromHex returns expected color or web-safe mapping', () {

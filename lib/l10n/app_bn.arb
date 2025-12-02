@@ -211,7 +211,7 @@
   "@savePreset": {
     "description": "Label for the save preset action in the palette settings section."
   },
-  "generate": "তৈরি করুন",
+  "generate": "পটভূমি থেকে তৈরি করুন",
   "@generate": {
     "description": "Label for a generic generate action (used for short generate buttons)."
   },

@@ -281,7 +281,7 @@
   "@savePreset": {
     "description": "Label for the save preset action in the palette settings section."
   },
-  "generate": "Generate",
+  "generate": "Generate from Background",
   "@generate": {
     "description": "Label for a generic generate action (used for short generate buttons)."
   },

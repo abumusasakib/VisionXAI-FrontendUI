@@ -40,4 +40,14 @@ class PaletteCubit extends Cubit<PaletteState> {
 
     return palette;
   }
+
+  /// Update the cubit state directly from a palette map (used by UI helpers
+  /// that compute palettes synchronously, for example from a hex string).
+  void updateFromMap(Map<String, Color> palette) {
+    emit(PaletteState(
+      primaryColor: palette['primary'] ?? const Color(0xFF089BB7),
+      secondaryColor: palette['secondary'] ?? const Color(0xFF0FC0B8),
+      backgroundColor: palette['background'] ?? const Color(0xFFFEFDFC),
+    ));
+  }
 }

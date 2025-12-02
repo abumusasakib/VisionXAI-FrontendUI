@@ -45,7 +45,6 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
   @override
   Widget build(BuildContext context) {
     final secondaryColor = _safeSecondaryColor(context);
-    final primaryColor = _safePrimaryColor(context);
 
     return OutlinedButton.icon(
       onPressed: () async {
@@ -118,21 +117,17 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
       },
       icon: const Icon(Icons.photo_library, size: 18),
       label: Text(context.tr.generateFromImage),
+      // Make this a filled action button using secondary color for the
+      // background and white foreground so it matches other actions and
+      // remains legible on light surfaces.
       style: OutlinedButton.styleFrom(
-        foregroundColor: primaryColor,
+        backgroundColor: secondaryColor,
+        foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         side: BorderSide(color: secondaryColor.withOpacity(0.3)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
-  }
-}
-
-Color _safePrimaryColor(BuildContext context) {
-  try {
-    return context.read<PaletteCubit>().state.primaryColor;
-  } catch (_) {
-    return Colors.black;
   }
 }
 

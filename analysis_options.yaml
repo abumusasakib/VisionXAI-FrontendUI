@@ -31,6 +31,10 @@ analyzer:
   exclude:
     - mason/**
     - example/**
+    # Ignore generated localization outputs so analyzer doesn't suggest
+    # edits for files created by the tooling.
+    - lib/l10n/**
+    - .dart_tool/**
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

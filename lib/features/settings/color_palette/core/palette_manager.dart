@@ -101,7 +101,8 @@ class PaletteManager {
         }
       } catch (e) {
         // Image decode / worker failed — return hardcoded fallbacks
-        log('Palette generation error (fast path): $e', name: 'PaletteManager', level: 900);
+        log('Palette generation error (fast path): $e',
+            name: 'PaletteManager', level: 900);
         return {
           'primary': fallbackPrimary,
           'secondary': fallbackSecondary,
@@ -316,9 +317,9 @@ class PaletteManager {
   /// Build a palette from a provided background [color].
   ///
   /// Algorithm:
-  /// 1. Primary: rotate hue by [rotationDegrees] (default 137.5°) using HSL.
-  /// 2. Secondary: desaturate the background by [desaturateFraction]
+  /// 1. Primary: desaturate the background by [desaturateFraction]
   ///    (default 0.6 means reduce saturation to 40% of original).
+  /// 2. Secondary: rotate hue by [rotationDegrees] (default 137.5°) using HSL.
   /// 3. Background: the provided color (web-safe adjusted on web).
   static Map<String, Color> buildPaletteFromBackgroundColor(Color color,
       {double rotationDegrees = 137.5, double desaturateFraction = 0.6}) {
@@ -328,18 +329,70 @@ class PaletteManager {
     // Convert to HSL for hue rotation and saturation change
     final hsl = HSLColor.fromColor(bg);
 
-    // Rotate hue
-    final double newHue = (hsl.hue + rotationDegrees) % 360.0;
-    final primaryHsl = hsl.withHue(newHue);
-
-    // Desaturate background to produce secondary color
+    // Desaturate background to produce primary color
     final double newSaturation =
         (hsl.saturation * (1.0 - desaturateFraction)).clamp(0.0, 1.0);
-    final secondaryHsl = hsl.withSaturation(newSaturation);
+    final HSLColor primaryHsl = hsl.withSaturation(newSaturation);
+
+    // Rotate hue to produce initial secondary color
+    final double newHue = (hsl.hue + rotationDegrees) % 360.0;
+    HSLColor secondaryHsl = hsl.withHue(newHue);
+
+    // Convert to Color values for contrast checks
+    Color primaryColor = primaryHsl.toColor();
+    Color secondaryColor = secondaryHsl.toColor();
+
+    // Ensure the secondary contrasts reasonably with the primary.
+    // Target a WCAG-like contrast ratio (approx) of at least 3:1 for UI
+    // accents; try adjusting secondary lightness to reach the target.
+    double contrast(Color a, Color b) {
+      final double la = a.computeLuminance();
+      final double lb = b.computeLuminance();
+      return (math.max(la, lb) + 0.05) / (math.min(la, lb) + 0.05);
+    }
+
+    const double desiredContrast = 3.0;
+    double bestContrast = contrast(primaryColor, secondaryColor);
+    HSLColor bestCandidate = secondaryHsl;
+
+    if (bestContrast < desiredContrast) {
+      final double baseLightness = secondaryHsl.lightness;
+      // Try small steps increasing/decreasing lightness to improve contrast
+      for (int i = 1; i <= 6; i++) {
+        final double delta = 0.06 * i;
+        // Try lighter candidate
+        final HSLColor lighter =
+            secondaryHsl.withLightness((baseLightness + delta).clamp(0.0, 1.0));
+        final double c1 = contrast(primaryColor, lighter.toColor());
+        if (c1 > bestContrast) {
+          bestContrast = c1;
+          bestCandidate = lighter;
+        }
+        if (bestContrast >= desiredContrast) break;
+
+        // Try darker candidate
+        final HSLColor darker =
+            secondaryHsl.withLightness((baseLightness - delta).clamp(0.0, 1.0));
+        final double c2 = contrast(primaryColor, darker.toColor());
+        if (c2 > bestContrast) {
+          bestContrast = c2;
+          bestCandidate = darker;
+        }
+        if (bestContrast >= desiredContrast) break;
+      }
+      secondaryHsl = bestCandidate;
+      secondaryColor = secondaryHsl.toColor();
+    }
+
+    // Apply web-safe adjustment to primary/secondary/background on web
+    final Color outPrimary =
+        kIsWeb ? getWebSafeColor(primaryColor) : primaryColor;
+    final Color outSecondary =
+        kIsWeb ? getWebSafeColor(secondaryColor) : secondaryColor;
 
     return {
-      'primary': primaryHsl.toColor(),
-      'secondary': secondaryHsl.toColor(),
+      'primary': outPrimary,
+      'secondary': outSecondary,
       'background': bg,
     };
   }

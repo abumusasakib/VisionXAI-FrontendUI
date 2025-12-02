@@ -28,27 +28,33 @@ class GenerateFromHexButton extends StatelessWidget {
           primaryController.text = toHex(palette['primary']!);
           secondaryController.text = toHex(palette['secondary']!);
           backgroundController.text = toHex(palette['background']!);
+          // Also update the live PaletteCubit so UI previews update immediately
+          try {
+            final cubit = context.read<PaletteCubit>();
+            cubit.updateFromMap({
+              'primary': palette['primary']!,
+              'secondary': palette['secondary']!,
+              'background': palette['background']!,
+            });
+          } catch (_) {
+            // If cubit isn't available in this context (tests/isolated usage), ignore.
+          }
         } catch (_) {
           // ignore invalid input
         }
       },
       icon: const Icon(Icons.auto_fix_high, size: 18),
       label: Text(context.tr.generate),
+      // Use filled secondary color with white text like the other action
+      // buttons so the button remains legible on light backgrounds.
       style: OutlinedButton.styleFrom(
-        foregroundColor: _safePrimaryColor(context),
+        backgroundColor: _safeSecondaryColor(context),
+        foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         side: BorderSide(color: _safeSecondaryColor(context).withOpacity(0.3)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
-  }
-}
-
-Color _safePrimaryColor(BuildContext context) {
-  try {
-    return context.read<PaletteCubit>().state.primaryColor;
-  } catch (_) {
-    return Colors.black;
   }
 }
 
