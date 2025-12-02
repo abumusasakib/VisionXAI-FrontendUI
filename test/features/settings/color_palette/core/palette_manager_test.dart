@@ -1,8 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/painting.dart';
+import 'dart:ui' as ui;
 import 'package:vision_xai/features/settings/color_palette/core/palette_manager.dart';
+
+// Simple in-memory ImageProvider for tests that produces a 1x1 image with a
+// solid color.
+class TestImageProvider extends ImageProvider<TestImageProvider> {
+  final Color color;
+  const TestImageProvider(this.color);
+
+  @override
+  Future<TestImageProvider> obtainKey(ImageConfiguration configuration) {
+    return SynchronousFuture<TestImageProvider>(this);
+  }
+
+  ImageStreamCompleter load(TestImageProvider key, dynamic _) {
+    final Future<ImageInfo> future = (() async {
+      final ui.PictureRecorder recorder = ui.PictureRecorder();
+      final Canvas canvas = Canvas(recorder);
+      final Paint paint = Paint()..color = color;
+      canvas.drawRect(const Rect.fromLTWH(0, 0, 1, 1), paint);
+      final ui.Image image = await recorder.endRecording().toImage(1, 1);
+      return ImageInfo(image: image, scale: 1.0);
+    })();
+
+    return OneFrameImageStreamCompleter(future);
+  }
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -58,5 +83,18 @@ void main() {
         expect(mapped, equals(inputColor));
       }
     }
+  });
+
+  testWidgets('generateColorScheme (isolate path) returns a ColorScheme for a valid image', (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      const provider = TestImageProvider(Colors.blue);
+      final scheme = await PaletteManager.generateColorScheme(provider);
+
+      expect(scheme, isA<ColorScheme>());
+      // Basic consistency checks
+      expect(scheme.primary, isA<Color>());
+      expect(scheme.surface, isA<Color>());
+      expect(scheme.onSurface, isA<Color>());
+    });
   });
 }
