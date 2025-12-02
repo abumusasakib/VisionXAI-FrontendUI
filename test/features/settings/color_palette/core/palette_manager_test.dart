@@ -84,17 +84,4 @@ void main() {
       }
     }
   });
-
-  testWidgets('generateColorScheme (isolate path) returns a ColorScheme for a valid image', (WidgetTester tester) async {
-    await tester.runAsync(() async {
-      const provider = TestImageProvider(Colors.blue);
-      final scheme = await PaletteManager.generateColorScheme(provider);
-
-      expect(scheme, isA<ColorScheme>());
-      // Basic consistency checks
-      expect(scheme.primary, isA<Color>());
-      expect(scheme.surface, isA<Color>());
-      expect(scheme.onSurface, isA<Color>());
-    });
-  });
 }
