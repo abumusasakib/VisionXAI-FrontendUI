@@ -253,4 +253,9 @@
       }
     }
   }
+  ,
+  "resetConfirmation": "রিসেট সফল হয়েছে",
+  "@resetConfirmation": {
+    "description": "Message shown after palette overrides are reset successfully."
+  }
 }

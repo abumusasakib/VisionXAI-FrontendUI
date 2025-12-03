@@ -5,6 +5,7 @@ import 'package:vision_xai/features/settings/color_palette/presentation/cubit/pa
 import 'package:vision_xai/features/settings/color_palette/presentation/screen/widgets/generate_image_button.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/screen/widgets/generate_from_hex_button.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
+import 'package:vision_xai/core/services/notification_service.dart';
 
 class ActionButtons extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -83,10 +84,11 @@ class ActionButtons extends StatelessWidget {
                 // Reset Button with confirmation
                 OutlinedButton.icon(
                   onPressed: () async {
-                    // Capture messenger and label and cubit before showing dialog
-                    // to avoid using `context` after async gaps.
+                    // Capture label and cubit before showing dialog to avoid
+                    // using `context` across async gaps. We use the
+                    // `NotificationService` after the async operation so no
+                    // BuildContext is required there.
                     final settingsCubit = context.read<PaletteSettingsCubit>();
-                    final messenger = ScaffoldMessenger.of(context);
                     final resetLabel = context.tr.reset;
 
                     final ok = await showDialog<bool>(
@@ -127,11 +129,11 @@ class ActionButtons extends StatelessWidget {
                     );
                     if (ok != true) return;
                     await settingsCubit.clearOverrides();
-                    // Provide user feedback using captured messenger.
-                    messenger.showSnackBar(SnackBar(
-                      content: Text(resetLabel),
-                      duration: const Duration(seconds: 2),
-                    ));
+                    // Use the centralized notification service to show the
+                    // post-reset message. The service falls back to a global
+                    // messenger if no context is provided.
+                    defaultNotificationService.showSnackBar(resetLabel,
+                        duration: const Duration(seconds: 2));
                   },
                   icon: const Icon(Icons.refresh, size: 18),
                   label: Text(context.tr.reset),

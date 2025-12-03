@@ -236,4 +236,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String deletePresetMessage(Object presetName) {
     return 'প্রিসেট $presetName মুছে ফেলবেন?';
   }
+
+  @override
+  String get resetConfirmation => 'রিসেট সফল হয়েছে';
 }

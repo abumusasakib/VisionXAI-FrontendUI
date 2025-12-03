@@ -530,6 +530,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete preset {presetName}?'**
   String deletePresetMessage(Object presetName);
+
+  /// Message shown after palette overrides are reset successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset successfully'**
+  String get resetConfirmation;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -323,4 +323,9 @@
       }
     }
   }
+  ,
+  "resetConfirmation": "Reset successfully",
+  "@resetConfirmation": {
+    "description": "Message shown after palette overrides are reset successfully."
+  }
 }
