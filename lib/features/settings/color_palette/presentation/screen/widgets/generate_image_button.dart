@@ -92,9 +92,8 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
           // Await the show call so the dialog is painted and the
           // CircularProgressIndicator starts animating before starting
           // potentially heavy synchronous work.
-          if (!mounted) return;
-          await ProgressService.show(context,
-              message: tr.generatingPalette, size: 84);
+            if (!mounted) return;
+            await ProgressService.show(message: tr.generatingPalette, size: 84);
           try {
             final Map<String, dynamic> palette = widget.generate != null
                 ? await widget.generate!(context, provider)
@@ -106,7 +105,7 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
             widget.backgroundController.text = toHex(palette['background']);
           } finally {
             if (mounted) {
-              ProgressService.hide(context);
+              ProgressService.hide();
             }
           }
         } catch (e) {

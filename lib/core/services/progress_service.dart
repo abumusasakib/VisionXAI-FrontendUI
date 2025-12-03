@@ -11,23 +11,25 @@ import 'package:vision_xai/core/services/global_ui_service.dart';
 /// ProgressService.hide(context);
 /// ```
 class ProgressService {
-  /// Shows a blocking progress dialog. Optional [message] and [size]
-  /// parameters control the displayed message and dialog size.
-  /// Shows a blocking progress dialog and awaits one frame before
-  /// returning so callers can start long-running work after the dialog
-  /// is painted and the progress indicator begins animating.
-  static Future<void> show(BuildContext? context,
-      {String? message, double size = 84, Widget? child}) async {
-    // If no context is provided, fall back to the global navigator/scaffold
-    // context so callers (including non-widget code) can show the dialog.
-    var ctx = context ?? GlobalUiService.scaffoldMessengerKey.currentContext;
-    if (ctx == null) {
-      // No context available; nothing to show.
+  /// Shows a blocking progress dialog.
+  ///
+  /// The [context] parameter is optional — when omitted the service will
+  /// fall back to `GlobalUiService.context` so callers don't need to hold
+  /// a `BuildContext` across async operations. Optional [message] and
+  /// [size] parameters control the displayed message and dialog size.
+  /// The method awaits one frame so callers can start long-running work
+  /// after the dialog is painted and the progress indicator begins
+  /// animating.
+  static Future<void> show({BuildContext? context, String? message, double size = 84, Widget? child}) async {
+    final useContext = context ?? GlobalUiService.context;
+    if (useContext == null) {
+      // No context available to show a dialog. Nothing to show; return
+      // immediately to avoid throwing.
       return;
     }
 
     showDialog<void>(
-      context: ctx,
+      context: useContext,
       barrierDismissible: false,
       // Use a dim barrier so the dialog content stands out. A semi-opaque
       // black overlay works well across light and dark themes and keeps the
@@ -49,26 +51,30 @@ class ProgressService {
     try {
       await SchedulerBinding.instance.endOfFrame;
     } catch (_) {
+      // If scheduler isn't available for some reason, fall back to a short
+      // delay to allow the event loop to process the showDialog work.
       await Future.delayed(const Duration(milliseconds: 16));
     }
   }
 
   /// Hides the progress dialog if present. Safe to call even if no dialog
   /// is shown (errors are ignored).
-  static void hide([BuildContext? context]) {
+  static void hide({BuildContext? context}) {
+    final useContext = context ?? GlobalUiService.context;
+    if (useContext == null) return;
+
     // Try to pop using the local navigator first, then fall back to the
     // root navigator. Swallow errors so callers can safely call hide()
     // without needing to guard for dialog presence.
-    var ctx = context ?? GlobalUiService.scaffoldMessengerKey.currentContext;
     try {
-      if (ctx != null && Navigator.of(ctx, rootNavigator: false).canPop()) {
-        Navigator.of(ctx, rootNavigator: false).pop();
+      if (Navigator.of(useContext, rootNavigator: false).canPop()) {
+        Navigator.of(useContext, rootNavigator: false).pop();
         return;
       }
     } catch (_) {}
     try {
-      if (ctx != null && Navigator.of(ctx, rootNavigator: true).canPop()) {
-        Navigator.of(ctx, rootNavigator: true).pop();
+      if (Navigator.of(useContext, rootNavigator: true).canPop()) {
+        Navigator.of(useContext, rootNavigator: true).pop();
       }
     } catch (_) {}
   }
