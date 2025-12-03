@@ -10,6 +10,7 @@ import 'package:vision_xai/l10n/app_localizations.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 import 'package:vision_xai/core/routes/routes.dart';
 import 'package:vision_xai/core/services/global_ui_service.dart';
+import 'package:vision_xai/core/services/progress_service.dart';
 import 'package:provider/provider.dart';
 import 'package:arb_utils/state_managers/l10n_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -63,6 +64,25 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // Trigger an initial palette load after the first frame so the
+    // application's navigator and localization delegates are available.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // Only run once
+      try {
+        // Show a brief blocking progress dialog while the palette is loaded.
+        await ProgressService.show(null, message: 'Generating Palette...');
+        try {
+          await widget.appDi.paletteCubit.updateColors();
+        } finally {
+          ProgressService.hide();
+        }
+      } catch (_) {}
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Use app-level DI (constructed in main) to provide single-instance cubits
     final imageCaptionCubit = appDi.imageCaptionCubit;
@@ -101,7 +121,7 @@ class _MyAppState extends State<MyApp> {
               providers: [
                 Provider.value(value: appDi.notificationService),
               ],
-              child: BlocBuilder<PaletteCubit, PaletteState>(
+                child: BlocBuilder<PaletteCubit, PaletteState>(
                 builder: (context, paletteState) {
                   return MaterialApp.router(
                     scaffoldMessengerKey: GlobalUiService.scaffoldMessengerKey,
@@ -186,3 +206,4 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+

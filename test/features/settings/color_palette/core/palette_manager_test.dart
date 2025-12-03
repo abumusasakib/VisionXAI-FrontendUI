@@ -56,7 +56,7 @@ void main() {
     final background = palette['background']!;
 
     // Expected values computed from the algorithm to avoid hard-coded
-    // constants that depend on the implementation details. This test now
+    // constants that depend on the implementation details. This test
     // verifies the builder follows the documented algorithm.
     const expectedBackground = Color(0xFFFFA500);
     final bgHsl = HSLColor.fromColor(expectedBackground);

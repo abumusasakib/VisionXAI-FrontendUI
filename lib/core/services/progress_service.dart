@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:vision_xai/core/services/global_ui_service.dart';
 
 /// Simple service to show a modal, non-dismissible progress indicator.
 ///
@@ -15,10 +16,18 @@ class ProgressService {
   /// Shows a blocking progress dialog and awaits one frame before
   /// returning so callers can start long-running work after the dialog
   /// is painted and the progress indicator begins animating.
-  static Future<void> show(BuildContext context,
+  static Future<void> show(BuildContext? context,
       {String? message, double size = 84, Widget? child}) async {
+    // If no context is provided, fall back to the global navigator/scaffold
+    // context so callers (including non-widget code) can show the dialog.
+    var ctx = context ?? GlobalUiService.scaffoldMessengerKey.currentContext;
+    if (ctx == null) {
+      // No context available; nothing to show.
+      return;
+    }
+
     showDialog<void>(
-      context: context,
+      context: ctx,
       barrierDismissible: false,
       // Use a dim barrier so the dialog content stands out. A semi-opaque
       // black overlay works well across light and dark themes and keeps the
@@ -40,27 +49,26 @@ class ProgressService {
     try {
       await SchedulerBinding.instance.endOfFrame;
     } catch (_) {
-      // If scheduler isn't available for some reason, fall back to a short
-      // delay to allow the event loop to process the showDialog work.
       await Future.delayed(const Duration(milliseconds: 16));
     }
   }
 
   /// Hides the progress dialog if present. Safe to call even if no dialog
   /// is shown (errors are ignored).
-  static void hide(BuildContext context) {
+  static void hide([BuildContext? context]) {
     // Try to pop using the local navigator first, then fall back to the
     // root navigator. Swallow errors so callers can safely call hide()
     // without needing to guard for dialog presence.
+    var ctx = context ?? GlobalUiService.scaffoldMessengerKey.currentContext;
     try {
-      if (Navigator.of(context, rootNavigator: false).canPop()) {
-        Navigator.of(context, rootNavigator: false).pop();
+      if (ctx != null && Navigator.of(ctx, rootNavigator: false).canPop()) {
+        Navigator.of(ctx, rootNavigator: false).pop();
         return;
       }
     } catch (_) {}
     try {
-      if (Navigator.of(context, rootNavigator: true).canPop()) {
-        Navigator.of(context, rootNavigator: true).pop();
+      if (ctx != null && Navigator.of(ctx, rootNavigator: true).canPop()) {
+        Navigator.of(ctx, rootNavigator: true).pop();
       }
     } catch (_) {}
   }

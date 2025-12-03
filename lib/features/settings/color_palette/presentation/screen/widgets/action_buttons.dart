@@ -5,6 +5,7 @@ import 'package:vision_xai/features/settings/color_palette/presentation/cubit/pa
 import 'package:vision_xai/features/settings/color_palette/presentation/screen/widgets/generate_image_button.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/screen/widgets/generate_from_hex_button.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
+import 'package:vision_xai/core/services/progress_service.dart';
 
 class ActionButtons extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -84,7 +85,13 @@ class ActionButtons extends StatelessWidget {
                 OutlinedButton.icon(
                   onPressed: () async {
                     final settingsCubit = context.read<PaletteSettingsCubit>();
-                    await settingsCubit.clearOverrides();
+                    final message = context.tr.generatingPalette;
+                    await ProgressService.show(null, message: message);
+                    try {
+                      await settingsCubit.clearOverrides();
+                    } finally {
+                      ProgressService.hide();
+                    }
                   },
                   icon: const Icon(Icons.refresh, size: 18),
                   label: Text(context.tr.reset),
