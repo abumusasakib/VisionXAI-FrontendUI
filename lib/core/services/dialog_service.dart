@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:vision_xai/core/services/global_ui_service.dart';
+import 'package:vision_xai/l10n/localization_extension.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:typed_data';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 /// Lightweight dialog helper that centralizes showing dialogs and uses the
@@ -60,7 +60,7 @@ class DialogService {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dctx).pop(false),
-            child: Text(cancelLabel ?? 'Cancel'),
+            child: Text(cancelLabel ?? dctx.tr.cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(dctx).pop(true),
@@ -70,7 +70,7 @@ class DialogService {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
             ),
-            child: Text(confirmLabel ?? 'OK'),
+            child: Text(confirmLabel ?? dctx.tr.ok),
           ),
         ],
       ),
@@ -98,7 +98,7 @@ class DialogService {
               if (onOk != null) onOk();
               Navigator.of(dctx).pop();
             },
-            child: Text(okLabel ?? 'OK'),
+            child: Text(okLabel ?? dctx.tr.ok),
           ),
         ],
       ),
@@ -107,7 +107,8 @@ class DialogService {
 
   /// Shows an image preview dialog for an [XFile]. Uses an
   /// InteractiveViewer for pinch/zoom. Returns when the dialog is closed.
-  static Future<void> showPreviewFromXFile(BuildContext? context, XFile imageFile) {
+  static Future<void> showPreviewFromXFile(
+      BuildContext? context, XFile imageFile) {
     return show<void>(
       context: context,
       builder: (dctx) {
@@ -120,10 +121,12 @@ class DialogService {
   }
 
   /// Shows an image preview dialog for raw bytes.
-  static Future<void> showPreviewFromBytes(BuildContext? context, Uint8List bytes) {
+  static Future<void> showPreviewFromBytes(
+      BuildContext? context, Uint8List bytes) {
     return show<void>(
       context: context,
-      builder: (dctx) => _buildPreviewDialog(dctx, Image.memory(bytes, fit: BoxFit.contain)),
+      builder: (dctx) =>
+          _buildPreviewDialog(dctx, Image.memory(bytes, fit: BoxFit.contain)),
     );
   }
 
@@ -143,7 +146,8 @@ class DialogService {
           children: [
             Flexible(
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(8)),
                 child: InteractiveViewer(
                   panEnabled: true,
                   minScale: 1.0,
@@ -157,7 +161,7 @@ class DialogService {
               width: double.infinity,
               child: TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
+                child: Text(context.tr.ok),
               ),
             ),
           ],
@@ -168,12 +172,13 @@ class DialogService {
 
   /// Shows a color picker dialog and returns the selected [Color] or `null`
   /// if cancelled.
-  static Future<Color?> showColorPicker(BuildContext? context, {required Color initialColor, String? title}) async {
+  static Future<Color?> showColorPicker(BuildContext? context,
+      {required Color initialColor, String? title}) async {
     Color picked = initialColor;
     final result = await show<Color?>(
       context: context,
       builder: (dctx) => AlertDialog(
-        title: Text(title ?? 'Pick a color'),
+        title: Text(title ?? dctx.tr.pickAColor),
         content: SingleChildScrollView(
           child: ColorPicker(
             pickerColor: initialColor,
@@ -183,8 +188,12 @@ class DialogService {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(dctx).pop(null), child: const Text('Cancel')),
-          TextButton(onPressed: () => Navigator.of(dctx).pop(picked), child: const Text('Select')),
+            TextButton(
+              onPressed: () => Navigator.of(dctx).pop(null),
+              child: Text(dctx.tr.cancel)),
+            TextButton(
+              onPressed: () => Navigator.of(dctx).pop(picked),
+              child: Text(dctx.tr.select)),
         ],
       ),
     );
@@ -193,7 +202,10 @@ class DialogService {
 
   /// Shows a text input dialog and returns the entered string or `null` if
   /// cancelled.
-  static Future<String?> showTextInput(BuildContext? context, {required String title, String? placeholder, String? initialValue}) async {
+  static Future<String?> showTextInput(BuildContext? context,
+      {required String title,
+      String? placeholder,
+      String? initialValue}) async {
     final controller = TextEditingController(text: initialValue ?? '');
     final result = await show<String?>(
       context: context,
@@ -205,8 +217,12 @@ class DialogService {
           decoration: InputDecoration(labelText: placeholder),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(dctx).pop(null), child: const Text('Cancel')),
-          TextButton(onPressed: () => Navigator.of(dctx).pop(controller.text.trim()), child: const Text('OK')),
+          TextButton(
+              onPressed: () => Navigator.of(dctx).pop(null),
+              child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.of(dctx).pop(controller.text.trim()),
+              child: const Text('OK')),
         ],
       ),
     );
@@ -215,7 +231,10 @@ class DialogService {
 
   /// Shows a simple list picker. Returns the selected item or `null` when
   /// cancelled.
-  static Future<T?> showListPicker<T>(BuildContext? context, {required String title, required List<T> items, required String Function(T) display}) async {
+  static Future<T?> showListPicker<T>(BuildContext? context,
+      {required String title,
+      required List<T> items,
+      required String Function(T) display}) async {
     return show<T?>(
       context: context,
       builder: (dctx) => AlertDialog(
@@ -232,7 +251,9 @@ class DialogService {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(dctx).pop(null), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.of(dctx).pop(null),
+              child: const Text('Cancel')),
         ],
       ),
     );

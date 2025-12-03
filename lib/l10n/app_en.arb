@@ -233,6 +233,10 @@
   "@colorConfiguration": {
     "description": "Label for the palette settings section."
   },
+  "pickAColor": "Pick a Color",
+  "@pickAColor": {
+    "description": "Label for the pick a color section."
+  },
   "primaryColor": "Primary Color",
   "@primaryColor": {
     "description": "Label for the primary color setting in the palette settings section."
@@ -272,6 +276,10 @@
   "presetNamePlaceholder": "Provide preset name",
   "@presetNamePlaceholder": {
     "description": "Placeholder text for the preset name input field in the palette settings section."
+  },
+  "select": "Select",
+  "@select": {
+    "description": "Label for selection actions (OK alternative)."
   },
   "presetsList": "Presets List",
   "@presetsList": {
