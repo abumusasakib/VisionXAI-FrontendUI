@@ -13,9 +13,17 @@ Future<void> showColorPicker(
     current = Theme.of(ctx).colorScheme.surface;
   }
 
-  final selected = await DialogService.showColorPicker(ctx, initialColor: current, title: ctx.tr.pickAColor);
+  final selected = await DialogService.showColorPicker(ctx,
+      initialColor: current, title: ctx.tr.pickAColor);
   if (selected != null) {
-    final hex = '#${selected.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}';
-    ctrl.text = hex;
+    final hex =
+        '#${selected.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}';
+    // Update the controller via a full TextEditingValue so listeners and
+    // any bound UI receive the change reliably and caret is placed at end.
+    ctrl.value = TextEditingValue(
+      text: hex,
+      selection: TextSelection.collapsed(offset: hex.length),
+    );
+    // Setting `ctrl.value` above notifies listeners; no further action needed.
   }
 }
