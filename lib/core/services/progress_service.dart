@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:vision_xai/core/services/global_ui_service.dart';
+import 'package:vision_xai/core/services/dialog_service.dart';
 
 /// Simple service to show a modal, non-dismissible progress indicator.
 ///
@@ -20,7 +21,11 @@ class ProgressService {
   /// The method awaits one frame so callers can start long-running work
   /// after the dialog is painted and the progress indicator begins
   /// animating.
-  static Future<void> show({BuildContext? context, String? message, double size = 84, Widget? child}) async {
+  static Future<void> show(
+      {BuildContext? context,
+      String? message,
+      double size = 84,
+      Widget? child}) async {
     final useContext = context ?? GlobalUiService.context;
     if (useContext == null) {
       // No context available to show a dialog. Nothing to show; return
@@ -28,16 +33,12 @@ class ProgressService {
       return;
     }
 
-    showDialog<void>(
+    // Use the centralized dialog helper so all dialogs render consistently
+    // and respect the global fallback for missing contexts.
+    DialogService.show<void>(
       context: useContext,
       barrierDismissible: false,
-      // Use a dim barrier so the dialog content stands out. A semi-opaque
-      // black overlay works well across light and dark themes and keeps the
-      // dialog readable.
       barrierColor: Colors.black54,
-      // Use the local navigator by default so the dialog pairs with the
-      // same Navigator instance used to hide it. Using the root navigator
-      // can cause mismatches in apps that use nested navigators.
       useRootNavigator: false,
       builder: (_) => _ProgressDialog(
         message: message,

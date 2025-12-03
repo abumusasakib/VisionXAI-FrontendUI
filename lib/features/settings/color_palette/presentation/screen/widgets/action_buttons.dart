@@ -137,64 +137,21 @@ class ActionButtons extends StatelessWidget {
                 // Save Preset Button
                 ElevatedButton.icon(
                   onPressed: () async {
-                    final nameCtrl = TextEditingController();
                     final settingsCubit = context.read<PaletteSettingsCubit>();
-                    final ok = await showDialog<bool>(
-                      context: context,
-                      builder: (dctx) => AlertDialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        title: Row(
-                          children: [
-                            Icon(Icons.bookmark_add, color: secondaryColor),
-                            const SizedBox(width: 8),
-                            Text(dctx.tr.presetNameAlertTitle),
-                          ],
-                        ),
-                        content: TextField(
-                          controller: nameCtrl,
-                          autofocus: true,
-                          decoration: InputDecoration(
-                            labelText: dctx.tr.presetNamePlaceholder,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[50],
-                          ),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(dctx).pop(false),
-                            child: Text(
-                              dctx.tr.cancel,
-                              style: TextStyle(color: Colors.grey[600]),
-                            ),
-                          ),
-                          ElevatedButton(
-                            onPressed: () => Navigator.of(dctx).pop(true),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: secondaryColor,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: Text(dctx.tr.save),
-                          ),
-                        ],
-                      ),
+                    final name = await DialogService.showTextInput(
+                      context,
+                      title: context.tr.presetNameAlertTitle,
+                      placeholder: context.tr.presetNamePlaceholder,
                     );
-                    if (ok != true) return;
-                    final name = nameCtrl.text.trim();
-                    if (name.isEmpty) return;
+                    if (name == null) return;
+                    final trimmed = name.trim();
+                    if (trimmed.isEmpty) return;
                     final colors = {
                       'primary': primaryController.text.toUpperCase(),
                       'secondary': secondaryController.text.toUpperCase(),
                       'background': backgroundController.text.toUpperCase(),
                     };
-                    await settingsCubit.saveNamedPreset(name, colors);
+                    await settingsCubit.saveNamedPreset(trimmed, colors);
                   },
                   icon: const Icon(Icons.bookmark_add, size: 18),
                   label: Text(context.tr.savePreset),
