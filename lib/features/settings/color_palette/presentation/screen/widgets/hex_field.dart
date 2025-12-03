@@ -7,7 +7,7 @@ import 'package:vision_xai/features/settings/color_palette/presentation/cubit/pa
 import 'package:vision_xai/core/services/notification_service.dart';
 
 typedef PickColorCallback = Future<void> Function(
-    BuildContext context, TextEditingController controller);
+  BuildContext context, TextEditingController controller, String label);
 
 class HexField extends StatefulWidget {
   final String label;
@@ -124,9 +124,9 @@ class _HexFieldState extends State<HexField> {
           ),
         ),
         IconButton(
-            onPressed: () => widget.onPickColor(context, _ctrl),
-            icon: Icon(Icons.colorize,
-                color: context.watch<PaletteCubit>().state.secondaryColor)),
+          onPressed: () => widget.onPickColor(context, _ctrl, widget.label),
+          icon: Icon(Icons.colorize,
+            color: context.watch<PaletteCubit>().state.secondaryColor)),
       ],
     );
   }
