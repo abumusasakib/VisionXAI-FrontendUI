@@ -68,6 +68,8 @@ void setupServiceLocator() {
     // initialize colors immediately after construction.
     getIt.registerLazySingleton<PaletteCubit>(() {
       final cubit = PaletteCubit(getIt<PaletteUC>());
+      // Start initial load
+      cubit.updateColors();
       return cubit;
     });
   }

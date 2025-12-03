@@ -79,6 +79,12 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
           },
         ),
         BlocListener<PaletteSettingsCubit, PaletteSettingsState>(
+          // Only react to overrides changes. Preview updates (which update
+          // `previewColors`) should not stomp the user's in-progress edits
+          // or recent color picker selections, so use `listenWhen` to apply
+          // the saved overrides only when the overrides map actually changes.
+          listenWhen: (previous, current) =>
+              previous.overrides != current.overrides,
           listener: (ctx, state) {
             if (state.message != null) {
               // Use global notification service so the listener doesn't need

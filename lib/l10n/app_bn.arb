@@ -207,7 +207,7 @@
   "@presetNamePlaceholder": {
     "description": "Placeholder text for the preset name input field in the palette settings section."
   },
-  "select": "নির্বাচন",
+  "select": "নির্বাচন করুন",
   "@select": {
     "description": "Label for selection actions (OK alternative)."
   },

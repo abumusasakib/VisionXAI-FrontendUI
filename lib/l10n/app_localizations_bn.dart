@@ -171,6 +171,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get colorConfiguration => 'রঙ কনফিগারেশন';
 
   @override
+  String get pickAColor => 'একটি রঙ নির্বাচন করুন';
+
+  @override
   String get primaryColor => 'প্রাথমিক রঙ';
 
   @override
@@ -199,6 +202,9 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get presetNamePlaceholder => 'প্রিসেট নাম প্রদান করুন';
+
+  @override
+  String get select => 'নির্বাচন করুন';
 
   @override
   String get presetsList => 'প্রিসেট তালিকা';
@@ -236,6 +242,12 @@ class AppLocalizationsBn extends AppLocalizations {
   String deletePresetMessage(Object presetName) {
     return 'প্রিসেট $presetName মুছে ফেলবেন?';
   }
+
+  @override
+  String get resetting => 'রিসেট করা হচ্ছে...';
+
+  @override
+  String get resetPrompt => 'আপনি কি রঙ প্যালেট রিসেট করতে চান?';
 
   @override
   String get resetConfirmation => 'রিসেট সফল হয়েছে';

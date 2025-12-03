@@ -188,10 +188,10 @@ class DialogService {
           ),
         ),
         actions: [
-            TextButton(
+          TextButton(
               onPressed: () => Navigator.of(dctx).pop(null),
               child: Text(dctx.tr.cancel)),
-            TextButton(
+          TextButton(
               onPressed: () => Navigator.of(dctx).pop(picked),
               child: Text(dctx.tr.select)),
         ],

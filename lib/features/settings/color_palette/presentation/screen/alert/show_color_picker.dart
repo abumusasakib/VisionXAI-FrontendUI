@@ -6,7 +6,7 @@ import 'package:vision_xai/core/services/dialog_service.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_cubit.dart';
 
 Future<void> showColorPicker(
-  BuildContext ctx, TextEditingController ctrl, String label) async {
+    BuildContext ctx, TextEditingController ctrl, String label) async {
   // Parse existing hex or fall back to the current theme surface color.
   Color current;
   try {

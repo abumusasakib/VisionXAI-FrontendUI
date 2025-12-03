@@ -11,6 +11,7 @@ Future<bool?> showDeletePresetDialog(BuildContext ctx, String name) {
     title: ctx.tr.deletePresetTitle,
     content: ctx.tr.deletePresetMessage(name),
     confirmLabel: ctx.tr.delete,
+    confirmColor: Colors.red,
     cancelLabel: ctx.tr.cancel,
   );
 }

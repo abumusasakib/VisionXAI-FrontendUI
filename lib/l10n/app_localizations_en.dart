@@ -171,6 +171,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get colorConfiguration => 'Color Configuration';
 
   @override
+  String get pickAColor => 'Pick a Color';
+
+  @override
   String get primaryColor => 'Primary Color';
 
   @override
@@ -199,6 +202,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get presetNamePlaceholder => 'Provide preset name';
+
+  @override
+  String get select => 'Select';
 
   @override
   String get presetsList => 'Presets List';
@@ -236,6 +242,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String deletePresetMessage(Object presetName) {
     return 'Delete preset $presetName?';
   }
+
+  @override
+  String get resetting => 'Resetting...';
+
+  @override
+  String get resetPrompt => 'Are you sure you want to reset the color palette?';
 
   @override
   String get resetConfirmation => 'Reset successfully';

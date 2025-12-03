@@ -47,7 +47,7 @@ class HomeScreen extends StatelessWidget {
           ),
           BlocListener<HomeCubit, HomeState>(
             listener: (context, state) {
-                if (state.errorMessage != null) {
+              if (state.errorMessage != null) {
                 // Show error dialog
                 log('Error: ${state.errorMessage}');
                 DialogService.showAlert(

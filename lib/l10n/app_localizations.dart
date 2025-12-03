@@ -405,6 +405,12 @@ abstract class AppLocalizations {
   /// **'Color Configuration'**
   String get colorConfiguration;
 
+  /// Label for the pick a color section.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a Color'**
+  String get pickAColor;
+
   /// Label for the primary color setting in the palette settings section.
   ///
   /// In en, this message translates to:
@@ -464,6 +470,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Provide preset name'**
   String get presetNamePlaceholder;
+
+  /// Label for selection actions (OK alternative).
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get select;
 
   /// Title for the presets list in the palette settings section.
   ///
@@ -530,6 +542,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete preset {presetName}?'**
   String deletePresetMessage(Object presetName);
+
+  /// Message shown while palette overrides are being reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Resetting...'**
+  String get resetting;
+
+  /// Prompt shown to ask whether to reset palette overrides.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to reset the color palette?'**
+  String get resetPrompt;
 
   /// Message shown after palette overrides are reset successfully.
   ///
