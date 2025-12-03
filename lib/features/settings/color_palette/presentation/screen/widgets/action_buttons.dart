@@ -5,7 +5,6 @@ import 'package:vision_xai/features/settings/color_palette/presentation/cubit/pa
 import 'package:vision_xai/features/settings/color_palette/presentation/screen/widgets/generate_image_button.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/screen/widgets/generate_from_hex_button.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
-import 'package:vision_xai/core/services/progress_service.dart';
 
 class ActionButtons extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -81,17 +80,58 @@ class ActionButtons extends StatelessWidget {
                   ),
                 ),
 
-                // Reset Button
+                // Reset Button with confirmation
                 OutlinedButton.icon(
                   onPressed: () async {
+                    // Capture messenger and label and cubit before showing dialog
+                    // to avoid using `context` after async gaps.
                     final settingsCubit = context.read<PaletteSettingsCubit>();
-                    final message = context.tr.generatingPalette;
-                    await ProgressService.show(null, message: message);
-                    try {
-                      await settingsCubit.clearOverrides();
-                    } finally {
-                      ProgressService.hide();
-                    }
+                    final messenger = ScaffoldMessenger.of(context);
+                    final resetLabel = context.tr.reset;
+
+                    final ok = await showDialog<bool>(
+                      context: context,
+                      builder: (dctx) => AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        title: Row(
+                          children: [
+                            Icon(Icons.refresh, color: secondaryColor),
+                            const SizedBox(width: 8),
+                            Text(dctx.tr.reset),
+                          ],
+                        ),
+                        content: Text(dctx.tr.deletePresetMessage('')),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(dctx).pop(false),
+                            child: Text(
+                              dctx.tr.cancel,
+                              style: TextStyle(color: Colors.grey[600]),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () => Navigator.of(dctx).pop(true),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: secondaryColor,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Text(dctx.tr.reset),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (ok != true) return;
+                    await settingsCubit.clearOverrides();
+                    // Provide user feedback using captured messenger.
+                    messenger.showSnackBar(SnackBar(
+                      content: Text(resetLabel),
+                      duration: const Duration(seconds: 2),
+                    ));
                   },
                   icon: const Icon(Icons.refresh, size: 18),
                   label: Text(context.tr.reset),
@@ -123,14 +163,14 @@ class ActionButtons extends StatelessWidget {
                           children: [
                             Icon(Icons.bookmark_add, color: secondaryColor),
                             const SizedBox(width: 8),
-                            Text(context.tr.presetNameAlertTitle),
+                            Text(dctx.tr.presetNameAlertTitle),
                           ],
                         ),
                         content: TextField(
                           controller: nameCtrl,
                           autofocus: true,
                           decoration: InputDecoration(
-                            labelText: context.tr.presetNamePlaceholder,
+                            labelText: dctx.tr.presetNamePlaceholder,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -142,7 +182,7 @@ class ActionButtons extends StatelessWidget {
                           TextButton(
                             onPressed: () => Navigator.of(dctx).pop(false),
                             child: Text(
-                              context.tr.cancel,
+                              dctx.tr.cancel,
                               style: TextStyle(color: Colors.grey[600]),
                             ),
                           ),
@@ -155,7 +195,7 @@ class ActionButtons extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: Text(context.tr.save),
+                            child: Text(dctx.tr.save),
                           ),
                         ],
                       ),
