@@ -7,6 +7,7 @@ import 'package:vision_xai/features/settings/color_palette/presentation/screen/w
 import 'package:vision_xai/l10n/localization_extension.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
 import 'package:vision_xai/core/services/progress_service.dart';
+import 'package:vision_xai/core/services/dialog_service.dart';
 
 class ActionButtons extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -93,41 +94,15 @@ class ActionButtons extends StatelessWidget {
                     final resetLabel = context.tr.resetConfirmation;
                     final resettingMsg = context.tr.resetting;
 
-                    final ok = await showDialog<bool>(
+                    final ok = await DialogService.showConfirm(
                       context: context,
-                      builder: (dctx) => AlertDialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        title: Row(
-                          children: [
-                            Icon(Icons.refresh, color: secondaryColor),
-                            const SizedBox(width: 8),
-                            Text(dctx.tr.reset),
-                          ],
-                        ),
-                        content: Text(dctx.tr.resetPrompt),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(dctx).pop(false),
-                            child: Text(
-                              dctx.tr.cancel,
-                              style: TextStyle(color: Colors.grey[600]),
-                            ),
-                          ),
-                          ElevatedButton(
-                            onPressed: () => Navigator.of(dctx).pop(true),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: secondaryColor,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: Text(dctx.tr.reset),
-                          ),
-                        ],
-                      ),
+                      title: context.tr.reset,
+                      content: context.tr.resetPrompt,
+                      confirmLabel: context.tr.reset,
+                      cancelLabel: context.tr.cancel,
+                      icon: Icons.refresh,
+                      iconColor: secondaryColor,
+                      confirmColor: secondaryColor,
                     );
                     if (ok != true) return;
                     // Show a modal progress indicator while clearing overrides.
