@@ -91,6 +91,7 @@ class ActionButtons extends StatelessWidget {
                     // BuildContext is required there.
                     final settingsCubit = context.read<PaletteSettingsCubit>();
                     final resetLabel = context.tr.resetConfirmation;
+                    final resettingMsg = context.tr.resetting;
 
                     final ok = await showDialog<bool>(
                       context: context,
@@ -130,7 +131,7 @@ class ActionButtons extends StatelessWidget {
                     );
                     if (ok != true) return;
                     // Show a modal progress indicator while clearing overrides.
-                    await ProgressService.show(message: null);
+                    await ProgressService.show(message: resettingMsg);
                     try {
                       await settingsCubit.clearOverrides();
                     } finally {

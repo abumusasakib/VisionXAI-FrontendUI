@@ -254,6 +254,16 @@
     }
   }
   ,
+  "resetting": "রিসেট করা হচ্ছে...",
+  "@resetting": {
+    "description": "Message shown while palette overrides are being reset."
+  }
+  ,
+  "resetPrompt": "আপনি কি রঙ প্যালেট রিসেট করতে চান?",
+  "@resetPrompt": {
+    "description": "Prompt shown to ask whether to reset palette overrides."
+  }
+  ,
   "resetConfirmation": "রিসেট সফল হয়েছে",
   "@resetConfirmation": {
     "description": "Message shown after palette overrides are reset successfully."
