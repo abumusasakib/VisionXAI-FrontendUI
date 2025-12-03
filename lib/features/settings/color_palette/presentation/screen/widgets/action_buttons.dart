@@ -6,6 +6,7 @@ import 'package:vision_xai/features/settings/color_palette/presentation/screen/w
 import 'package:vision_xai/features/settings/color_palette/presentation/screen/widgets/generate_from_hex_button.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
+import 'package:vision_xai/core/services/progress_service.dart';
 
 class ActionButtons extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -89,7 +90,7 @@ class ActionButtons extends StatelessWidget {
                     // `NotificationService` after the async operation so no
                     // BuildContext is required there.
                     final settingsCubit = context.read<PaletteSettingsCubit>();
-                    final resetLabel = context.tr.reset;
+                    final resetLabel = context.tr.resetConfirmation;
 
                     final ok = await showDialog<bool>(
                       context: context,
@@ -104,7 +105,7 @@ class ActionButtons extends StatelessWidget {
                             Text(dctx.tr.reset),
                           ],
                         ),
-                        content: Text(dctx.tr.deletePresetMessage('')),
+                        content: Text(dctx.tr.resetPrompt),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(dctx).pop(false),
@@ -128,7 +129,14 @@ class ActionButtons extends StatelessWidget {
                       ),
                     );
                     if (ok != true) return;
-                    await settingsCubit.clearOverrides();
+                    // Show a modal progress indicator while clearing overrides.
+                    await ProgressService.show(message: null);
+                    try {
+                      await settingsCubit.clearOverrides();
+                    } finally {
+                      ProgressService.hide();
+                    }
+
                     // Use the centralized notification service to show the
                     // post-reset message. The service falls back to a global
                     // messenger if no context is provided.
