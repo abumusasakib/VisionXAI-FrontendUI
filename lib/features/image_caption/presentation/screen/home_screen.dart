@@ -8,6 +8,7 @@ import 'package:vision_xai/features/image_caption/presentation/screen/widget/ima
 
 import 'package:vision_xai/l10n/localization_extension.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
+import 'package:vision_xai/core/services/dialog_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vision_xai/core/routes/app_routes.dart';
 import 'package:vision_xai/features/settings/presentation/cubit/settings_feature_cubit.dart';
@@ -46,26 +47,15 @@ class HomeScreen extends StatelessWidget {
           ),
           BlocListener<HomeCubit, HomeState>(
             listener: (context, state) {
-              if (state.errorMessage != null) {
+                if (state.errorMessage != null) {
                 // Show error dialog
-                showDialog(
+                log('Error: ${state.errorMessage}');
+                DialogService.showAlert(
                   context: context,
-                  builder: (context) {
-                    log('Error: ${state.errorMessage}');
-                    return AlertDialog(
-                      title: Text(context.tr.errorTitle),
-                      content: Text(state.errorMessage!),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            context.read<HomeCubit>().reset();
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(context.tr.ok),
-                        ),
-                      ],
-                    );
-                  },
+                  title: context.tr.errorTitle,
+                  content: state.errorMessage!,
+                  okLabel: context.tr.ok,
+                  onOk: () => context.read<HomeCubit>().reset(),
                 );
               }
             },
