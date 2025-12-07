@@ -74,7 +74,8 @@ class GenerateFromHexButton extends StatelessWidget {
         backgroundColor: _safeSecondaryColor(context),
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        side: BorderSide(color: _safeSecondaryColor(context).withOpacity(0.3)),
+        side: BorderSide(
+            color: _safeSecondaryColor(context).withAlpha((0.3 * 255).round())),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );

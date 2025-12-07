@@ -1,3 +1,14 @@
+// Make plugin repositories available for the declarative plugins {} block
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        // Flutter's plugin artifacts may be hosted on Google's storage for Flutter
+        maven { url 'https://storage.googleapis.com/download.flutter.io' }
+        google()
+        mavenCentral()
+    }
+}
+
 def flutterRoot = null
 def properties = new Properties()
 def localProperties = file('local.properties')
@@ -6,9 +17,11 @@ if (localProperties.exists()) {
     flutterRoot = properties.getProperty('flutter.sdk')
 }
 if (flutterRoot == null) {
-    throw new GradleException("flutter.sdk not found in local.properties")
+    throw new org.gradle.api.GradleException("flutter.sdk not found in local.properties")
 }
+
+// expose flutterRoot to subprojects (app/build.gradle will use it)
+gradle.ext.flutterRoot = flutterRoot
 
 include ":app"
 
-apply from: "${flutterRoot}/packages/flutter_tools/gradle/app_plugin_loader.gradle"

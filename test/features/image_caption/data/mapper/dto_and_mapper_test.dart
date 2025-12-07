@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'package:vision_xai/features/image_caption/data/mapper/image_caption_json_to_model_mapper.dart';
-import 'package:vision_xai/features/image_caption/data/mapper/image_caption_model_to_entity_mapper.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vision_xai/features/image_caption/data/model/image_caption_response_dto.dart';
 import 'package:vision_xai/features/image_caption/data/mapper/image_caption_response_to_entity_group_mapper.dart';
-
+import 'package:vision_xai/features/image_caption/data/mapper/image_caption_json_to_model_mapper.dart';
+import 'package:vision_xai/features/image_caption/data/mapper/image_caption_model_to_entity_mapper.dart';
 import 'package:vision_xai/features/image_caption/data/model/topk_item.dart';
+import 'package:vision_xai/features/image_caption/domain/entity/image_caption_entity.dart';
 
 void main() {
   group('ImageCaption DTO and Mapper', () {
@@ -31,7 +31,7 @@ void main() {
         ]
       };
 
-      final dto = ImageCaptionResponseDto.fromSource(sample);
+      final dto = ImageCaptionResponseDto.fromJson(sample);
 
       expect(dto.filename, 'image.jpg');
       expect(dto.caption, 'একটি সুন্দর ছবি');
@@ -67,7 +67,7 @@ void main() {
         ]
       };
 
-      final dto = ImageCaptionResponseDto.fromSource(sample);
+      final dto = ImageCaptionResponseDto.fromJson(sample);
 
       final jsonToModel = ImageCaptionJsonToModelMapper();
       final modelToEntity = ImageCaptionModelToEntityMapper();
@@ -77,16 +77,18 @@ void main() {
       );
 
       final group = mapper.map(dto);
-      group.when(
-        success: (entity) {
-          expect(entity.attributes.caption, 'একটি সুন্দর ছবি');
-          expect(entity.attributes.tokens, ['একটি', 'সুন্দর', 'ছবি']);
-          // entity is enriched with decoded bytes and topk items
-          expect(entity.attributes.attentionImageBytes, isNotNull);
-          expect(entity.attributes.attentionTopkItems, isNotNull);
-        },
-        unKnown: () => fail('Expected success group'),
-      );
+      // Use `dynamic` access to avoid relying on generated `when`/`map`.
+      final dyn = group as dynamic;
+      if (dyn.entity != null) {
+        final ImageCaptionEntity entity = dyn.entity as ImageCaptionEntity;
+        expect(entity.attributes['caption'], 'একটি সুন্দর ছবি');
+        expect(entity.attributes['tokens'], ['একটি', 'সুন্দর', 'ছবি']);
+        // entity is enriched with decoded bytes and topk items
+        expect(entity.attributes['attention_image_bytes'], isNotNull);
+        expect(entity.attributes['attention_topk_items'], isNotNull);
+      } else {
+        fail('Expected success group');
+      }
     });
   });
 }

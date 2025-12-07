@@ -34,7 +34,7 @@ class ImageCaptionCubit extends Cubit<ImageCaptionState> {
         emit(terminal);
       },
       (entityGroup) {
-        entityGroup.when(
+        entityGroup.fold(
           success: (entity) {
             terminal = ImageCaptionState.loaded(entity);
             emit(terminal);

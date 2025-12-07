@@ -1,14 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dartz/dartz.dart';
 
-import 'package:vision_xai/features/image_caption/data/mapper/image_caption_json_to_model_mapper.dart';
-import 'package:vision_xai/features/image_caption/data/mapper/image_caption_model_to_entity_mapper.dart';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:vision_xai/features/image_caption/data/datasource/remote/image_caption_remote.dart';
 import 'package:vision_xai/features/image_caption/data/model/image_caption_response_dto.dart';
-
+import 'package:vision_xai/features/image_caption/data/mapper/image_caption_json_to_model_mapper.dart';
+import 'package:vision_xai/features/image_caption/data/mapper/image_caption_model_to_entity_mapper.dart';
 import 'package:vision_xai/features/image_caption/data/mapper/image_caption_response_to_entity_group_mapper.dart';
 import 'package:vision_xai/features/image_caption/data/repository/image_caption_repo_impl.dart';
 
@@ -37,14 +36,13 @@ class FakeRemoteError extends ImageCaptionRemote {
 
 void main() {
   test('repo maps remote dto to entity group success', () async {
-    const dto = ImageCaptionResponseDto(
+    final dto = ImageCaptionResponseDto(
       caption: 'a cat',
       id: '1',
       statusCode: 200,
     );
 
     final remote = FakeRemote(dto);
-
     final jsonToModel = ImageCaptionJsonToModelMapper();
     final modelToEntity = ImageCaptionModelToEntityMapper();
     final responseMapper = ImageCaptionResponseToEntityGroupMapper(
@@ -61,19 +59,19 @@ void main() {
     final result = await repo.call(bytes, 'image.png');
     expect(result, isA<Right>());
     result.fold((l) => fail('expected right'), (r) {
-      r.when(
-        success: (entity) {
-          expect(entity.id, '1');
-          expect(entity.attributes.caption, 'a cat');
-        },
-        unKnown: () => fail('expected success'),
-      );
+      final dyn = r as dynamic;
+      if (dyn.entity != null) {
+        final entity = dyn.entity;
+        expect(entity.id, '1');
+        expect(entity.attributes['caption'], 'a cat');
+      } else {
+        fail('expected success');
+      }
     });
   });
 
   test('repo returns Left when remote throws', () async {
     final remote = FakeRemoteError();
-
     final jsonToModel = ImageCaptionJsonToModelMapper();
     final modelToEntity = ImageCaptionModelToEntityMapper();
     final responseMapper = ImageCaptionResponseToEntityGroupMapper(

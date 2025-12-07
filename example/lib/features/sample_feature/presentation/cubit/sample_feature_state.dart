@@ -1,5 +1,6 @@
 part of 'sample_feature_cubit.dart';
 
+
 @freezed
 class SampleFeatureState with _$SampleFeatureState {
   const factory SampleFeatureState.initial() = _Initial;

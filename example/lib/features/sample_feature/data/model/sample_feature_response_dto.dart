@@ -1,19 +1,21 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-part 'sample_feature_response_dto.freezed.dart';
 part 'sample_feature_response_dto.g.dart';
 
-@freezed
-class SampleFeatureResponseDto with _$SampleFeatureResponseDto {
-  const factory SampleFeatureResponseDto({
-    required String caption,
-    double? confidence,
-    String? id,
-    int? statusCode,
-  }) = _SampleFeatureResponseDto;
+@JsonSerializable()
+class SampleFeatureResponseDto {
+  final String caption;
+  final double? confidence;
+  final String? id;
+  final int? statusCode;
 
-  const SampleFeatureResponseDto._();
+  SampleFeatureResponseDto({
+    required this.caption,
+    this.confidence,
+    this.id,
+    this.statusCode,
+  });
 
-  factory SampleFeatureResponseDto.fromJson(Map<String, dynamic> json) =>
-      _$SampleFeatureResponseDtoFromJson(json);
+  factory SampleFeatureResponseDto.fromJson(Map<String, dynamic> json) => _$SampleFeatureResponseDtoFromJson(json);
+  Map<String, dynamic> toJson() => _$SampleFeatureResponseDtoToJson(this);
 }

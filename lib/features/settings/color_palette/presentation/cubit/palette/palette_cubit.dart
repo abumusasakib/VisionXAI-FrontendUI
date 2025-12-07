@@ -3,6 +3,7 @@ export 'palette_state.dart';
 import 'package:bloc/bloc.dart';
 import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
+import 'package:vision_xai/features/settings/color_palette/core/utils/palette_utils.dart';
 import '../../../domain/use_case/palette_uc.dart';
 import 'palette_state.dart';
 
@@ -28,7 +29,7 @@ class PaletteCubit extends Cubit<PaletteState> {
     final secondary = palette['secondary'] ?? const Color(0xFF0FC0B8);
     final background = palette['background'] ?? const Color(0xFFFEFDFC);
     developer.log(
-        'updateColors: emitting primary=${primary.value.toRadixString(16)}, secondary=${secondary.value.toRadixString(16)}, background=${background.value.toRadixString(16)}',
+        'updateColors: emitting primary=${toHex(primary)}, secondary=${toHex(secondary)}, background=${toHex(background)}',
         name: 'PaletteCubit');
 
     emit(PaletteState(
@@ -52,7 +53,7 @@ class PaletteCubit extends Cubit<PaletteState> {
     final secondary = palette['secondary'] ?? const Color(0xFF0FC0B8);
     final background = palette['background'] ?? const Color(0xFFFEFDFC);
     developer.log(
-        'generateFromImage: emitting primary=${primary.value.toRadixString(16)}, secondary=${secondary.value.toRadixString(16)}, background=${background.value.toRadixString(16)}',
+        'generateFromImage: emitting primary=${toHex(primary)}, secondary=${toHex(secondary)}, background=${toHex(background)}',
         name: 'PaletteCubit');
 
     emit(PaletteState(
@@ -74,7 +75,7 @@ class PaletteCubit extends Cubit<PaletteState> {
     final secondary = palette['secondary'] ?? const Color(0xFF0FC0B8);
     final background = palette['background'] ?? const Color(0xFFFEFDFC);
     developer.log(
-        'updateFromMap: emitting primary=${primary.value.toRadixString(16)}, secondary=${secondary.value.toRadixString(16)}, background=${background.value.toRadixString(16)}',
+        'updateFromMap: emitting primary=${toHex(primary)}, secondary=${toHex(secondary)}, background=${toHex(background)}',
         name: 'PaletteCubit');
     emit(PaletteState(
       primaryColor: primary,

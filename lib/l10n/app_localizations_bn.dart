@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -158,10 +160,12 @@ class AppLocalizationsBn extends AppLocalizations {
   String get requestCancelled => 'অনুরোধ বাতিল করা হয়েছে।';
 
   @override
-  String get noInternetOrServerUnreachable => 'সংযোগ ব্যর্থ হয়েছে। অনুগ্রহ করে ইন্টারনেট বা সার্ভার ঠিকানা যাচাই করুন।';
+  String get noInternetOrServerUnreachable =>
+      'সংযোগ ব্যর্থ হয়েছে। অনুগ্রহ করে ইন্টারনেট বা সার্ভার ঠিকানা যাচাই করুন।';
 
   @override
-  String get unknownError => 'একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। পরে আবার চেষ্টা করুন।';
+  String get unknownError =>
+      'একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। পরে আবার চেষ্টা করুন।';
 
   @override
   String get captionMissing => 'কোনো ক্যাপশন প্রাপ্ত হয়নি।';

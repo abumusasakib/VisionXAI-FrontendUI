@@ -1,12 +1,12 @@
 import 'dart:convert';
-import 'package:vision_xai/features/image_caption/data/mapper/image_caption_json_to_model_mapper.dart';
-import 'package:vision_xai/features/image_caption/data/mapper/image_caption_model_to_entity_mapper.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vision_xai/features/image_caption/data/model/image_caption_response_dto.dart';
 import 'package:vision_xai/features/image_caption/data/mapper/image_caption_response_to_entity_group_mapper.dart';
+import 'package:vision_xai/features/image_caption/data/mapper/image_caption_json_to_model_mapper.dart';
+import 'package:vision_xai/features/image_caption/data/mapper/image_caption_model_to_entity_mapper.dart';
 
 void main() {
   test('parse sample response.json and map to entity', () {
@@ -38,22 +38,21 @@ void main() {
       debugPrint('DTO normalized keys: ${normalized.keys.toList()}');
     }
 
-    final jsonToModel = ImageCaptionJsonToModelMapper();
-    final modelToEntity = ImageCaptionModelToEntityMapper();
     final mapper = ImageCaptionResponseToEntityGroupMapper(
-      jsonToModelMapper: jsonToModel,
-      modelToEntityMapper: modelToEntity,
+      jsonToModelMapper: ImageCaptionJsonToModelMapper(),
+      modelToEntityMapper: ImageCaptionModelToEntityMapper(),
     );
 
     final group = mapper.map(dto);
 
     // Ensure we got a success or unknown (don't fail on unknown)
-    group.when(
-      success: (entity) {
-        debugPrint('Mapped entity id: ${entity.id}');
-        debugPrint('Attributes: ${entity.attributes}');
-      },
-      unKnown: () => debugPrint('Mapped to unknown group'),
-    );
+    final dyn = group as dynamic;
+    if (dyn.entity != null) {
+      final entity = dyn.entity;
+      debugPrint('Mapped entity id: ${entity.id}');
+      debugPrint('Attributes keys: ${entity.attributes.keys.toList()}');
+    } else {
+      debugPrint('Mapped to unknown group');
+    }
   });
 }
