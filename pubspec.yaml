@@ -34,7 +34,7 @@ dependencies:
     sdk: flutter
   flutter_localizations: # For localization support
     sdk: flutter
-  flutter_tts:
+  flutter_tts: 4.0.2
 
   # State management
   flutter_bloc: ^9.0.0
@@ -63,7 +63,7 @@ dependencies:
   # Persistence & Storage
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  shared_preferences: ^2.3.3
+  shared_preferences: 2.2.3
 
   # Image processing & UI
   image_picker: ^1.1.2
@@ -73,8 +73,7 @@ dependencies:
 
   # Platform-specific & Device utilities
   wifi_ip_details: ^1.0.0
-  flutter_nsd: ^1.5.0
-  package_info_plus: ^8.3.0
+  package_info_plus: 4.2.0
 
   # UI Enhancements
   cupertino_icons: ^1.0.2
