@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
@@ -123,7 +123,7 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
         backgroundColor: secondaryColor,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        side: BorderSide(color: secondaryColor.withOpacity(0.3)),
+        side: BorderSide(color: secondaryColor.withAlpha((0.3 * 255).round())),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
@@ -140,13 +140,19 @@ Color _safeSecondaryColor(BuildContext context) {
 
 // Default helpers used when injection points are not provided.
 Future<File?> _defaultPickFile() async {
-  final result = await FilePicker.platform.pickFiles(
-    type: FileType.image,
-    allowMultiple: false,
+  // Use `file_selector` to pick an image file. On web the returned XFile may
+  // not have a usable filesystem path; callers already check `kIsWeb` and
+  // show a notification for web, so returning null on web is acceptable.
+  const XTypeGroup images = XTypeGroup(
+    label: 'images',
+    extensions: <String>['png', 'jpg', 'jpeg', 'webp', 'gif'],
   );
-  if (result == null || result.files.isEmpty) return null;
-  final path = result.files.single.path;
-  if (path == null) return null;
+
+  final XFile? result =
+      await openFile(acceptedTypeGroups: <XTypeGroup>[images]);
+  if (result == null) return null;
+  final String path = result.path;
+  if (path.isEmpty) return null;
   return File(path);
 }
 

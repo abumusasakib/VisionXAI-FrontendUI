@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:arb_utils/state_managers/l10n_provider.dart';
-import 'package:vision_xai/core/common/widgets/custom_language_selector_dropdown.dart';
+import 'package:vision_xai/core/common/cubit/locale_cubit.dart';
+import 'package:vision_xai/core/common/widgets/language_selector_dropdown_widget.dart';
 import 'package:vision_xai/core/constants/ip_details.dart';
 import 'package:vision_xai/l10n/app_localizations.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
@@ -20,7 +20,7 @@ class _LanguageSettingsScreenState extends State<LanguageSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<SettingsFeatureCubit>();
-    final provider = context.read<ProviderL10n>();
+    final provider = context.read<LocaleCubit>();
     return Scaffold(
       appBar: AppBar(title: Text(context.tr.languageSettings)),
       body: Padding(
@@ -31,8 +31,8 @@ class _LanguageSettingsScreenState extends State<LanguageSettingsScreen> {
             Text(context.tr.selectLanguage,
                 style: const TextStyle(fontSize: 18)),
             const SizedBox(width: 25),
-            // Centralized custom dropdown which updates ProviderL10n
-            CustomLanguageSelectorDropdown(
+            // Centralized custom dropdown which updates LocaleCubit
+            LanguageSelectorDropdownWidget(
               supportedLocales: AppLocalizations.supportedLocales,
               provider: provider,
               languageChangeHandler: (locale) {

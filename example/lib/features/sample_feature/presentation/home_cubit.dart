@@ -35,12 +35,10 @@ class HomeCubit extends Cubit<HomeState> {
     final sub = imageCubit.stream.listen((event) {
       if (event is SampleFeatureSuccess) {
         sub.cancel();
-        emit(state.copyWith(
-            status: HomeStatus.success, testOutput: event.caption));
+        emit(state.copyWith(status: HomeStatus.success, testOutput: event.caption));
       } else if (event is SampleFeatureError) {
         sub.cancel();
-        emit(state.copyWith(
-            status: HomeStatus.failure, testOutput: event.message));
+        emit(state.copyWith(status: HomeStatus.failure, testOutput: event.message));
       }
     });
   }

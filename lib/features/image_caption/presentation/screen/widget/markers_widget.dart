@@ -51,7 +51,7 @@ List<Widget> markersWidget(BuildContext context, List<List<TopKItem>> topk,
         width: markerSize,
         height: markerSize,
         decoration: BoxDecoration(
-          color: defaultColor.withOpacity(opacity),
+          color: defaultColor.withAlpha((opacity * 255).round()),
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 1.0),
         ),

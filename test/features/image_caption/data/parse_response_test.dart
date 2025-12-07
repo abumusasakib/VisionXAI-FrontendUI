@@ -46,12 +46,13 @@ void main() {
     final group = mapper.map(dto);
 
     // Ensure we got a success or unknown (don't fail on unknown)
-    group.when(
-      success: (entity) {
-        debugPrint('Mapped entity id: ${entity.id}');
-        debugPrint('Attributes keys: ${entity.attributes.keys.toList()}');
-      },
-      unKnown: () => debugPrint('Mapped to unknown group'),
-    );
+    final dyn = group as dynamic;
+    if (dyn.entity != null) {
+      final entity = dyn.entity;
+      debugPrint('Mapped entity id: ${entity.id}');
+      debugPrint('Attributes keys: ${entity.attributes.keys.toList()}');
+    } else {
+      debugPrint('Mapped to unknown group');
+    }
   });
 }

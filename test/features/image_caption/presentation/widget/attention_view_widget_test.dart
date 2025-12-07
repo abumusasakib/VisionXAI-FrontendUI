@@ -154,8 +154,8 @@ void main() {
     // Check opacity from BoxDecoration color
     final dec0 = container0.decoration as BoxDecoration;
     final dec1 = container1.decoration as BoxDecoration;
-    final op0 = dec0.color?.opacity ?? 0.0;
-    final op1 = dec1.color?.opacity ?? 0.0;
+    final op0 = dec0.color?.a ?? 0.0;
+    final op1 = dec1.color?.a ?? 0.0;
     expect(op1, greaterThan(op0));
   });
 
@@ -579,7 +579,7 @@ void main() {
     final Color? markerColor = decoration!.color;
     // expected parsed color: #ff0000 with opacity approx 0.95
     const expectedBase = Color(0xffff0000);
-    final expected = expectedBase.withOpacity(0.95);
+    final expected = expectedBase.withAlpha((0.95 * 255).round());
     expect(markerColor, equals(expected));
   });
 
@@ -629,7 +629,7 @@ void main() {
     // expected base color for 'b' is #0000ff
     const expectedBase = Color(0xff0000ff);
     // score 0.8 -> opacity = 0.35 + 0.8*0.6 = 0.83
-    final expected = expectedBase.withOpacity(0.35 + 0.8 * 0.6);
+    final expected = expectedBase.withAlpha(((0.35 + 0.8 * 0.6) * 255).round());
     expect(markerColor, equals(expected));
   });
 

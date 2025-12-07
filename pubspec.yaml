@@ -20,7 +20,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.1.2+1
 
 environment:
-  sdk: ">=3.1.4 <4.0.0"
+  sdk: ">=3.8.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -53,12 +53,11 @@ dependencies:
   retrofit: ^4.0.1
   dartz: ^0.10.1
   json_annotation: ^4.9.0
-  freezed_annotation: ^2.1.0
+  freezed_annotation: ^3.1.0
 
   # Localization & Utilities
-  intl: ^0.19.0 # For date and number formatting (Flutter 3.24 LTS compatibility)
+  intl: ^0.20.2 # Updated for Flutter 3.35 / Dart 3.9 compatibility
   locale_names: ^1.1.1
-  arb_utils: ^0.9.0
 
   # Persistence & Storage
   hive: ^2.2.3
@@ -68,7 +67,7 @@ dependencies:
   # Image processing & UI
   image_picker: ^1.1.2
   image: ^4.0.17
-  file_picker: ^5.2.7
+  file_selector: ^1.0.4
   material_color_utilities: '>=0.8.0 <0.12.0'
 
   # Platform-specific & Device utilities
@@ -86,16 +85,15 @@ dev_dependencies:
   # Testing
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
-  bloc_test: ^10.0.0
-  analyzer: ^9.0.0
+  flutter_lints: ^6.0.0
+  analyzer: ^8.0.0
 
   # Code generation for localization
-  flutter_gen_runner: ^5.1.0 # To generate localization files
-  retrofit_generator: ^10.2.0
-  build_runner: ^2.10.4
-  freezed: ^2.3.2
-  json_serializable: ^6.6.0
+  flutter_gen_runner: ^5.1.0
+  build_runner: ^2.10.0
+  freezed: ^3.0.0
+  json_serializable: ^6.11.0
+  dart_style: ^3.0.0
 
   # The "flutter_lints" package contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

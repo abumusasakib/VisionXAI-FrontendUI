@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -158,10 +160,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get requestCancelled => 'Request was cancelled.';
 
   @override
-  String get noInternetOrServerUnreachable => 'Unable to connect. Please check your internet or server address.';
+  String get noInternetOrServerUnreachable =>
+      'Unable to connect. Please check your internet or server address.';
 
   @override
-  String get unknownError => 'An unexpected error occurred. Please try again later.';
+  String get unknownError =>
+      'An unexpected error occurred. Please try again later.';
 
   @override
   String get captionMissing => 'No caption available.';

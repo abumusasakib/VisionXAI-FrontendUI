@@ -116,7 +116,14 @@ class PaletteManager {
           blendedSurface = Color.lerp(
                   blendedSurface, Color(primary99Argb), surfaceTintFrac) ??
               blendedSurface;
-          final int surfaceArgb = blendedSurface.value;
+          // Use component accessors to compute an ARGB integer without
+          // relying on the deprecated `Color.value` getter.
+          final int surfaceA = (blendedSurface.a * 255.0).round() & 0xFF;
+          final int surfaceR = (blendedSurface.r * 255.0).round() & 0xFF;
+          final int surfaceG = (blendedSurface.g * 255.0).round() & 0xFF;
+          final int surfaceB = (blendedSurface.b * 255.0).round() & 0xFF;
+          final int surfaceArgb =
+              (surfaceA << 24) | (surfaceR << 16) | (surfaceG << 8) | surfaceB;
 
           // Return a small, canonical map of role -> Color. On web we map
           // colors to a web-safe palette to avoid display artifacts.
@@ -306,9 +313,14 @@ class PaletteManager {
 
   static Color _ensureWebSafeColor(Color color) {
     // Use round instead of integer division to ensure consistent rounding behavior
-    final int r = ((color.red / 51).round() * 51).clamp(0, 255);
-    final int g = ((color.green / 51).round() * 51).clamp(0, 255);
-    final int b = ((color.blue / 51).round() * 51).clamp(0, 255);
+    // Use the modern component accessors (.r/.g/.b) which return 0..1 doubles
+    // then convert to 0..255 range for the web-safe quantization.
+    final int r =
+        ((((color.r * 255.0) / 51).round() * 51).clamp(0, 255)).toInt();
+    final int g =
+        ((((color.g * 255.0) / 51).round() * 51).clamp(0, 255)).toInt();
+    final int b =
+        ((((color.b * 255.0) / 51).round() * 51).clamp(0, 255)).toInt();
 
     return Color.fromARGB(255, r, g, b);
   }
@@ -387,7 +399,10 @@ class PaletteManager {
     // If background is muted, allow higher saturation for pop
     double secondarySaturation;
     if (hsl.saturation > 0.6) {
-      secondarySaturation = (hsl.saturation * 0.7).clamp(0.3, 0.8);
+      // Preserve more of the original saturation for vivid backgrounds so
+      // secondary stays visually related; reduce slightly rather than a
+      // large drop which produced stronger mismatches in tests.
+      secondarySaturation = (hsl.saturation * 0.95).clamp(0.4, 0.95);
     } else if (hsl.saturation < 0.3) {
       secondarySaturation = (hsl.saturation + 0.4).clamp(0.4, 0.9);
     } else {
@@ -527,10 +542,13 @@ class PaletteManager {
       {double rotationDegrees = 137.5, double desaturateFraction = 0.6}) {
     try {
       final Color bg = getWebSafeColorFromHex(hex);
+      // Use analogous/rotated harmony for hex-derived palettes. Tests and
+      // UI expectations assume a rotation-based secondary hue (e.g. +137.5°),
+      // not the direct complementary (180°), so pass `useComplementary: false`.
       return buildPaletteFromBackgroundColor(bg,
           rotationDegrees: rotationDegrees,
           desaturateFraction: desaturateFraction,
-          useComplementary: true);
+          useComplementary: false);
     } catch (_) {
       return {
         'primary': fallbackPrimary,

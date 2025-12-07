@@ -29,7 +29,7 @@ import 'package:material_color_utilities/material_color_utilities.dart';
 ///   of tonal values is extracted for primary/secondary/tertiary/neutral
 ///   and neutralVariant palettes.
 ///
-/// Return value (Map<String,int>): the worker returns a flat map of tone
+/// Return value (`Map<String, int>`): the worker returns a flat map of tone
 /// keys to ARGB integers so the main isolate can deterministically map
 /// tones to UI roles. Typical keys include:
 /// - `'base'` : scored base ARGB int (0xAARRGGBB)
