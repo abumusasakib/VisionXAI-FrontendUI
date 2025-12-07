@@ -6,7 +6,7 @@ import 'package:vision_xai/core/services/dialog_service.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_cubit.dart';
 
 Future<void> showColorPicker(
-    BuildContext ctx, TextEditingController ctrl, String label) async {
+    BuildContext ctx, TextEditingController ctrl, String fieldKey) async {
   // Parse existing hex or fall back to the current theme surface color.
   Color current;
   try {
@@ -17,6 +17,9 @@ Future<void> showColorPicker(
 
   final selected = await DialogService.showColorPicker(ctx,
       initialColor: current, title: ctx.tr.pickAColor);
+  // Avoid using the context if the widget was removed while awaiting the
+  // dialog result.
+  if (!ctx.mounted) return;
   if (selected != null) {
     final hex =
         '#${selected.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}';
@@ -30,7 +33,9 @@ Future<void> showColorPicker(
     // PaletteSettingsCubit's preview entry explicitly so the swatch updates
     // immediately for this label.
     try {
-      ctx.read<PaletteSettingsCubit>().updatePreviewColor(label, hex);
+      // Update preview using the canonical field key so it lines up with
+      // persisted overrides and other consumers.
+      ctx.read<PaletteSettingsCubit>().updatePreviewColor(fieldKey, hex);
     } catch (_) {}
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:developer' as developer;
 import 'package:vision_xai/features/settings/color_palette/core/utils/palette_utils.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
+import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_cubit.dart';
 
 class GenerateFromHexButton extends StatelessWidget {
   final TextEditingController primaryController;
@@ -19,7 +21,7 @@ class GenerateFromHexButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OutlinedButton.icon(
-      onPressed: () {
+      onPressed: () async {
         final hex = backgroundController.text.trim();
         if (hex.isEmpty) return;
         final normalized = hex.toUpperCase();
@@ -28,9 +30,14 @@ class GenerateFromHexButton extends StatelessWidget {
           primaryController.text = toHex(palette['primary']!);
           secondaryController.text = toHex(palette['secondary']!);
           backgroundController.text = toHex(palette['background']!);
+          developer.log(
+              'GenerateFromHex: palette generated primary=${toHex(palette['primary']!)}, secondary=${toHex(palette['secondary']!)}, background=${toHex(palette['background']!)}',
+              name: 'GenerateFromHexButton');
           // Also update the live PaletteCubit so UI previews update immediately
           try {
             final cubit = context.read<PaletteCubit>();
+            developer.log('GenerateFromHex: updating PaletteCubit from hex',
+                name: 'GenerateFromHexButton');
             cubit.updateFromMap({
               'primary': palette['primary']!,
               'secondary': palette['secondary']!,
@@ -39,6 +46,22 @@ class GenerateFromHexButton extends StatelessWidget {
           } catch (_) {
             // If cubit isn't available in this context (tests/isolated usage), ignore.
           }
+          // Persist the generated palette as overrides so the local data
+          // source and overrides timestamp reflect the user's generated
+          // palette. This prevents later reloads from accidentally
+          // reverting the UI back to old stored overrides.
+          try {
+            final settings = context.read<PaletteSettingsCubit>();
+            final overrides = {
+              'primary': toHex(palette['primary']!),
+              'secondary': toHex(palette['secondary']!),
+              'background': toHex(palette['background']!),
+            };
+            developer.log(
+                'GenerateFromHex: persisting generated overrides=$overrides',
+                name: 'GenerateFromHexButton');
+            await settings.saveOverrides(overrides);
+          } catch (_) {}
         } catch (_) {
           // ignore invalid input
         }

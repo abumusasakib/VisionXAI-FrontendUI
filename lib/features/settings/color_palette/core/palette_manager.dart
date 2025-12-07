@@ -15,14 +15,30 @@ class PaletteManager {
 
   static Future<Map<String, Color>> generatePalette(ImageProvider image) async {
     try {
-      // Resolve the ImageProvider to a ui.Image, extract raw RGBA bytes,
-      // then run a lightweight quantizer in a background isolate using
-      // `compute(...)` so this work does not block the UI thread.
+      // High-level flow:
+      // 1) Resolve the given `ImageProvider` into a fully decoded `ui.Image`.
+      // 2) Extract raw RGBA bytes from the ui.Image using `toByteData`.
+      // 3) Send the raw pixel buffer, width and height to a background
+      //    isolate via `compute(...)` where `quantizeAndFindDominant` will
+      //    perform color quantization and produce tonal ARGB integers.
+      // 4) Choose preferred tonal steps for `primary`, `secondary` and a
+      //    neutral `surface`/`background` value using fallbacks to ensure a
+      //    usable palette even when some tones are missing.
+      // 5) Apply a subtle tint blend to the surface color so backgrounds
+      //    are not purely neutral white on some images.
+      // 6) Return a small map of canonical roles -> Color.
       try {
+        // Convert the ImageProvider -> ImageInfo by listening to the image
+        // stream. This is necessary because many ImageProviders (Network,
+        // Asset, Memory) resolve asynchronously and we need the decoded
+        // pixel data which lives on the resolved `ui.Image`.
         final completer = Completer<ImageInfo>();
 
         final ImageStream stream = image.resolve(ImageConfiguration.empty);
 
+        // Single-shot listener: complete the completer when the image is
+        // available, or complete with error on failure. We guard against
+        // multiple invocations by checking `completer.isCompleted`.
         final listener = ImageStreamListener((ImageInfo info, bool _) {
           if (!completer.isCompleted) {
             completer.complete(info);
@@ -35,15 +51,23 @@ class PaletteManager {
 
         stream.addListener(listener);
 
+        // Await the fully decoded image (this yields a ui.Image we can read
+        // pixels from). We remove the listener afterwards to avoid leaks.
         final ImageInfo imageInfo = await completer.future;
         stream.removeListener(listener);
 
+        // Extract raw RGBA bytes from the ui.Image. We request
+        // `ui.ImageByteFormat.rawRgba` to get a contiguous packed buffer
+        // that the quantizer can operate on directly.
         final ui.Image uiImage = imageInfo.image;
         final ByteData? bd =
             await uiImage.toByteData(format: ui.ImageByteFormat.rawRgba);
         if (bd != null) {
           final Uint8List pixels = bd.buffer.asUint8List();
 
+          // Run the quantizer + tonal extraction in a background isolate
+          // to avoid jank. The worker returns a map of tonal keys -> ARGB
+          // integer values (e.g. 'primary_40', 'neutral_95', 'base', etc.).
           final Map<String, int> result =
               await compute(quantizeAndFindDominant, {
             'pixels': pixels,
@@ -51,22 +75,28 @@ class PaletteManager {
             'height': uiImage.height,
           });
 
-          // Worker returns multiple tonal ARGB ints derived from CorePalette.
-          // Prefer specific tonal steps (40 for primary/secondary) so the
-          // colors differ instead of falling back to the scored base color.
+          // The worker provides many candidate tones. Choose preferred
+          // tones with graceful fallbacks so we always return sensible
+          // colors even if some tonal steps are missing for the image.
+          // For primary we prefer a mid-tone (40) to provide a distinct
+          // accent color. If that is missing, fall back to the scored
+          // primary or the base color.
           final int primaryArgb =
               result['primary_40'] ?? result['primary'] ?? result['base']!;
-          // Prefer a lighter secondary tone (80 -> 60 -> 40) to avoid very dark
-          // secondaries on some images.
+
+          // For the secondary color prefer a lighter tone (80 -> 60 -> 40)
+          // because some images yield very dark secondaries; falling back
+          // progressively produces more usable accents.
           final int secondaryArgb = result['secondary_80'] ??
               result['secondary_60'] ??
               result['secondary_40'] ??
               result['secondary'] ??
               result['base']!;
-          // Prefer a slightly darker neutral for surface/background so it
-          // doesn't always return near-white. Try neutral_95 -> neutral_90
-          // -> neutral_99 -> base. Then mix a small amount of primary_99
-          // into the neutral to produce a subtle tinted surface.
+
+          // For the neutral/surface color prefer a slightly darker neutral
+          // (neutral_95/90/99) or a 'surface' token if present. We then
+          // subtly mix a very light primary (primary_99) into the neutral
+          // to produce a gently tinted surface rather than a flat white.
           final int neutralArgb = result['surface'] ??
               result['neutral_95'] ??
               result['neutral_90'] ??
@@ -74,11 +104,12 @@ class PaletteManager {
               result['base']!;
           final int primary99Argb =
               result['primary_99'] ?? result['primary'] ?? result['base']!;
+
+          // Blend the neutral toward the light primary by an adaptive
+          // amount. The adaptive fraction depends on saturation/contrast
+          // so strongly tinted images produce a larger tint without
+          // exceeding the clamp of 1.0.
           Color blendedSurface = Color(neutralArgb);
-          // Adaptive tint fraction based on saturation/contrast
-          // Adaptive tint fraction based on saturation/contrast
-          // Double the effect for surface/background blending to make
-          // the background tint noticeably stronger, but clamp to 1.0.
           final double fastTintFrac =
               _adaptiveTintFraction(blendedSurface, Color(primary99Argb));
           final double surfaceTintFrac = math.min(1.0, 2.0 * fastTintFrac);
@@ -87,6 +118,8 @@ class PaletteManager {
               blendedSurface;
           final int surfaceArgb = blendedSurface.value;
 
+          // Return a small, canonical map of role -> Color. On web we map
+          // colors to a web-safe palette to avoid display artifacts.
           return {
             'primary': kIsWeb
                 ? getWebSafeColor(Color(primaryArgb))
@@ -100,7 +133,9 @@ class PaletteManager {
           };
         }
       } catch (e) {
-        // Image decode / worker failed — return hardcoded fallbacks
+        // If image decoding, byte extraction or the worker fails we log
+        // and return hardcoded fallback colors so callers always receive a
+        // usable palette instead of crashing or returning nulls.
         log('Palette generation error (fast path): $e',
             name: 'PaletteManager', level: 900);
         return {
@@ -110,6 +145,8 @@ class PaletteManager {
         };
       }
     } catch (e) {
+      // Catch-all guard: if anything unexpected bubbles up, return
+      // deterministic fallbacks and log the problem for diagnostics.
       log('Palette generation error: $e', name: 'PaletteManager', level: 900);
       return {
         'primary': fallbackPrimary,
@@ -117,6 +154,7 @@ class PaletteManager {
         'background': fallbackBackground,
       };
     }
+
     // Defensive fallback: ensure a non-null map is always returned.
     return {
       'primary': fallbackPrimary,
@@ -255,8 +293,6 @@ class PaletteManager {
             kIsWeb ? getWebSafeColor(onInverseSurface) : onInverseSurface,
         inversePrimary:
             kIsWeb ? getWebSafeColor(inversePrimary) : inversePrimary,
-        // Note: `background`/`onBackground` are deprecated; values are
-        // represented by `surface`/`onSurface` above.
       );
 
       return scheme;
@@ -316,13 +352,15 @@ class PaletteManager {
 
   /// Build a palette from a provided background [color].
   ///
-  /// Algorithm:
+  /// Algorithm improvements:
   /// 1. Primary: desaturate the background by [desaturateFraction]
-  ///    (default 0.6 means reduce saturation to 40% of original).
-  /// 2. Secondary: rotate hue by [rotationDegrees] (default 137.5°) using HSL.
-  /// 3. Background: the provided color (web-safe adjusted on web).
+  /// 2. Secondary: use complementary or analogous harmony with dynamic adjustments
+  /// 3. Ensure proper contrast ratios for both accessibility and aesthetics
+  /// 4. Balance saturation levels across the palette
   static Map<String, Color> buildPaletteFromBackgroundColor(Color color,
-      {double rotationDegrees = 137.5, double desaturateFraction = 0.6}) {
+      {double rotationDegrees = 137.5,
+      double desaturateFraction = 0.6,
+      bool useComplementary = false}) {
     // Use web-safe color for web targets
     final bg = getWebSafeColor(color);
 
@@ -334,57 +372,124 @@ class PaletteManager {
         (hsl.saturation * (1.0 - desaturateFraction)).clamp(0.0, 1.0);
     final HSLColor primaryHsl = hsl.withSaturation(newSaturation);
 
-    // Rotate hue to produce initial secondary color
-    final double newHue = (hsl.hue + rotationDegrees) % 360.0;
-    HSLColor secondaryHsl = hsl.withHue(newHue);
+    // Calculate secondary hue based on harmony type
+    double secondaryHue;
+    if (useComplementary) {
+      // Complementary: opposite on color wheel (180°)
+      secondaryHue = (hsl.hue + 180.0) % 360.0;
+    } else {
+      // Split-complementary or triadic for more subtle harmony
+      secondaryHue = (hsl.hue + rotationDegrees) % 360.0;
+    }
+
+    // Adjust secondary saturation based on background saturation
+    // If background is highly saturated, use moderate saturation for secondary
+    // If background is muted, allow higher saturation for pop
+    double secondarySaturation;
+    if (hsl.saturation > 0.6) {
+      secondarySaturation = (hsl.saturation * 0.7).clamp(0.3, 0.8);
+    } else if (hsl.saturation < 0.3) {
+      secondarySaturation = (hsl.saturation + 0.4).clamp(0.4, 0.9);
+    } else {
+      secondarySaturation = (hsl.saturation * 0.85).clamp(0.4, 0.85);
+    }
+
+    // Adjust secondary lightness to balance with background
+    // Aim for visual weight balance
+    double secondaryLightness;
+    if (hsl.lightness > 0.6) {
+      // Light background: make secondary darker for contrast
+      secondaryLightness = (hsl.lightness - 0.25).clamp(0.3, 0.5);
+    } else if (hsl.lightness < 0.4) {
+      // Dark background: make secondary lighter
+      secondaryLightness = (hsl.lightness + 0.3).clamp(0.5, 0.7);
+    } else {
+      // Medium background: adjust based on saturation
+      secondaryLightness = hsl.saturation > 0.5
+          ? (hsl.lightness - 0.15).clamp(0.35, 0.65)
+          : (hsl.lightness + 0.1).clamp(0.4, 0.7);
+    }
+
+    HSLColor secondaryHsl = HSLColor.fromAHSL(
+      1.0,
+      secondaryHue,
+      secondarySaturation,
+      secondaryLightness,
+    );
 
     // Convert to Color values for contrast checks
     Color primaryColor = primaryHsl.toColor();
     Color secondaryColor = secondaryHsl.toColor();
 
-    // Ensure the secondary contrasts reasonably with the primary.
-    // Target a WCAG-like contrast ratio (approx) of at least 3:1 for UI
-    // accents; try adjusting secondary lightness to reach the target.
+    // Helper function to calculate contrast ratio
     double contrast(Color a, Color b) {
       final double la = a.computeLuminance();
       final double lb = b.computeLuminance();
       return (math.max(la, lb) + 0.05) / (math.min(la, lb) + 0.05);
     }
 
-    const double desiredContrast = 3.0;
-    double bestContrast = contrast(primaryColor, secondaryColor);
-    HSLColor bestCandidate = secondaryHsl;
+    // Ensure secondary contrasts with BOTH primary and background
+    const double minContrastWithPrimary = 3.0;
+    const double minContrastWithBackground = 2.5;
 
-    if (bestContrast < desiredContrast) {
+    double contrastWithPrimary = contrast(primaryColor, secondaryColor);
+    double contrastWithBg = contrast(bg, secondaryColor);
+
+    // Optimize contrast if needed
+    if (contrastWithPrimary < minContrastWithPrimary ||
+        contrastWithBg < minContrastWithBackground) {
+      double bestScore = _calculateHarmonyScore(
+        contrastWithPrimary,
+        contrastWithBg,
+        minContrastWithPrimary,
+        minContrastWithBackground,
+      );
+      HSLColor bestCandidate = secondaryHsl;
+
+      // Try adjusting lightness in both directions
       final double baseLightness = secondaryHsl.lightness;
-      // Try small steps increasing/decreasing lightness to improve contrast
-      for (int i = 1; i <= 6; i++) {
-        final double delta = 0.06 * i;
-        // Try lighter candidate
+      for (int i = 1; i <= 8; i++) {
+        final double delta = 0.05 * i;
+
+        // Try lighter
         final HSLColor lighter =
             secondaryHsl.withLightness((baseLightness + delta).clamp(0.0, 1.0));
-        final double c1 = contrast(primaryColor, lighter.toColor());
-        if (c1 > bestContrast) {
-          bestContrast = c1;
+        final Color lighterColor = lighter.toColor();
+        final double cp = contrast(primaryColor, lighterColor);
+        final double cb = contrast(bg, lighterColor);
+        final double score = _calculateHarmonyScore(
+            cp, cb, minContrastWithPrimary, minContrastWithBackground);
+
+        if (score > bestScore) {
+          bestScore = score;
           bestCandidate = lighter;
         }
-        if (bestContrast >= desiredContrast) break;
 
-        // Try darker candidate
+        // Try darker
         final HSLColor darker =
             secondaryHsl.withLightness((baseLightness - delta).clamp(0.0, 1.0));
-        final double c2 = contrast(primaryColor, darker.toColor());
-        if (c2 > bestContrast) {
-          bestContrast = c2;
+        final Color darkerColor = darker.toColor();
+        final double cpD = contrast(primaryColor, darkerColor);
+        final double cbD = contrast(bg, darkerColor);
+        final double scoreD = _calculateHarmonyScore(
+            cpD, cbD, minContrastWithPrimary, minContrastWithBackground);
+
+        if (scoreD > bestScore) {
+          bestScore = scoreD;
           bestCandidate = darker;
         }
-        if (bestContrast >= desiredContrast) break;
+
+        // Early exit if we've achieved good contrast with both
+        if (bestScore >= minContrastWithPrimary + minContrastWithBackground) {
+          break;
+        }
       }
+
       secondaryHsl = bestCandidate;
       secondaryColor = secondaryHsl.toColor();
     }
 
-    // Apply web-safe adjustment to primary/secondary/background on web
+    // Apply web-safe adjustment on web
     final Color outPrimary =
         kIsWeb ? getWebSafeColor(primaryColor) : primaryColor;
     final Color outSecondary =
@@ -397,6 +502,26 @@ class PaletteManager {
     };
   }
 
+  /// Calculate a harmony score based on contrast ratios with targets
+  static double _calculateHarmonyScore(
+    double contrastWithPrimary,
+    double contrastWithBg,
+    double targetPrimary,
+    double targetBg,
+  ) {
+    // Reward meeting minimums, but also reward exceeding them moderately
+    final double primaryScore = contrastWithPrimary >= targetPrimary
+        ? targetPrimary + math.min(contrastWithPrimary - targetPrimary, 3.0)
+        : contrastWithPrimary;
+
+    final double bgScore = contrastWithBg >= targetBg
+        ? targetBg + math.min(contrastWithBg - targetBg, 2.0)
+        : contrastWithBg;
+
+    // Weight primary contrast slightly more than background
+    return (primaryScore * 1.2) + bgScore;
+  }
+
   /// Build palette from a hex color string like `#RRGGBB`.
   static Map<String, Color> buildPaletteFromHex(String hex,
       {double rotationDegrees = 137.5, double desaturateFraction = 0.6}) {
@@ -404,7 +529,8 @@ class PaletteManager {
       final Color bg = getWebSafeColorFromHex(hex);
       return buildPaletteFromBackgroundColor(bg,
           rotationDegrees: rotationDegrees,
-          desaturateFraction: desaturateFraction);
+          desaturateFraction: desaturateFraction,
+          useComplementary: true);
     } catch (_) {
       return {
         'primary': fallbackPrimary,

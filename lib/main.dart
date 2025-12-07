@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:developer' as developer;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -103,6 +104,9 @@ class _MyAppState extends State<MyApp> {
               ],
               child: BlocBuilder<PaletteCubit, PaletteState>(
                 builder: (context, paletteState) {
+                  developer.log(
+                      'App theme updated: primary=${paletteState.primaryColor.value.toRadixString(16)}, secondary=${paletteState.secondaryColor.value.toRadixString(16)}, background=${paletteState.backgroundColor.value.toRadixString(16)}',
+                      name: 'MyApp');
                   return MaterialApp.router(
                     scaffoldMessengerKey: GlobalUiService.scaffoldMessengerKey,
                     onGenerateTitle: (cxt) => cxt.tr.appTitle,

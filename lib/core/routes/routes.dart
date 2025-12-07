@@ -56,10 +56,10 @@ GoRouter createRouter(AppDi appDi) => GoRouter(
             providers: [
               BlocProvider.value(value: appDi.paletteCubit),
               BlocProvider(create: (ctx) {
-                // Create the settings cubit here and load persisted overrides.
-                final cubit = PaletteSettingsCubit(appDi.paletteCubit);
-                cubit.loadOverrides();
-                return cubit;
+                // Create the settings cubit here. The settings screen will
+                // drive loading of persisted overrides so the UI can decide
+                // when to perform that action and avoid duplicate loads.
+                return PaletteSettingsCubit(appDi.paletteCubit);
               }),
             ],
             child: const PaletteSettingsScreen(),

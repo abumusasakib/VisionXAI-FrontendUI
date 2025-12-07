@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/palette_manager.dart';
 import '../../domain/repository/palette_repo.dart';
 import '../datasource/local/palette_local_data_source.dart';
+import 'dart:developer' as developer;
 
 class PaletteRepoImpl implements PaletteRepo {
   final PaletteLocalDataSource _local;
@@ -18,6 +19,9 @@ class PaletteRepoImpl implements PaletteRepo {
     try {
       if (image is AssetImage && image.assetName == 'assets/icon/icon.png') {
         final overrides = await _local.getOverrides();
+        developer.log(
+            'PaletteRepoImpl.generatePalette: loaded overrides=$overrides for asset icon',
+            name: 'PaletteRepoImpl');
         if (overrides != null) {
           final Map<String, Color> map = {};
           if (overrides.containsKey('primary')) {
@@ -32,7 +36,12 @@ class PaletteRepoImpl implements PaletteRepo {
             map['background'] =
                 PaletteManager.getWebSafeColorFromHex(overrides['background']!);
           }
-          if (map.isNotEmpty) return map;
+          if (map.isNotEmpty) {
+            developer.log(
+                'PaletteRepoImpl.generatePalette: returning overrides-as-palette=$map',
+                name: 'PaletteRepoImpl');
+            return map;
+          }
         }
       }
     } catch (_) {

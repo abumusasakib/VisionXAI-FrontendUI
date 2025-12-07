@@ -1,11 +1,71 @@
 import 'dart:typed_data';
 import 'package:material_color_utilities/material_color_utilities.dart';
 
-// Top-level compute worker for palette extraction using
-// `material_color_utilities` scoring algorithm.
-// Receives a Map with keys: 'pixels' (Uint8List RGBA), 'width' (int), 'height' (int)
-// Returns a Map<String,int> with 'baseColor' ARGB int (the scored base color).
-
+/// Top-level compute worker used by the main isolate to perform
+/// color quantization and tonal extraction in a background isolate.
+///
+/// Contract (payload): the function expects a `Map<String, dynamic>` with
+/// the following keys:
+/// - `'pixels'` : `Uint8List` containing raw pixel bytes in RGBA order
+///   (repeated bytes: r, g, b, a). This is typically obtained from
+///   `ui.Image.toByteData(format: ui.ImageByteFormat.rawRgba)` on the
+///   main isolate before sending to `compute(...)`.
+/// - `'width'`  : `int` image width in pixels (optional for current
+///   implementation but provided for future use).
+/// - `'height'` : `int` image height in pixels (optional for current
+///   implementation but provided for future use).
+///
+/// Behavior:
+/// - The worker iterates `pixels` 4 bytes at a time (r,g,b,a).
+/// - It ignores very-transparent pixels (alpha < 40) to avoid counting
+///   edges/antialiasing artifacts.
+/// - Each remaining pixel is packed into an ARGB integer using the
+///   expression `(a << 24) | (r << 16) | (g << 8) | b` (i.e. 0xAARRGGBB)
+///   and a frequency map (`color -> count`) is accumulated.
+/// - The `material_color_utilities.Score.score(...)` routine is used to
+///   pick a scored base color from the frequency map (preferred color for
+///   building a `CorePalette`).
+/// - A `CorePalette` is created from the base ARGB color and a collection
+///   of tonal values is extracted for primary/secondary/tertiary/neutral
+///   and neutralVariant palettes.
+///
+/// Return value (Map<String,int>): the worker returns a flat map of tone
+/// keys to ARGB integers so the main isolate can deterministically map
+/// tones to UI roles. Typical keys include:
+/// - `'base'` : scored base ARGB int (0xAARRGGBB)
+/// - `'surface'` : a default surface/neutral tone (e.g. neutral_99)
+/// - `'primary_100'`, `'primary_99'`, `'primary_90'`, ..., `'primary_10'`
+/// - `'secondary_100'`, ... (same pattern for `tertiary`, `neutral`,
+///   `neutralVariant`)
+///
+/// Notes:
+/// - This function MUST be a top-level function (not a closure or
+///   instance method) so it can be passed to `compute(...)`.
+/// - Consumers should treat the returned map as a best-effort set of
+///   tonal candidates: some tones may be missing for certain images, so
+///   callers should perform graceful fallbacks (as done in
+///   `PaletteManager.generatePalette`).
+///
+/// Example usage:
+/// ```dart
+/// // Build a small 2x1 RGBA pixel buffer: [r,g,b,a, r,g,b,a]
+/// final Uint8List pixels = Uint8List.fromList([
+///   255, 0, 0, 255, // opaque red
+///   0, 255, 0, 255, // opaque green
+/// ]);
+/// final payload = {'pixels': pixels, 'width': 2, 'height': 1};
+/// // When executed via compute(...) the worker will return a map like:
+/// // {
+/// //   'base': 0xFFrrggbb,           // scored base ARGB int
+/// //   'surface': 0xFFssssss,        // neutral/surface tone
+/// //   'primary_100': 0xFF...,       // many tonal entries follow
+/// //   'primary_99': 0xFF...,
+/// //   'primary_90': 0xFF...,
+/// //   'secondary_80': 0xFF...,
+/// //   ...
+/// // }
+/// // Exact ARGB values depend on the scoring and CorePalette mapping.
+/// ```
 Map<String, int> quantizeAndFindDominant(Map<String, dynamic> payload) {
   final Uint8List pixels = payload['pixels'] as Uint8List;
 

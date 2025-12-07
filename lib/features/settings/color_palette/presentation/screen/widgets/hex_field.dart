@@ -7,10 +7,15 @@ import 'package:vision_xai/features/settings/color_palette/presentation/cubit/pa
 import 'package:vision_xai/core/services/notification_service.dart';
 
 typedef PickColorCallback = Future<void> Function(
-    BuildContext context, TextEditingController controller, String label);
+    BuildContext context, TextEditingController controller, String fieldKey);
 
 class HexField extends StatefulWidget {
   final String label;
+
+  /// Canonical key used for preview and persistence (e.g. 'primary').
+  /// This key is stable and should not be localized. If omitted the
+  /// localized `label` is used as a fallback for backwards compatibility.
+  final String? fieldKey;
   final TextEditingController controller;
   final Color swatchColor;
   final PickColorCallback onPickColor;
@@ -19,6 +24,7 @@ class HexField extends StatefulWidget {
   const HexField({
     super.key,
     required this.label,
+    this.fieldKey,
     required this.controller,
     required this.swatchColor,
     required this.onPickColor,
@@ -54,11 +60,11 @@ class _HexFieldState extends State<HexField> {
     // current controller text so other widgets can react to a preview value.
     try {
       final hex = _ctrl.text.trim();
-      // Use context.read here; initState/didUpdateWidget set up listeners
-      // synchronously so context is safe to use.
-      // If no PaletteSettingsCubit is provided, ignore.
+      // Use canonical key for preview updates; fall back to the label if
+      // a fieldKey was not supplied (preserves backward compatibility).
+      final key = widget.fieldKey ?? widget.label;
       final cubit = context.read<PaletteSettingsCubit?>();
-      cubit?.updatePreviewColor(widget.label, hex.isEmpty ? null : hex);
+      cubit?.updatePreviewColor(key, hex.isEmpty ? null : hex);
     } catch (_) {}
   }
 
@@ -91,7 +97,8 @@ class _HexFieldState extends State<HexField> {
             final preview = (state is Map || state.previewColors != null)
                 ? (state.previewColors ?? <String, String>{})
                 : <String, String>{};
-            final previewHex = preview[widget.label];
+            final key = widget.fieldKey ?? widget.label;
+            final previewHex = preview[key];
             return Container(
                 width: 56, height: 56, color: _swatchFrom(previewHex));
           },
@@ -124,7 +131,8 @@ class _HexFieldState extends State<HexField> {
           ),
         ),
         IconButton(
-            onPressed: () => widget.onPickColor(context, _ctrl, widget.label),
+            onPressed: () => widget.onPickColor(
+                context, _ctrl, widget.fieldKey ?? widget.label),
             icon: Icon(Icons.colorize,
                 color: context.watch<PaletteCubit>().state.secondaryColor)),
       ],
