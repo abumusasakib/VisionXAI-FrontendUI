@@ -63,13 +63,3 @@ flutter analyze .
 # if the generated code uses `freezed`, run codegen
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
-
-If your consuming app doesn't want to use `freezed`, ask me and I can update the brick to generate `EntityGroup` without `freezed` so no code-generation step is required.
-
-## Example + Next steps
-
-- I can generate a concrete example inside this repo at `example/` so you can inspect the generated files and run `flutter analyze` locally. Would you like me to generate an example now? (I can do that and run the analyzer; if `flutter` or `mason` are not available in the environment I'll report back and provide the generated files anyway.)
-
----
-
-This brick is intended as a lightweight starting point. Feel free to request changes (e.g., remove `freezed`, add network client hooks, add test templates) and I'll update the brick accordingly.

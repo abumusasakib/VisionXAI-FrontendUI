@@ -56,9 +56,9 @@ dependencies:
   freezed_annotation: ^2.1.0
 
   # Localization & Utilities
-  intl: ^0.19.0 # For date and number formatting
+  intl: ^0.19.0 # For date and number formatting (Flutter 3.24 LTS compatibility)
   locale_names: ^1.1.1
-  arb_utils: ^0.8.3
+  arb_utils: ^0.9.0
 
   # Persistence & Storage
   hive: ^2.2.3
