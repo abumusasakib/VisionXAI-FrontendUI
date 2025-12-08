@@ -102,11 +102,11 @@ void main() {
       };
       final jsonStr = jsonEncode(map);
 
-      final dtoFromJson = ImageCaptionResponseDto.fromJson(jsonStr);
+      final dtoFromJson = ImageCaptionResponseDto.fromSource(jsonStr);
       expect(dtoFromJson.caption, 'json');
       expect(dtoFromJson.tokens, ['a', 'b']);
 
-      final dtoFromMap = ImageCaptionResponseDto.fromJson(map);
+      final dtoFromMap = ImageCaptionResponseDto.fromSource(map);
       expect(dtoFromMap.caption, 'json');
     });
 

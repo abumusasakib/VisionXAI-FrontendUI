@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'mapper.dart';
 import '../model/image_caption_model.dart';
 
@@ -6,7 +8,8 @@ class ImageCaptionJsonToModelMapper
   @override
   ImageCaptionModel performMap(Object from) {
     if (from is String) {
-      return ImageCaptionModel.fromJson(from);
+      final map = json.decode(from) as Map<String, dynamic>;
+      return ImageCaptionModel.fromJson(map);
     }
     if (from is Map<String, dynamic>) {
       return ImageCaptionModel.fromMap(from);

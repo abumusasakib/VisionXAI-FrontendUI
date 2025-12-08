@@ -1,53 +1,66 @@
 import 'dart:convert';
+
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'topk_item.dart';
 import 'attention_grid.dart';
 
+part 'image_caption_response_dto.freezed.dart';
+part 'image_caption_response_dto.g.dart';
+
 /// Lightweight DTO for the image-caption API response.
 ///
-/// A custom `fromMap` factory so the DTO can accept multiple
-/// server-side shapes: either `attention_topk`
-/// as nested lists (list of list of [row,col,score]) or `attention_topk_items`
-/// as nested lists of objects `{row,col,score}`. The server may also return
-/// `attention_image` or `attention_image_bytes` (both base64 strings) — prefer
-/// `attention_image_bytes` when present.
-class ImageCaptionResponseDto {
-  final String caption;
-  final String? filename;
-  final List<int>? tokenIds;
-  final List<String>? tokens;
-  final List<double>? tokenScores;
-  final String? attentionImage; // legacy key
-  final String? attentionImageBytes; // preferred key
-  final List<double>? attentionMeans;
-  final List<String>? attentionColors;
-  final Map<String, String>? attentionColorMap;
-  final List<List<TopKItem>>? attentionTopk;
-  final AttentionGrid? attentionGrid;
-  final Map<String, dynamic>? attentionShape;
-  final double? confidence;
-  final String? id;
-  final int? statusCode;
+/// This file preserves the original *parsing* behavior via `fromMap`
+/// and `fromSource` while also providing generated equality/immutability
+/// and `fromJson(Map)`/`toJson()` via `freezed` + `json_serializable`.
+@freezed
+class ImageCaptionResponseDto with _$ImageCaptionResponseDto {
+  const factory ImageCaptionResponseDto({
+    required String caption,
+    String? filename,
+    List<int>? tokenIds,
+    List<String>? tokens,
+    List<double>? tokenScores,
+    String? attentionImage,
+    String? attentionImageBytes,
+    List<double>? attentionMeans,
+    List<String>? attentionColors,
+    Map<String, String>? attentionColorMap,
+    List<List<TopKItem>>? attentionTopk,
+    AttentionGrid? attentionGrid,
+    Map<String, dynamic>? attentionShape,
+    double? confidence,
+    String? id,
+    int? statusCode,
+  }) = _ImageCaptionResponseDto;
 
-  ImageCaptionResponseDto({
-    required this.caption,
-    this.filename,
-    this.tokenIds,
-    this.tokens,
-    this.tokenScores,
-    this.attentionImage,
-    this.attentionImageBytes,
-    this.attentionColors,
-    this.attentionColorMap,
-    this.attentionMeans,
-    this.attentionGrid,
-    this.attentionShape,
-    this.attentionTopk,
-    this.confidence,
-    this.id,
-    this.statusCode,
-  });
+  const ImageCaptionResponseDto._();
 
-  /// Create DTO from a raw map
+  /// Generated JSON factory (Map -> model).
+  factory ImageCaptionResponseDto.fromJson(Map<String, dynamic> json) =>
+      _$ImageCaptionResponseDtoFromJson(json);
+
+  /// Original custom parsing logic preserved. Use this when the source may be
+  /// either a JSON string or an arbitrary Map (legacy behavior).
+  factory ImageCaptionResponseDto.fromSource(dynamic source) {
+    if (source is String) {
+      final Map<String, dynamic> map =
+          jsonDecode(source) as Map<String, dynamic>;
+      return ImageCaptionResponseDto.fromMap(map);
+    }
+
+    if (source is Map<String, dynamic>) {
+      return ImageCaptionResponseDto.fromMap(source);
+    }
+
+    if (source is Map) {
+      return ImageCaptionResponseDto.fromMap(Map<String, dynamic>.from(source));
+    }
+
+    throw ArgumentError.value(source, 'source', 'Expected String or Map');
+  }
+
+  /// Create DTO from a raw map — preserves all custom parsing/flexibility.
   factory ImageCaptionResponseDto.fromMap(Map<String, dynamic> json) {
     // caption is required by our client; if missing, set empty string
     final caption = (json['caption'] ?? '') as String;
@@ -142,28 +155,8 @@ class ImageCaptionResponseDto {
     );
   }
 
-  /// Convenience constructor used that expect
-  /// a `fromJson(String)` factory. It simply decodes the JSON string and
-  /// delegates to `fromMap`.
-  factory ImageCaptionResponseDto.fromJson(dynamic source) {
-    if (source is String) {
-      final Map<String, dynamic> map =
-          jsonDecode(source) as Map<String, dynamic>;
-      return ImageCaptionResponseDto.fromMap(map);
-    }
-
-    if (source is Map<String, dynamic>) {
-      return ImageCaptionResponseDto.fromMap(source);
-    }
-
-    // Accept also Map<String, Object> or similar
-    if (source is Map) {
-      return ImageCaptionResponseDto.fromMap(Map<String, dynamic>.from(source));
-    }
-
-    throw ArgumentError.value(source, 'source', 'Expected String or Map');
-  }
-
+  /// Preserve original Map-style serialization helper. The generated
+  /// `toJson()` (from json_serializable) will also be available.
   Map<String, dynamic> toMap() => {
         'caption': caption,
         'filename': filename,

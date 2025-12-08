@@ -19,7 +19,7 @@ class SettingsLocalDataSource {
             defaultValue: AppLocalizations.supportedLocales.first.languageCode)
         ?.toString();
 
-    return SettingsModel.fromJson({
+    return SettingsModel.fromMap({
       'ip': ip,
       'port': port,
       'locale': locale,

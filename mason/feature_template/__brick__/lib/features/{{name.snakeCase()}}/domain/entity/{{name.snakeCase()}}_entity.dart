@@ -1,12 +1,15 @@
-import 'package:equatable/equatable.dart';
+import 'dart:convert';
 
-/// Generic entity used by the generated feature.
-/// Keeps an optional `id` and an attributes map so projects can extend easily.
-class {{name.pascalCase()}}Entity extends Equatable {
-  final String? id;
-  final Map<String, dynamic> attributes;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  const {{name.pascalCase()}}Entity({this.id, this.attributes = const {}});
+part '{{name.snakeCase()}}_entity.freezed.dart';
+part '{{name.snakeCase()}}_entity.g.dart';
+
+@freezed
+class {{name.pascalCase()}}Entity with _${{name.pascalCase()}}Entity {
+  const factory {{name.pascalCase()}}Entity({String? id, @Default(<String, dynamic>{}) Map<String, dynamic> attributes}) = _{{name.pascalCase()}}Entity;
+
+  const {{name.pascalCase()}}Entity._();
 
   factory {{name.pascalCase()}}Entity.fromMap(Map<String, dynamic> map) {
     final mapCopy = Map<String, dynamic>.from(map);
@@ -16,6 +19,7 @@ class {{name.pascalCase()}}Entity extends Equatable {
 
   Map<String, dynamic> toMap() => {'id': id, ...attributes};
 
-  @override
-  List<Object?> get props => [id, attributes];
+  factory {{name.pascalCase()}}Entity.fromJson(Map<String, dynamic> json) => _${{name.pascalCase()}}EntityFromJson(json);
+
+  String toJsonString() => json.encode(toMap());
 }

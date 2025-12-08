@@ -93,122 +93,118 @@ You need to have Node.js installed before using the setup build scripts.
 Below is the detailed directory structure for the **VisionXAI** Flutter project. This structure organizes the app into logical modules, ensuring modularity and clarity in code maintenance.
 
 ```plaintext
-vision_xai/
-├── analysis_options.yaml                # Analysis options for linting rules.
-├── devtools_options.yaml                # DevTools configuration.
-├── flutter_launcher_icons.yaml          # Configuration for launcher icons.
-├── flutter_native_splash.yaml           # Splash screen configuration.
-├── l10n.yaml                            # Configuration for Flutter localization.
-├── l10n_errors.txt                      # Logs for localization errors.
-├── pubspec.yaml                         # Flutter project dependencies and configurations.
-├── pubspec.lock                         # Lock file for dependencies.
-├── README.md                            # Project documentation.
-├── .fvm/                                # Flutter Version Management files.
-│   ├── fvm_config.json
-│   ├── release
-│   └── version
-├── .fvmrc                               # FVM version configuration.
-├── .gitignore                           # Git ignore rules.
-├── .metadata                            # Flutter project metadata.
-├── .vscode/                             # Visual Studio Code configurations.
-│   ├── launch.json                      # Debugger configurations.
-│   └── settings.json                     # Editor-specific settings.
-├── android/                             # Android-specific files and configurations.
-│   ├── .gitignore
-│   ├── app/
-│   │   ├── build.gradle
-│   │   └── src/
-│   │       ├── debug/
-│   │       ├── main/
-│   │       ├── profile/
-│   ├── build.gradle
-│   ├── gradle.properties
-│   ├── gradle/
-│   │   └── wrapper/
-│   │       └── gradle-wrapper.properties
-│   └── settings.gradle
-├── web/                                 # Web-specific files.
-│   ├── index.html                       # HTML entry point for the web app.
-│   ├── favicon.png                      # Web favicon.
-│   ├── manifest.json                    # Web manifest for PWA features.
-│   ├── icons/                           # App icons for web.
-│   │   ├── Icon-192.png
-│   │   ├── Icon-512.png
-│   │   ├── Icon-maskable-192.png
-│   │   └── Icon-maskable-512.png
-│   └── splash/
-│       └── img/
-│           ├── dark-1x.png
-│           ├── dark-2x.png
-│           ├── dark-3x.png
-│           ├── dark-4x.png
-│           ├── light-1x.png
-│           ├── light-2x.png
-│           ├── light-3x.png
-│           ├── light-4x.png
-├── windows/                             # Windows-specific files.
-│   ├── .gitignore
-│   ├── CMakeLists.txt                   # CMake build configurations.
-│   ├── flutter/                         # Flutter-generated Windows integration files.
-│   │   ├── CMakeLists.txt
-│   │   ├── generated_plugin_registrant.cc
-│   │   ├── generated_plugin_registrant.h
-│   │   └── generated_plugins.cmake
-│   └── runner/                          # App runner configurations for Windows.
-│       ├── CMakeLists.txt
-│       ├── Runner.rc
-│       ├── flutter_window.cpp
-│       ├── flutter_window.h
-│       ├── main.cpp
-│       ├── resource.h
-│       ├── resources/
-│       │   └── app_icon.ico
-│       ├── runner.exe.manifest
-│       ├── utils.cpp
-│       ├── utils.h
-│       ├── win32_window.cpp
-│       └── win32_window.h
-├── test/                                # Unit and widget tests.
-│   └── widget_test.dart                 # Example widget test.
-├── lib/                                 # Main application source code.
-│   ├── main.dart                        # Application entry point.
-│   ├── color_palette/                   # Color theme management.
-│   │   ├── palette_cubit.dart
-│   │   ├── palette_manager.dart
-│   │   └── palette_state.dart
-│   ├── constants/                       # Constants for the app.
-│   │   └── ip_details.dart               # IP configuration constants.
-│   ├── l10n/                            # Localization files and utilities.
-│   │   ├── app_en.arb                   # English language translations.
-│   │   ├── app_bn.arb                   # Bengali language translations.
-│   │   └── localization_extension.dart  # Localization extension for convenience.
-│   ├── routes/                          # Routing configuration.
-│   │   ├── app_routes.dart              # Route definitions.
-│   │   └── routes.dart                  # GoRouter setup.
-│   ├── home/                            # Home screen-related files.
-│   │   ├── home_screen.dart             # Home screen UI.
-│   │   ├── home_cubit.dart              # State management for home screen.
-│   │   └── home_state.dart              # State definitions for home screen.
-│   ├── settings/                        # Settings screen and logic.
-│   │   ├── about/                       # About screen module.
-│   │   │   ├── about_cubit.dart
-│   │   │   ├── about_screen.dart
-│   │   │   └── about_state.dart
-│   │   ├── ip_settings/                 # IP configuration UI.
-│   │   │   └── ip_settings_screen.dart
-│   │   ├── language_settings/           # Language selection UI.
-│   │   │   └── language_settings_screen.dart
-│   │   ├── settings_cubit.dart          # State management for settings.
-│   │   ├── settings_screen.dart         # Main settings screen.
-│   │   └── settings_state.dart          # State definitions for settings.
-│   └── widgets/                         # Shared widgets.
-│       └── custom_language_selector_dropdown.dart # Dropdown for language selection.
-├── assets/                              # App assets.
-│   ├── about.png
-│   ├── icon/
-│   │   └── icon.png
-│   └── splash.png
+VisionXAI-FrontendUI/
+├── example/
+│   └── lib/features/sample_feature/
+│       └── [Standard Feature Pattern] (data, domain, core, presentation)
+│
+├── lib/
+│   ├── features/
+│   │   ├── image_caption/
+│   │   │   ├── data/
+│   │   │   │   ├── model/ (*.dart + generated *.freezed.dart, *.g.dart)
+│   │   │   │   ├── datasource/remote/
+│   │   │   │   ├── mapper/ (json→model→entity mappers)
+│   │   │   │   └── repository/*_repo_impl.dart
+│   │   │   ├── domain/
+│   │   │   │   ├── entity/ (*.dart + generated files)
+│   │   │   │   ├── repository/*_repo.dart
+│   │   │   │   └── use_case/*_uc.dart
+│   │   │   ├── core/
+│   │   │   │   ├── di/*_injection.dart
+│   │   │   │   ├── export/*_export.dart
+│   │   │   │   └── utils/
+│   │   │   └── presentation/
+│   │   │       ├── cubit/ (state management)
+│   │   │       └── screen/ (UI + widgets/)
+│   │   │
+│   │   ├── settings/
+│   │   │   ├── about/ [Standard Pattern]
+│   │   │   └── [Standard Pattern] (data, domain)
+│   │   │
+│   │   └── color_palette/
+│   │       ├── core/ (di, managers, workers, utils)
+│   │       ├── data/ (datasource, repository)
+│   │       └── presentation/ (cubit, screens)
+│   │
+│   ├── core/
+│   │   ├── common/ (tts_client.dart)
+│   │   ├── widgets/ (custom widgets)
+│   │   ├── constants/ (ip_details, string_res)
+│   │   ├── di/ (app_di, service_locator)
+│   │   ├── network/ (interceptors)
+│   │   └── routes/ (app_routes, routes)
+│   │
+│   ├── gen/assets.gen.dart
+│   ├── l10n/ (localization files: *.arb, generated *.dart)
+│   └── main.dart
+│
+├── config/
+│   ├── .fvmrc, .gitignore, analysis_options.yaml
+│   ├── pubspec.yaml, pubspec.lock
+│   ├── l10n.yaml, l10n_errors.txt
+│   ├── flutter_launcher_icons.yaml
+│   ├── flutter_native_splash.yaml
+│   ├── docker-compose.yml, Dockerfile*
+│   └── devtools_options.yaml
+│
+├── mason/ (code generation templates)
+│   ├── feature_template/ (__brick__, brick.yaml, hooks/)
+│   └── mason-lock.json
+│
+├── setup scripts/ (setup.sh, setup.bat, setup.js)
+│
+├── assets/
+│   ├── about.png, splash.png
+│   └── icon/icon.png
+│
+├── test/
+│   ├── core/services/ (error_handler, notification tests)
+│   └── features/ [Mirror lib/features structure]
+│       ├── image_caption/ (mapper, model, repository, cubit tests)
+│       └── settings/ (similar test patterns)
+│
+├── android/
+│   ├── app/ (build.gradle, src/[debug|main|profile]/AndroidManifest.xml)
+│   ├── gradle/ (wrapper, properties)
+│   └── build.gradle, settings.gradle
+│
+├── web/
+│   ├── index.html, manifest.json, favicon.png
+│   ├── icons/ (various sizes: 192, 512, maskable)
+│   └── splash/img/ (dark/light variants: 1x-4x)
+│
+├── windows/
+│   ├── CMakeLists.txt
+│   ├── flutter/ (generated plugins, registrant)
+│   └── runner/ (main, resources, window management)
+│
+└── docs/
+    ├── CHANGELOG.md
+    └── README.md
 ```
+
+## Pattern Summary
+
+**Standard Feature Pattern** (repeated across features):
+
+```plaintext
+feature_name/
+├── data/ (models, datasources, mappers, repository_impl)
+├── domain/ (entities, repository interface, use_cases)
+├── core/ (di, exports, utils)
+└── presentation/ (cubits, screens, widgets)
+```
+
+**Generated Files Pattern**:
+
+- `*.freezed.dart` (immutable models)
+- `*.g.dart` (JSON serialization)
+
+**Localization Pattern**:
+
+- `app_*.arb` (source)
+- `app_localizations_*.dart` (generated)
 
 ---
 

@@ -1,12 +1,18 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// Entity used by the image caption feature.
-/// Keeps an `id` and an attributes map.
-class ImageCaptionEntity extends Equatable {
-  final String? id;
-  final Map<String, dynamic> attributes;
+part 'image_caption_entity.freezed.dart';
+part 'image_caption_entity.g.dart';
 
-  const ImageCaptionEntity({this.id, this.attributes = const {}});
+@freezed
+class ImageCaptionEntity with _$ImageCaptionEntity {
+  const factory ImageCaptionEntity(
+          {String? id,
+          @Default(<String, dynamic>{}) Map<String, dynamic> attributes}) =
+      _ImageCaptionEntity;
+  const ImageCaptionEntity._();
+
+  factory ImageCaptionEntity.fromJson(Map<String, dynamic> json) =>
+      _$ImageCaptionEntityFromJson(json);
 
   factory ImageCaptionEntity.fromMap(Map<String, dynamic> map) {
     final mapCopy = Map<String, dynamic>.from(map);
@@ -15,7 +21,4 @@ class ImageCaptionEntity extends Equatable {
   }
 
   Map<String, dynamic> toMap() => {'id': id, ...attributes};
-
-  @override
-  List<Object?> get props => [id, attributes];
 }

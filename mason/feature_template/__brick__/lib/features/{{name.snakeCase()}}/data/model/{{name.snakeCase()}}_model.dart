@@ -1,35 +1,28 @@
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// Generic model used by the feature template.
-/// Stores an optional `id` and a map of arbitrary attributes.
-class {{name.pascalCase()}}Model extends Equatable {
-  final String? id;
-  final Map<String, dynamic> attributes;
+part '{{name.snakeCase()}}_model.freezed.dart';
+part '{{name.snakeCase()}}_model.g.dart';
 
-  const {{name.pascalCase()}}Model({this.id, this.attributes = const {}});
+@freezed
+class {{name.pascalCase()}}Model with _${{name.pascalCase()}}Model {
+  const factory {{name.pascalCase()}}Model({String? id, @Default(<String, dynamic>{}) Map<String, dynamic> attributes}) = _{{name.pascalCase()}}Model;
 
+  const {{name.pascalCase()}}Model._();
+
+  /// Preserve original Map-based constructor semantics (remove 'id' from attributes)
   factory {{name.pascalCase()}}Model.fromMap(Map<String, dynamic> map) {
     final mapCopy = Map<String, dynamic>.from(map);
     final id = mapCopy.remove('id')?.toString();
     return {{name.pascalCase()}}Model(id: id, attributes: mapCopy);
   }
 
+  /// Generated JSON factory (Map -> model).
+  factory {{name.pascalCase()}}Model.fromJson(Map<String, dynamic> json) => _${{name.pascalCase()}}ModelFromJson(json);
+
+  /// Convenience: return JSON string encoded from the Map representation.
+  String toJsonString() => json.encode(toMap());
+
   Map<String, dynamic> toMap() => {'id': id, ...attributes};
-
-  factory {{name.pascalCase()}}Model.fromJson(String source) =>
-      {{name.pascalCase()}}Model.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  String toJson() => json.encode(toMap());
-
-  {{name.pascalCase()}}Model copyWith({String? id, Map<String, dynamic>? attributes}) {
-    return {{name.pascalCase()}}Model(
-      id: id ?? this.id,
-      attributes: attributes ?? Map<String, dynamic>.from(this.attributes),
-    );
-  }
-
-  @override
-  List<Object?> get props => [id, attributes];
 }

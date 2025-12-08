@@ -1,15 +1,19 @@
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// Model used by the image caption feature.
-/// Stores an optional `id` and a map of arbitrary attributes.
-class ImageCaptionModel extends Equatable {
-  final String? id;
-  final Map<String, dynamic> attributes;
+part 'image_caption_model.freezed.dart';
+part 'image_caption_model.g.dart';
 
-  const ImageCaptionModel({this.id, this.attributes = const {}});
+@freezed
+class ImageCaptionModel with _$ImageCaptionModel {
+  const factory ImageCaptionModel(
+          {String? id,
+          @Default(<String, dynamic>{}) Map<String, dynamic> attributes}) =
+      _ImageCaptionModel;
+  const ImageCaptionModel._();
 
+  /// Preserve the old Map-based constructor semantics (removes 'id' from attributes)
   factory ImageCaptionModel.fromMap(Map<String, dynamic> map) {
     final mapCopy = Map<String, dynamic>.from(map);
     final id = mapCopy.remove('id')?.toString();
@@ -18,18 +22,11 @@ class ImageCaptionModel extends Equatable {
 
   Map<String, dynamic> toMap() => {'id': id, ...attributes};
 
-  factory ImageCaptionModel.fromJson(String source) =>
-      ImageCaptionModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory ImageCaptionModel.fromJson(Map<String, dynamic> json) =>
+      _$ImageCaptionModelFromJson(json);
 
-  String toJson() => json.encode(toMap());
-
-  ImageCaptionModel copyWith({String? id, Map<String, dynamic>? attributes}) {
-    return ImageCaptionModel(
-      id: id ?? this.id,
-      attributes: attributes ?? Map<String, dynamic>.from(this.attributes),
-    );
-  }
-
-  @override
-  List<Object?> get props => [id, attributes];
+  /// Returns a JSON-encodable `Map` (generated `toJson` from freezed/json_serializable
+  /// provides a `Map<String, dynamic>` already). Use `toJsonString` when you
+  /// need the encoded JSON `String`.
+  String toJsonString() => json.encode(toMap());
 }

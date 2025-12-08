@@ -30,7 +30,7 @@ void main() {
         ]
       };
 
-      final dto = ImageCaptionResponseDto.fromJson(sample);
+      final dto = ImageCaptionResponseDto.fromSource(sample);
 
       expect(dto.filename, 'image.jpg');
       expect(dto.caption, 'একটি সুন্দর ছবি');
@@ -66,7 +66,7 @@ void main() {
         ]
       };
 
-      final dto = ImageCaptionResponseDto.fromJson(sample);
+      final dto = ImageCaptionResponseDto.fromSource(sample);
 
       final jsonToModel = ImageCaptionJsonToModelMapper();
       final modelToEntity = ImageCaptionModelToEntityMapper();

@@ -1,14 +1,18 @@
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// Generic model used by the feature template.
-/// Stores an optional `id` and a map of arbitrary attributes.
-class SampleFeatureModel extends Equatable {
-  final String? id;
-  final Map<String, dynamic> attributes;
+part 'sample_feature_model.freezed.dart';
+part 'sample_feature_model.g.dart';
 
-  const SampleFeatureModel({this.id, this.attributes = const {}});
+@freezed
+class SampleFeatureModel with _$SampleFeatureModel {
+  const factory SampleFeatureModel(
+          {String? id,
+          @Default(<String, dynamic>{}) Map<String, dynamic> attributes}) =
+      _SampleFeatureModel;
+
+  const SampleFeatureModel._();
 
   factory SampleFeatureModel.fromMap(Map<String, dynamic> map) {
     final mapCopy = Map<String, dynamic>.from(map);
@@ -18,18 +22,8 @@ class SampleFeatureModel extends Equatable {
 
   Map<String, dynamic> toMap() => {'id': id, ...attributes};
 
-  factory SampleFeatureModel.fromJson(String source) =>
-      SampleFeatureModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory SampleFeatureModel.fromJson(Map<String, dynamic> json) =>
+      _$SampleFeatureModelFromJson(json);
 
-  String toJson() => json.encode(toMap());
-
-  SampleFeatureModel copyWith({String? id, Map<String, dynamic>? attributes}) {
-    return SampleFeatureModel(
-      id: id ?? this.id,
-      attributes: attributes ?? Map<String, dynamic>.from(this.attributes),
-    );
-  }
-
-  @override
-  List<Object?> get props => [id, attributes];
+  String toJsonString() => json.encode(toMap());
 }

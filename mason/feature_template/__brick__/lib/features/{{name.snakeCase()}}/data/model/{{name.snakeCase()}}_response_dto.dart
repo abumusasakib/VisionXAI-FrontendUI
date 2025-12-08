@@ -1,21 +1,18 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part '{{name.snakeCase()}}_response_dto.freezed.dart';
 part '{{name.snakeCase()}}_response_dto.g.dart';
 
-@JsonSerializable()
-class {{name.pascalCase()}}ResponseDto {
-  final String caption;
-  final double? confidence;
-  final String? id;
-  final int? statusCode;
+@freezed
+class {{name.pascalCase()}}ResponseDto with _${{name.pascalCase()}}ResponseDto {
+  const factory {{name.pascalCase()}}ResponseDto({
+    required String caption,
+    double? confidence,
+    String? id,
+    int? statusCode,
+  }) = _{{name.pascalCase()}}ResponseDto;
 
-  {{name.pascalCase()}}ResponseDto({
-    required this.caption,
-    this.confidence,
-    this.id,
-    this.statusCode,
-  });
+  const {{name.pascalCase()}}ResponseDto._();
 
   factory {{name.pascalCase()}}ResponseDto.fromJson(Map<String, dynamic> json) => _${{name.pascalCase()}}ResponseDtoFromJson(json);
-  Map<String, dynamic> toJson() => _${{name.pascalCase()}}ResponseDtoToJson(this);
 }

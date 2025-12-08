@@ -82,6 +82,8 @@ abstract class _$$SuccessImplCopyWith<$Res> {
       __$$SuccessImplCopyWithImpl<$Res>;
   @useResult
   $Res call({SampleFeatureEntity entity});
+
+  $SampleFeatureEntityCopyWith<$Res> get entity;
 }
 
 /// @nodoc
@@ -103,6 +105,14 @@ class __$$SuccessImplCopyWithImpl<$Res>
           : entity // ignore: cast_nullable_to_non_nullable
               as SampleFeatureEntity,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $SampleFeatureEntityCopyWith<$Res> get entity {
+    return $SampleFeatureEntityCopyWith<$Res>(_value.entity, (value) {
+      return _then(_value.copyWith(entity: value));
+    });
   }
 }
 

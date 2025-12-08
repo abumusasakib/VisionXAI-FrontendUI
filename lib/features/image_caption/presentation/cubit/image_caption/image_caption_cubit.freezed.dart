@@ -339,6 +339,8 @@ abstract class _$$LoadedImplCopyWith<$Res> {
       __$$LoadedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({ImageCaptionEntity entity});
+
+  $ImageCaptionEntityCopyWith<$Res> get entity;
 }
 
 /// @nodoc
@@ -360,6 +362,14 @@ class __$$LoadedImplCopyWithImpl<$Res>
           : entity // ignore: cast_nullable_to_non_nullable
               as ImageCaptionEntity,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ImageCaptionEntityCopyWith<$Res> get entity {
+    return $ImageCaptionEntityCopyWith<$Res>(_value.entity, (value) {
+      return _then(_value.copyWith(entity: value));
+    });
   }
 }
 

@@ -1,20 +1,20 @@
-class SettingsEntity {
-  final String ip;
-  final String port;
-  final String locale;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  const SettingsEntity(
-      {required this.ip, required this.port, required this.locale});
+part 'settings_entity.freezed.dart';
+part 'settings_entity.g.dart';
 
-  Map<String, dynamic> toJson() => {
-        'ip': ip,
-        'port': port,
-        'locale': locale,
-      };
+@freezed
+class SettingsEntity with _$SettingsEntity {
+  const factory SettingsEntity(
+      {required String ip,
+      required String port,
+      required String locale}) = _SettingsEntity;
 
-  factory SettingsEntity.fromJson(Map<String, dynamic> json) => SettingsEntity(
-        ip: json['ip'] as String? ?? '127.0.0.1',
-        port: json['port'] as String? ?? '8000',
-        locale: json['locale'] as String? ?? 'en',
-      );
+  const SettingsEntity._();
+
+  @override
+  Map<String, dynamic> toJson() => {'ip': ip, 'port': port, 'locale': locale};
+
+  factory SettingsEntity.fromJson(Map<String, dynamic> json) =>
+      _$SettingsEntityFromJson(json);
 }

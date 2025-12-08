@@ -1,16 +1,18 @@
-class AboutModel {
-  final String appVersion;
-  final String platform;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  const AboutModel({required this.appVersion, required this.platform});
+part 'about_model.freezed.dart';
+part 'about_model.g.dart';
 
-  /// Convert to a JSON map (for debugging or persistence).
-  Map<String, Object?> toJson() =>
+@freezed
+class AboutModel with _$AboutModel {
+  const factory AboutModel(
+      {required String appVersion, required String platform}) = _AboutModel;
+
+  const AboutModel._();
+
+  factory AboutModel.fromJson(Map<String, dynamic> json) =>
+      _$AboutModelFromJson(json);
+
+  Map<String, Object?> toJsonMap() =>
       {'appVersion': appVersion, 'platform': platform};
-
-  /// Create model from JSON map.
-  factory AboutModel.fromJson(Map<String, Object?> json) => AboutModel(
-        appVersion: json['appVersion'] as String? ?? '',
-        platform: json['platform'] as String? ?? '',
-      );
 }

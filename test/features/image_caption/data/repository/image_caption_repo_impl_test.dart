@@ -36,7 +36,7 @@ class FakeRemoteError extends ImageCaptionRemote {
 
 void main() {
   test('repo maps remote dto to entity group success', () async {
-    final dto = ImageCaptionResponseDto(
+    const dto = ImageCaptionResponseDto(
       caption: 'a cat',
       id: '1',
       statusCode: 200,
