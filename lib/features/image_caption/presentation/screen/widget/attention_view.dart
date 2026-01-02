@@ -54,7 +54,7 @@ class _AttentionViewBody extends StatelessWidget {
         if (imageBytes != null) ...[
           SizedBox(
             height:
-                (MediaQuery.of(context).size.height * 0.45).clamp(320.0, 900.0),
+                (MediaQuery.of(context).size.height * 0.45).clamp(220.0, 800.0),
             width: double.infinity,
             child: BlocBuilder<AttentionViewCubit, int?>(
               builder: (context, selectedIndex) => ImageWithMarkers(
