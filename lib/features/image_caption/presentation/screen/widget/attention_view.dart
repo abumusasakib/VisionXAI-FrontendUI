@@ -49,11 +49,13 @@ class _AttentionViewBody extends StatelessWidget {
     final gridRows = grid['rows'];
     final gridCols = grid['cols'];
 
+
     return Column(
       children: [
         if (imageBytes != null) ...[
           SizedBox(
-            height: 180,
+            height: (MediaQuery.of(context).size.height * 0.45).clamp(260.0, 700.0),
+            width: double.infinity,
             child: BlocBuilder<AttentionViewCubit, int?>(
               builder: (context, selectedIndex) => ImageWithMarkers(
                 imageBytes: imageBytes,
