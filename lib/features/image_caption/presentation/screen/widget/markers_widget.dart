@@ -5,7 +5,13 @@ import 'package:vision_xai/features/settings/color_palette/presentation/cubit/pa
 
 List<Widget> markersWidget(BuildContext context, List<List<TopKItem>> topk,
     int tokenIndex, double width, double height,
-    {int? gridRows, int? gridCols, Color? color}) {
+    {int? gridRows,
+    int? gridCols,
+    Color? color,
+    double originLeft = 0.0,
+    double originTop = 0.0,
+    double containerWidth = double.infinity,
+    double containerHeight = double.infinity}) {
   if (tokenIndex >= topk.length) return [];
   final items = topk[tokenIndex];
   if (items.isEmpty) return [];
@@ -29,8 +35,13 @@ List<Widget> markersWidget(BuildContext context, List<List<TopKItem>> topk,
     final markerSize = 8.0 + (normalized * 20.0); // 8..28
     final opacity = 0.35 + (normalized * 0.6); // 0.35..0.95
 
-    final left = (t.col + 0.5) * cellW - (markerSize / 2);
-    final top = (t.row + 0.5) * cellH - (markerSize / 2);
+    final leftRel = (t.col + 0.5) * cellW - (markerSize / 2);
+    final topRel = (t.row + 0.5) * cellH - (markerSize / 2);
+
+    // Absolute positions within the container (apply origin offsets)
+    final leftAbs = (originLeft + leftRel).clamp(0.0, containerWidth - markerSize);
+    final topAbs = (originTop + topRel).clamp(0.0, containerHeight - markerSize);
+
     Color defaultColor;
     if (color != null) {
       defaultColor = color;
@@ -44,8 +55,8 @@ List<Widget> markersWidget(BuildContext context, List<List<TopKItem>> topk,
       }
     }
     return Positioned(
-      left: left.clamp(0.0, width - markerSize),
-      top: top.clamp(0.0, height - markerSize),
+      left: leftAbs,
+      top: topAbs,
       child: Container(
         key: Key('marker-$tokenIndex-$i'),
         width: markerSize,
