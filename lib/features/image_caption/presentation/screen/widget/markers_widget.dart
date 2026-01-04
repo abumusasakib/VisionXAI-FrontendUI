@@ -39,8 +39,10 @@ List<Widget> markersWidget(BuildContext context, List<List<TopKItem>> topk,
     final topRel = (t.row + 0.5) * cellH - (markerSize / 2);
 
     // Absolute positions within the container (apply origin offsets)
-    final leftAbs = (originLeft + leftRel).clamp(0.0, containerWidth - markerSize);
-    final topAbs = (originTop + topRel).clamp(0.0, containerHeight - markerSize);
+    final leftAbs =
+        (originLeft + leftRel).clamp(0.0, containerWidth - markerSize);
+    final topAbs =
+        (originTop + topRel).clamp(0.0, containerHeight - markerSize);
 
     Color defaultColor;
     if (color != null) {

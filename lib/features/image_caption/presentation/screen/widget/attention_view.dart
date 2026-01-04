@@ -49,12 +49,15 @@ class _AttentionViewBody extends StatelessWidget {
     final gridRows = grid['rows'];
     final gridCols = grid['cols'];
 
+    // Use a larger, responsive display height (60% of viewport height, clamped).
+    final double displayHeight =
+        (MediaQuery.of(context).size.height * 0.6).clamp(220.0, 800.0);
+
     return Column(
       children: [
         if (imageBytes != null) ...[
           SizedBox(
-            height:
-                (MediaQuery.of(context).size.height * 0.45).clamp(220.0, 800.0),
+            height: displayHeight,
             width: double.infinity,
             child: BlocBuilder<AttentionViewCubit, int?>(
               builder: (context, selectedIndex) => ImageWithMarkers(

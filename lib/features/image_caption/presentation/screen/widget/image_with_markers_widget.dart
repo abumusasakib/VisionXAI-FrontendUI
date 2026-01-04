@@ -83,13 +83,16 @@ class _ImageWithMarkersState extends State<ImageWithMarkers> {
         int? selectedIdx;
         if (widget.topk != null && widget.selectedIndex != null) {
           selectedIdx = widget.selectedIndex!;
-          final token =
-              widget.tokens.length > selectedIdx ? widget.tokens[selectedIdx] : null;
+          final token = widget.tokens.length > selectedIdx
+              ? widget.tokens[selectedIdx]
+              : null;
           if (widget.colorMap is Map && token != null) {
-            selectedTokenColor = parseHexColor(widget.colorMap[token] as String?);
+            selectedTokenColor =
+                parseHexColor(widget.colorMap[token] as String?);
           }
           if (selectedTokenColor == null) {
-            if (widget.colorsList is List && widget.colorsList.length > selectedIdx) {
+            if (widget.colorsList is List &&
+                widget.colorsList.length > selectedIdx) {
               selectedTokenColor =
                   parseHexColor(widget.colorsList[selectedIdx] as String?);
             }
