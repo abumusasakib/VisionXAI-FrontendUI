@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:vision_xai/core/services/global_ui_service.dart';
 
@@ -25,6 +26,16 @@ class NotificationServiceImpl implements NotificationService {
         duration: duration ?? const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
       );
+      // Log the snackbar show with optional context/route information.
+      final String routeName = context != null
+          ? (ModalRoute.of(context)?.settings.name ?? 'unknown')
+          : (GlobalUiService.context != null
+              ? (ModalRoute.of(GlobalUiService.context!)?.settings.name ?? 'global')
+              : 'no-route');
+      developer.log('Show SnackBar: "$message"',
+          name: 'NotificationService',
+          error: {'route': routeName, 'backgroundColor': backgroundColor?.toString(), 'duration': duration?.inSeconds});
+
       // Prefer the provided context; fall back to the global scaffold messenger.
       if (context != null) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
