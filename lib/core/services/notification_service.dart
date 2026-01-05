@@ -16,6 +16,10 @@ abstract class NotificationService {
 
 /// Default implementation that uses `ScaffoldMessenger` to show a SnackBar.
 class NotificationServiceImpl implements NotificationService {
+  final Logger? logger;
+
+  NotificationServiceImpl({this.logger});
+
   @override
   void showSnackBar(String message,
       {BuildContext? context,
@@ -37,16 +41,24 @@ class NotificationServiceImpl implements NotificationService {
                   'global')
               : 'no-route');
       final meta = {
+        'id': DateTime.now().toIso8601String(),
+        'caller': () {
+          try {
+            final lines = StackTrace.current.toString().split('\n');
+            return lines.length > 1 ? lines[1].trim() : 'unknown';
+          } catch (_) {
+            return 'unknown';
+          }
+        }(),
         'route': routeName,
         'backgroundColor': backgroundColor?.toString(),
         'duration': duration?.inSeconds
       };
-      // Structured logging
-      _logger.info(message, meta);
+      // Structured logging via provided logger or default
+      (logger ?? _logger).info(message, meta);
       // Also forward to dart:developer for existing sinks
       developer.log('Show SnackBar: "$message"',
-          name: 'NotificationService',
-          error: meta);
+          name: 'NotificationService', error: meta);
 
       // Prefer the provided context; fall back to the global scaffold messenger.
       if (context != null) {
