@@ -1,6 +1,9 @@
 import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:vision_xai/core/services/global_ui_service.dart';
+
+final Logger _logger = Logger('NotificationService');
 
 /// Abstract notification service to allow injection and easy testing.
 abstract class NotificationService {
@@ -30,11 +33,20 @@ class NotificationServiceImpl implements NotificationService {
       final String routeName = context != null
           ? (ModalRoute.of(context)?.settings.name ?? 'unknown')
           : (GlobalUiService.context != null
-              ? (ModalRoute.of(GlobalUiService.context!)?.settings.name ?? 'global')
+              ? (ModalRoute.of(GlobalUiService.context!)?.settings.name ??
+                  'global')
               : 'no-route');
+      final meta = {
+        'route': routeName,
+        'backgroundColor': backgroundColor?.toString(),
+        'duration': duration?.inSeconds
+      };
+      // Structured logging
+      _logger.info(message, meta);
+      // Also forward to dart:developer for existing sinks
       developer.log('Show SnackBar: "$message"',
           name: 'NotificationService',
-          error: {'route': routeName, 'backgroundColor': backgroundColor?.toString(), 'duration': duration?.inSeconds});
+          error: meta);
 
       // Prefer the provided context; fall back to the global scaffold messenger.
       if (context != null) {

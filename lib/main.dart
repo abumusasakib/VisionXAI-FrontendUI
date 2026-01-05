@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
+import 'package:logging/logging.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -40,6 +41,17 @@ void main() async {
   await appDi.settingsFeatureCubit.load();
   // Load about info (app version, platform) so About screen can render immediately
   await appDi.aboutCubit.loadAppInfo();
+
+  // Configure package:logging to forward to dart:developer so logs integrate with
+  // existing platform/system sinks. This centralizes log handling.
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((record) {
+    developer.log(record.message.toString(),
+        name: record.loggerName,
+        error: record.error,
+        stackTrace: record.stackTrace,
+        level: record.level.value);
+  });
 
   runApp(MyApp(appDi: appDi));
 }
