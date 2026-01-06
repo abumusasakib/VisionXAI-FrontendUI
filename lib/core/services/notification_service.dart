@@ -56,14 +56,12 @@ class NotificationServiceImpl implements NotificationService {
         'backgroundColor': backgroundColor?.toString(),
         'duration': duration?.inSeconds
       };
-      // Structured logging via provided logger or default
-      (logger ?? _logger).info(message, meta);
-      
-      // Also forward to dart:developer for existing sinks with JSON-encoded metadata
-      developer.log(
-        'Show SnackBar: "$message" | meta: ${jsonEncode(meta)}',
-        name: 'NotificationService',
-      );
+        // Structured logging via provided logger or default (preserve meta Map for tests)
+        (logger ?? _logger).info('Show SnackBar: "$message"', meta);
+
+        // Dorward a readable JSON-encoded version to dart:developer
+        developer.log('Show SnackBar: "$message" | meta: ${jsonEncode(meta)}',
+          name: 'NotificationService');
 
       // Prefer the provided context; fall back to the global scaffold messenger.
       if (context != null) {
