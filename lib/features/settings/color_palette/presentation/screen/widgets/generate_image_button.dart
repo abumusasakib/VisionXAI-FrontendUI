@@ -51,7 +51,6 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
         // Capture localized strings and services early to avoid using
         // BuildContext across async gaps.
         final tr = context.tr;
-        final notifier = defaultNotificationService;
         // Only read the cubit if no injected `generate` function exists.
         final PaletteCubit? paletteCubit =
             widget.generate == null ? context.read<PaletteCubit>() : null;
@@ -68,17 +67,22 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
           ImageProvider? provider;
 
           if (choice == 'files') {
-            final File? file =
-                await (widget.pickFile?.call() ?? _defaultPickFile());
-            if (file == null) return;
             if (kIsWeb) {
-              // Use notification service; safe to pass context here because
-              // we check `mounted` before UI interactions below.
-              if (!mounted) return;
-              notifier.showSnackBar(tr.localFilesNotSupported);
-              return;
+              // On web, use bytes
+              final result = await FilePicker.platform.pickFiles(
+                type: FileType.image,
+                allowMultiple: false,
+              );
+              if (result == null || result.files.isEmpty) return;
+              final bytes = result.files.single.bytes;
+              if (bytes == null) return;
+              provider = MemoryImage(bytes);
+            } else {
+              final File? file =
+                  await (widget.pickFile?.call() ?? _defaultPickFile());
+              if (file == null) return;
+              provider = FileImage(file);
             }
-            provider = FileImage(file);
           } else if (choice == 'gallery') {
             final File? file = await (widget.pickFromGallery?.call() ??
                 _defaultPickFromGallery());

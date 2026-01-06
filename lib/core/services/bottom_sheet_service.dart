@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:vision_xai/core/services/global_ui_service.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 /// Small service to present commonly used bottom sheets.
 class BottomSheetService {
   /// Shows an image source picker and returns the selected option:
   /// - 'files' for picking from the file system
-  /// - 'gallery' for picking from the image gallery
+  /// - 'gallery' for picking from the image gallery (only on web)
   /// - null when cancelled
   static Future<String?> showImageSourcePicker([BuildContext? context]) async {
     // Prefer to use a provided context; if not available attempt to use
@@ -24,11 +25,12 @@ class BottomSheetService {
               title: Text(ctx.tr.pickFromFiles),
               onTap: () => Navigator.of(dctx).pop('files'),
             ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: Text(ctx.tr.pickFromGallery),
-              onTap: () => Navigator.of(dctx).pop('gallery'),
-            ),
+            if (!kIsWeb)
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: Text(ctx.tr.pickFromGallery),
+                onTap: () => Navigator.of(dctx).pop('gallery'),
+              ),
             ListTile(
               leading: const Icon(Icons.cancel),
               title: Text(ctx.tr.cancel),

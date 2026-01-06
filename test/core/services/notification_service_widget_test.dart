@@ -10,7 +10,7 @@ void main() {
     // Create a dedicated logger for this test
     final testLogger = Logger('NotificationService.Test');
     final records = <LogRecord>[];
-    
+
     // Listen only to our test logger
     testLogger.onRecord.listen((r) {
       records.add(r);
@@ -39,7 +39,7 @@ void main() {
     final rec = records.last;
     expect(rec.message, equals('log-snack'));
     expect(rec.error, isA<Map>());
-    
+
     final meta = rec.error as Map;
     expect(meta.containsKey('id'), isTrue);
     expect(meta.containsKey('caller'), isTrue);
@@ -76,7 +76,7 @@ void main() {
       (tester) async {
     final testLogger = Logger('NotificationService.RouteTest');
     final records = <LogRecord>[];
-    
+
     testLogger.onRecord.listen((r) {
       records.add(r);
     });
@@ -121,7 +121,7 @@ void main() {
     expect(records, isNotEmpty);
     final rec = records.last;
     expect(rec.message, equals('route-test'));
-    
+
     final meta = rec.error as Map;
     // Verify the route name is captured
     expect(meta['route'], equals('/test-route'));
@@ -162,7 +162,7 @@ void main() {
       (tester) async {
     final testLogger = Logger('NotificationService.MetadataTest');
     final records = <LogRecord>[];
-    
+
     testLogger.onRecord.listen((r) {
       records.add(r);
     });
@@ -192,7 +192,7 @@ void main() {
     expect(records, isNotEmpty);
     final rec = records.last;
     expect(rec.message, equals('metadata-test'));
-    
+
     final meta = rec.error as Map;
     expect(meta.containsKey('backgroundColor'), isTrue);
     expect(meta['backgroundColor'], contains('Color'));
