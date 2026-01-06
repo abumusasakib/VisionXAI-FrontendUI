@@ -41,7 +41,12 @@ Widget imageDisplay(BuildContext context, HomeState state) {
       borderRadius: BorderRadius.circular(10),
     ),
     child: Center(
-      child: Text(context.tr.noImageSelected),
+      child: RepaintBoundary(
+        child: Text(
+          context.tr.noImageSelected,
+          key: const ValueKey('noImageSelectedText'),
+        ),
+      ),
     ),
   );
 }
