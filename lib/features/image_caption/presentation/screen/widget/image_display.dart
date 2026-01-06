@@ -42,9 +42,10 @@ Widget imageDisplay(BuildContext context, HomeState state) {
     ),
     child: Center(
       child: RepaintBoundary(
+        key: const ValueKey('no-image-text'),
         child: Text(
           context.tr.noImageSelected,
-          key: const ValueKey('noImageSelectedText'),
+          key: const ValueKey('no-image-text-inner'),
         ),
       ),
     ),
