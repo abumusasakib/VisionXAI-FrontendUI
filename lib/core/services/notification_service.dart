@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'dart:developer' as developer;
-import 'dart:convert' as convert;
+
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:vision_xai/core/services/global_ui_service.dart';
@@ -34,7 +35,7 @@ class NotificationServiceImpl implements NotificationService {
         duration: duration ?? const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
       );
-          // Log the snackbar show with optional context/route information; include JSON metadata
+      // Log the snackbar show with optional context/route information; include JSON metadata
       final String routeName = context != null
           ? (ModalRoute.of(context)?.settings.name ?? 'unknown')
           : (GlobalUiService.context != null
@@ -55,12 +56,14 @@ class NotificationServiceImpl implements NotificationService {
         'backgroundColor': backgroundColor?.toString(),
         'duration': duration?.inSeconds
       };
-            // Structured logging via provided logger or default
-            (logger ?? _logger).info(message, meta);
-
-          // Also forward to dart:developer for existing sinks; include JSON metadata
-          developer.log('Show SnackBar: "$message" | meta: ${convert.jsonEncode(meta)}',
-            name: 'NotificationService');
+      // Structured logging via provided logger or default
+      (logger ?? _logger).info(message, meta);
+      
+      // Also forward to dart:developer for existing sinks with JSON-encoded metadata
+      developer.log(
+        'Show SnackBar: "$message" | meta: ${jsonEncode(meta)}',
+        name: 'NotificationService',
+      );
 
       // Prefer the provided context; fall back to the global scaffold messenger.
       if (context != null) {
