@@ -81,8 +81,8 @@ VOLUME /app/build
 EXPOSE 5000
 
 # Output build information
-RUN echo "The Flutter web app will be hosted at http://localhost:5000"
+RUN echo "The Flutter web app will be hosted at http://localhost:5001"
 RUN echo "Press Ctrl+C twice to quit"
 
 # Serve the web app using a simple web server
-CMD ["serve", "-s", "/app/build/web", "-l", "5000"]
+CMD ["serve", "-s", "/app/build/web", "-l", "5001"]
