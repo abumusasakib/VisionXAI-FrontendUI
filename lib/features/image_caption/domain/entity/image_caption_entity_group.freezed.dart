@@ -220,7 +220,7 @@ $Res call({
 });
 
 
-
+$ImageCaptionEntityCopyWith<$Res> get entity;
 
 }
 /// @nodoc
@@ -240,7 +240,16 @@ as ImageCaptionEntity,
   ));
 }
 
-
+/// Create a copy of ImageCaptionEntityGroup
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ImageCaptionEntityCopyWith<$Res> get entity {
+  
+  return $ImageCaptionEntityCopyWith<$Res>(_self.entity, (value) {
+    return _then(_self.copyWith(entity: value));
+  });
+}
 }
 
 /// @nodoc

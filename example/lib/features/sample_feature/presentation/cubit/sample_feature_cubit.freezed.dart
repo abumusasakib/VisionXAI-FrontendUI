@@ -302,7 +302,7 @@ $Res call({
 });
 
 
-
+$SampleFeatureEntityCopyWith<$Res> get entity;
 
 }
 /// @nodoc
@@ -322,7 +322,16 @@ as SampleFeatureEntity,
   ));
 }
 
-
+/// Create a copy of SampleFeatureState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SampleFeatureEntityCopyWith<$Res> get entity {
+  
+  return $SampleFeatureEntityCopyWith<$Res>(_self.entity, (value) {
+    return _then(_self.copyWith(entity: value));
+  });
+}
 }
 
 /// @nodoc

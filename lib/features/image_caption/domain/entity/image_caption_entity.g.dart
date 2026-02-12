@@ -6,17 +6,13 @@ part of 'image_caption_entity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ImageCaptionEntityImpl _$$ImageCaptionEntityImplFromJson(
-        Map<String, dynamic> json) =>
-    _$ImageCaptionEntityImpl(
+_ImageCaptionEntity _$ImageCaptionEntityFromJson(Map<String, dynamic> json) =>
+    _ImageCaptionEntity(
       id: json['id'] as String?,
       attributes: ImageCaptionAttributes.fromJson(
-          json['attributes'] as Map<String, dynamic>),
+        json['attributes'] as Map<String, dynamic>,
+      ),
     );
 
-Map<String, dynamic> _$$ImageCaptionEntityImplToJson(
-        _$ImageCaptionEntityImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'attributes': instance.attributes,
-    };
+Map<String, dynamic> _$ImageCaptionEntityToJson(_ImageCaptionEntity instance) =>
+    <String, dynamic>{'id': instance.id, 'attributes': instance.attributes};

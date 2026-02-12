@@ -81,11 +81,11 @@ void main() {
       final dyn = group as dynamic;
       if (dyn.entity != null) {
         final ImageCaptionEntity entity = dyn.entity as ImageCaptionEntity;
-        expect(entity.attributes['caption'], 'একটি সুন্দর ছবি');
-        expect(entity.attributes['tokens'], ['একটি', 'সুন্দর', 'ছবি']);
+        expect(entity.attributes.caption, 'একটি সুন্দর ছবি');
+        expect(entity.attributes.tokens, ['একটি', 'সুন্দর', 'ছবি']);
         // entity is enriched with decoded bytes and topk items
-        expect(entity.attributes['attention_image_bytes'], isNotNull);
-        expect(entity.attributes['attention_topk_items'], isNotNull);
+        expect(entity.attributes.attentionImageBytes, isNotNull);
+        expect(entity.attributes.attentionTopkItems, isNotNull);
       } else {
         fail('Expected success group');
       }

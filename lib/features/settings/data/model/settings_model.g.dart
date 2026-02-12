@@ -6,14 +6,14 @@ part of 'settings_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SettingsModelImpl _$$SettingsModelImplFromJson(Map<String, dynamic> json) =>
-    _$SettingsModelImpl(
+_SettingsModel _$SettingsModelFromJson(Map<String, dynamic> json) =>
+    _SettingsModel(
       ip: json['ip'] as String,
       port: json['port'] as String,
       locale: json['locale'] as String,
     );
 
-Map<String, dynamic> _$$SettingsModelImplToJson(_$SettingsModelImpl instance) =>
+Map<String, dynamic> _$SettingsModelToJson(_SettingsModel instance) =>
     <String, dynamic>{
       'ip': instance.ip,
       'port': instance.port,

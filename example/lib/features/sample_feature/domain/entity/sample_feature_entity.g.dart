@@ -6,17 +6,14 @@ part of 'sample_feature_entity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SampleFeatureEntityImpl _$$SampleFeatureEntityImplFromJson(
-        Map<String, dynamic> json) =>
-    _$SampleFeatureEntityImpl(
+_SampleFeatureEntity _$SampleFeatureEntityFromJson(Map<String, dynamic> json) =>
+    _SampleFeatureEntity(
       id: json['id'] as String?,
-      attributes: json['attributes'] as Map<String, dynamic>? ??
+      attributes:
+          json['attributes'] as Map<String, dynamic>? ??
           const <String, dynamic>{},
     );
 
-Map<String, dynamic> _$$SampleFeatureEntityImplToJson(
-        _$SampleFeatureEntityImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'attributes': instance.attributes,
-    };
+Map<String, dynamic> _$SampleFeatureEntityToJson(
+  _SampleFeatureEntity instance,
+) => <String, dynamic>{'id': instance.id, 'attributes': instance.attributes};

@@ -24,7 +24,7 @@ class GenerateImageButton extends StatefulWidget {
   final Future<File?> Function()? pickFile;
   final Future<File?> Function()? pickFromGallery;
   final Future<Map<String, dynamic>> Function(BuildContext, ImageProvider)?
-      generate;
+  generate;
 
   const GenerateImageButton({
     super.key,
@@ -52,30 +52,34 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
         // BuildContext across async gaps.
         final tr = context.tr;
         // Only read the cubit if no injected `generate` function exists.
-        final PaletteCubit? paletteCubit =
-            widget.generate == null ? context.read<PaletteCubit>() : null;
+        final PaletteCubit? paletteCubit = widget.generate == null
+            ? context.read<PaletteCubit>()
+            : null;
 
         try {
           // The bottom sheet uses the provided context to show UI; the
           // resulting await is intentionally permitted. Lint is noisy
           // here because the context is used to present the sheet. Guard
           // subsequent UI calls with `mounted`.
-          final choice = await (widget.showImageSourcePicker?.call(context) ??
-              BottomSheetService.showImageSourcePicker());
+          final choice =
+              await (widget.showImageSourcePicker?.call(context) ??
+                  BottomSheetService.showImageSourcePicker());
           if (choice == null) return;
 
           ImageProvider? provider;
 
           if (choice == 'files') {
             if (kIsWeb) {
-              // On web, use bytes
-              final result = await FilePicker.platform.pickFiles(
-                type: FileType.image,
-                allowMultiple: false,
+              // On web, use bytes from file_selector
+              const XTypeGroup images = XTypeGroup(
+                label: 'images',
+                extensions: <String>['png', 'jpg', 'jpeg', 'webp', 'gif'],
               );
-              if (result == null || result.files.isEmpty) return;
-              final bytes = result.files.single.bytes;
-              if (bytes == null) return;
+              final XFile? result = await openFile(
+                acceptedTypeGroups: <XTypeGroup>[images],
+              );
+              if (result == null) return;
+              final bytes = await result.readAsBytes();
               provider = MemoryImage(bytes);
             } else {
               final File? file =
@@ -84,8 +88,9 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
               provider = FileImage(file);
             }
           } else if (choice == 'gallery') {
-            final File? file = await (widget.pickFromGallery?.call() ??
-                _defaultPickFromGallery());
+            final File? file =
+                await (widget.pickFromGallery?.call() ??
+                    _defaultPickFromGallery());
             if (file == null) return;
             provider = FileImage(file);
           }
@@ -152,8 +157,9 @@ Future<File?> _defaultPickFile() async {
     extensions: <String>['png', 'jpg', 'jpeg', 'webp', 'gif'],
   );
 
-  final XFile? result =
-      await openFile(acceptedTypeGroups: <XTypeGroup>[images]);
+  final XFile? result = await openFile(
+    acceptedTypeGroups: <XTypeGroup>[images],
+  );
   if (result == null) return null;
   final String path = result.path;
   if (path.isEmpty) return null;
