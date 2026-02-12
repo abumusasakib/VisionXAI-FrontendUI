@@ -1,13 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dartz/dartz.dart';
 
+import 'package:vision_xai/features/image_caption/data/mapper/image_caption_json_to_model_mapper.dart';
+import 'package:vision_xai/features/image_caption/data/mapper/image_caption_model_to_entity_mapper.dart';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:vision_xai/features/image_caption/data/datasource/remote/image_caption_remote.dart';
 import 'package:vision_xai/features/image_caption/data/model/image_caption_response_dto.dart';
-import 'package:vision_xai/features/image_caption/data/mapper/image_caption_json_to_model_mapper.dart';
-import 'package:vision_xai/features/image_caption/data/mapper/image_caption_model_to_entity_mapper.dart';
+
 import 'package:vision_xai/features/image_caption/data/mapper/image_caption_response_to_entity_group_mapper.dart';
 import 'package:vision_xai/features/image_caption/data/repository/image_caption_repo_impl.dart';
 
@@ -43,6 +44,7 @@ void main() {
     );
 
     final remote = FakeRemote(dto);
+
     final jsonToModel = ImageCaptionJsonToModelMapper();
     final modelToEntity = ImageCaptionModelToEntityMapper();
     final responseMapper = ImageCaptionResponseToEntityGroupMapper(
@@ -62,7 +64,7 @@ void main() {
       r.when(
         success: (entity) {
           expect(entity.id, '1');
-          expect(entity.attributes['caption'], 'a cat');
+          expect(entity.attributes.caption, 'a cat');
         },
         unKnown: () => fail('expected success'),
       );
@@ -71,6 +73,7 @@ void main() {
 
   test('repo returns Left when remote throws', () async {
     final remote = FakeRemoteError();
+
     final jsonToModel = ImageCaptionJsonToModelMapper();
     final modelToEntity = ImageCaptionModelToEntityMapper();
     final responseMapper = ImageCaptionResponseToEntityGroupMapper(

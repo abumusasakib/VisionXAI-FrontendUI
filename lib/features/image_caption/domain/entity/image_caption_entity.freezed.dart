@@ -21,7 +21,7 @@ ImageCaptionEntity _$ImageCaptionEntityFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ImageCaptionEntity {
   String? get id => throw _privateConstructorUsedError;
-  Map<String, dynamic> get attributes => throw _privateConstructorUsedError;
+  ImageCaptionAttributes get attributes => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -35,7 +35,9 @@ abstract class $ImageCaptionEntityCopyWith<$Res> {
           ImageCaptionEntity value, $Res Function(ImageCaptionEntity) then) =
       _$ImageCaptionEntityCopyWithImpl<$Res, ImageCaptionEntity>;
   @useResult
-  $Res call({String? id, Map<String, dynamic> attributes});
+  $Res call({String? id, ImageCaptionAttributes attributes});
+
+  $ImageCaptionAttributesCopyWith<$Res> get attributes;
 }
 
 /// @nodoc
@@ -62,8 +64,16 @@ class _$ImageCaptionEntityCopyWithImpl<$Res, $Val extends ImageCaptionEntity>
       attributes: null == attributes
           ? _value.attributes
           : attributes // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
+              as ImageCaptionAttributes,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ImageCaptionAttributesCopyWith<$Res> get attributes {
+    return $ImageCaptionAttributesCopyWith<$Res>(_value.attributes, (value) {
+      return _then(_value.copyWith(attributes: value) as $Val);
+    });
   }
 }
 
@@ -75,7 +85,10 @@ abstract class _$$ImageCaptionEntityImplCopyWith<$Res>
       __$$ImageCaptionEntityImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? id, Map<String, dynamic> attributes});
+  $Res call({String? id, ImageCaptionAttributes attributes});
+
+  @override
+  $ImageCaptionAttributesCopyWith<$Res> get attributes;
 }
 
 /// @nodoc
@@ -98,9 +111,9 @@ class __$$ImageCaptionEntityImplCopyWithImpl<$Res>
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
       attributes: null == attributes
-          ? _value._attributes
+          ? _value.attributes
           : attributes // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
+              as ImageCaptionAttributes,
     ));
   }
 }
@@ -108,25 +121,16 @@ class __$$ImageCaptionEntityImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$ImageCaptionEntityImpl extends _ImageCaptionEntity {
-  const _$ImageCaptionEntityImpl(
-      {this.id,
-      final Map<String, dynamic> attributes = const <String, dynamic>{}})
-      : _attributes = attributes,
-        super._();
+  const _$ImageCaptionEntityImpl({this.id, required this.attributes})
+      : super._();
 
   factory _$ImageCaptionEntityImpl.fromJson(Map<String, dynamic> json) =>
       _$$ImageCaptionEntityImplFromJson(json);
 
   @override
   final String? id;
-  final Map<String, dynamic> _attributes;
   @override
-  @JsonKey()
-  Map<String, dynamic> get attributes {
-    if (_attributes is EqualUnmodifiableMapView) return _attributes;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_attributes);
-  }
+  final ImageCaptionAttributes attributes;
 
   @override
   String toString() {
@@ -139,14 +143,13 @@ class _$ImageCaptionEntityImpl extends _ImageCaptionEntity {
         (other.runtimeType == runtimeType &&
             other is _$ImageCaptionEntityImpl &&
             (identical(other.id, id) || other.id == id) &&
-            const DeepCollectionEquality()
-                .equals(other._attributes, _attributes));
+            (identical(other.attributes, attributes) ||
+                other.attributes == attributes));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, const DeepCollectionEquality().hash(_attributes));
+  int get hashCode => Object.hash(runtimeType, id, attributes);
 
   @JsonKey(ignore: true)
   @override
@@ -165,8 +168,9 @@ class _$ImageCaptionEntityImpl extends _ImageCaptionEntity {
 
 abstract class _ImageCaptionEntity extends ImageCaptionEntity {
   const factory _ImageCaptionEntity(
-      {final String? id,
-      final Map<String, dynamic> attributes}) = _$ImageCaptionEntityImpl;
+          {final String? id,
+          required final ImageCaptionAttributes attributes}) =
+      _$ImageCaptionEntityImpl;
   const _ImageCaptionEntity._() : super._();
 
   factory _ImageCaptionEntity.fromJson(Map<String, dynamic> json) =
@@ -175,7 +179,7 @@ abstract class _ImageCaptionEntity extends ImageCaptionEntity {
   @override
   String? get id;
   @override
-  Map<String, dynamic> get attributes;
+  ImageCaptionAttributes get attributes;
   @override
   @JsonKey(ignore: true)
   _$$ImageCaptionEntityImplCopyWith<_$ImageCaptionEntityImpl> get copyWith =>

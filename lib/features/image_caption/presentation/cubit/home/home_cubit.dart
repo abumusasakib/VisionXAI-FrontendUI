@@ -174,7 +174,7 @@ class HomeCubit extends Cubit<HomeState> {
         loaded: (loaded) {
           if (context.mounted) {
             emit(state.copyWith(
-                testOutput: loaded.entity.attributes['caption'] ?? '',
+                testOutput: loaded.entity.attributes.caption,
                 isLoading: false));
           }
         },

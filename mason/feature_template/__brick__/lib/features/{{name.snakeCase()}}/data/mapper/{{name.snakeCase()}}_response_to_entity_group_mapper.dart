@@ -21,11 +21,8 @@ class {{name.pascalCase()}}ResponseToEntityGroupMapper implements Mapper<{{name.
     try {
       final status = response.statusCode ?? 200;
       if (status == 200 && response.caption.isNotEmpty) {
-        final bodyMap = <String, dynamic>{
-          'id': response.id,
-          'caption': response.caption,
-          'confidence': response.confidence,
-        };
+        // Convert DTO to Map, then use the mapper chain
+        final bodyMap = response.toMap();
         final model = _jsonToModelMapper.map(bodyMap);
         final entity = _modelToEntityMapper.map(model);
         return {{name.pascalCase()}}EntityGroup.success(entity);

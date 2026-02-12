@@ -30,68 +30,91 @@ class _AttentionViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = (entity.attributes['tokens'] as List?)?.cast<String>() ?? [];
-    final tokenScores = (entity.attributes['token_scores'] as List?)
-            ?.map((e) => (e as num).toDouble())
-            .toList() ??
-        [];
-    final Uint8List? imageBytes =
-        entity.attributes['attention_image_bytes'] as Uint8List?;
-    final rawTopk = entity.attributes['attention_topk_items'];
-    final topk = parseTopK(rawTopk);
+    final attributes = entity.attributes;
+    final tokens = attributes.tokens ?? [];
+    final tokenScores = attributes.tokenScores ?? [];
+    final Uint8List? imageBytes = attributes.attentionImageBytes;
+    final topk = attributes.attentionTopkItems ?? [];
 
     // Grid override
-    final typedGrid = entity.attributes['attention_grid_typed'];
-    final rawGrid = entity.attributes['attention_grid'];
-    final rawGridMap = entity.attributes['attention_grid_map'];
-    final shape = entity.attributes['attention_shape'];
-    final grid = parseGrid(typedGrid, rawGrid, rawGridMap, shape);
+    // We can use the typed grid directly if available, or fall back to parsing
+    // In the new attributes, attentionGridTyped is redundant with attentionGrid if it is strictly typed.
+    // The mapper puts attentionGrid (if compatible) into attentionGridTyped.
+    // But let's check how ImageCaptionAttributes is defined.
+    // It has attentionGrid (AttentionGrid?) and attentionGridTyped (AttentionGrid?).
+    // And attentionGridList (List<int>?) and attentionGridMap (Map<String, int>?).
+    // The previous logic was:
+    // final typedGrid = entity.attributes['attention_grid_typed'];
+    // final rawGrid = entity.attributes['attention_grid'];
+    // final rawGridMap = entity.attributes['attention_grid_map'];
+    // final shape = entity.attributes['attention_shape'];
+    // final grid = parseGrid(typedGrid, rawGrid, rawGridMap, shape);
+
+    // We can simplify if we trust our mapper/attributes, but preserving the robust parsing logic is safer
+    // if we think there might be some edge cases.
+    // However, `parseGrid` expects dynamic inputs.
+    // Let's pass the typed values if possible or just use the extracted ones.
+
+    // attributes.attentionGrid is specific type AttentionGrid?
+    // attributes.attentionShape is Map<String, dynamic>?
+
+    // Let's rely on the helper `parseGrid` but passing the new properties.
+    final grid = parseGrid(
+        attributes.attentionGridTyped,
+        attributes.attentionGridList ?? attributes.attentionGrid,
+        attributes.attentionGridMap,
+        attributes.attentionShape);
     final gridRows = grid['rows'];
     final gridCols = grid['cols'];
 
-    // Use a larger, responsive display height (60% of viewport height, clamped).
-    final double displayHeight =
-        (MediaQuery.of(context).size.height * 0.6).clamp(220.0, 800.0);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double displayHeight = (constraints.maxHeight.isFinite
+                ? constraints.maxHeight * 0.6
+                : constraints.maxWidth * 0.75)
+            .clamp(220.0, 800.0);
 
-    return Column(
-      children: [
-        if (imageBytes != null) ...[
-          SizedBox(
-            height: displayHeight,
-            width: double.infinity,
-            child: BlocBuilder<AttentionViewCubit, int?>(
-              builder: (context, selectedIndex) => ImageWithMarkers(
-                imageBytes: imageBytes,
-                topk: topk,
-                selectedIndex: selectedIndex,
+        return Column(
+          children: [
+            if (imageBytes != null) ...[
+              SizedBox(
+                height: displayHeight,
+                width: double.infinity,
+                child: BlocBuilder<AttentionViewCubit, int?>(
+                  builder: (context, selectedIndex) => ImageWithMarkers(
+                    imageBytes: imageBytes,
+                    topk: topk,
+                    selectedIndex: selectedIndex,
+                    tokens: tokens,
+                    colorMap: entity.attributes.attentionColorMap,
+                    colorsList: entity.attributes.attentionColors,
+                    gridRows: gridRows,
+                    gridCols: gridCols,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              LegendRow(
                 tokens: tokens,
-                colorMap: entity.attributes['attention_color_map'],
-                colorsList: entity.attributes['attention_colors'],
-                gridRows: gridRows,
-                gridCols: gridCols,
+                colorsList: entity.attributes.attentionColors,
+                colorMap: entity.attributes.attentionColorMap,
+              ),
+            ],
+            BlocBuilder<AttentionViewCubit, int?>(
+              builder: (context, selectedIndex) => TokenChipsRow(
+                tokens: tokens,
+                tokenScores: tokenScores,
+                selectedIndex: selectedIndex,
+                colorMap: entity.attributes.attentionColorMap,
+                colorsList: entity.attributes.attentionColors,
+                onSelected: (index, wasSelected) {
+                  context.read<AttentionViewCubit>().toggle(index);
+                },
               ),
             ),
-          ),
-          const SizedBox(height: 8),
-          LegendRow(
-            tokens: tokens,
-            colorsList: entity.attributes['attention_colors'],
-            colorMap: entity.attributes['attention_color_map'],
-          ),
-        ],
-        BlocBuilder<AttentionViewCubit, int?>(
-          builder: (context, selectedIndex) => TokenChipsRow(
-            tokens: tokens,
-            tokenScores: tokenScores,
-            selectedIndex: selectedIndex,
-            colorMap: entity.attributes['attention_color_map'],
-            colorsList: entity.attributes['attention_colors'],
-            onSelected: (index, wasSelected) {
-              context.read<AttentionViewCubit>().toggle(index);
-            },
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }

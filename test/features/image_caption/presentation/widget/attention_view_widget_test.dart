@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vision_xai/features/image_caption/data/model/topk_item.dart';
 import 'package:vision_xai/features/image_caption/domain/entity/image_caption_entity.dart';
+import 'package:vision_xai/features/image_caption/domain/entity/image_caption_attributes.dart';
 import 'package:vision_xai/features/image_caption/presentation/screen/widget/attention_view.dart';
 
 void main() {
@@ -23,12 +24,14 @@ void main() {
       [const TopKItem(row: 0, col: 0, score: 0.2)],
     ];
 
-    final entity = ImageCaptionEntity(attributes: {
-      'attention_image_bytes': imageBytes,
-      'tokens': tokens,
-      'token_scores': tokenScores,
-      'attention_topk_items': topk,
-    });
+    final entity = ImageCaptionEntity(
+        attributes: ImageCaptionAttributes(
+      attentionImageBytes: imageBytes,
+      tokens: tokens,
+      tokenScores: tokenScores,
+      attentionTopkItems: topk,
+      caption: '',
+    ));
 
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
@@ -74,12 +77,14 @@ void main() {
       ],
     ];
 
-    final entity = ImageCaptionEntity(attributes: {
-      'attention_image_bytes': imageBytes,
-      'tokens': tokens,
-      'token_scores': tokenScores,
-      'attention_topk_items': topk,
-    });
+    final entity = ImageCaptionEntity(
+        attributes: ImageCaptionAttributes(
+      attentionImageBytes: imageBytes,
+      tokens: tokens,
+      tokenScores: tokenScores,
+      attentionTopkItems: topk,
+      caption: '',
+    ));
 
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
@@ -115,14 +120,16 @@ void main() {
       ],
     ];
 
-    final entity = ImageCaptionEntity(attributes: {
-      'attention_image_bytes': imageBytes,
-      'tokens': tokens,
-      'token_scores': tokenScores,
+    final entity = ImageCaptionEntity(
+        attributes: ImageCaptionAttributes(
+      attentionImageBytes: imageBytes,
+      tokens: tokens,
+      tokenScores: tokenScores,
       // Provide explicit grid override
-      'attention_grid': const [1, 2],
-      'attention_topk_items': topk,
-    });
+      attentionGridList: const [1, 2],
+      attentionTopkItems: topk,
+      caption: '',
+    ));
 
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
@@ -171,21 +178,23 @@ void main() {
       [const TopKItem(row: 1, col: 0, score: 1.0)],
     ];
 
-    final entity = ImageCaptionEntity(attributes: {
-      'attention_image_bytes': imageBytes,
-      'tokens': tokens,
-      'token_scores': tokenScores,
+    final entity = ImageCaptionEntity(
+        attributes: ImageCaptionAttributes(
+      attentionImageBytes: imageBytes,
+      tokens: tokens,
+      tokenScores: tokenScores,
       // explicit grid override 2x2
-      'attention_grid': const [2, 2],
-      'attention_topk_items': topk,
-    });
+      attentionGridList: const [2, 2],
+      attentionTopkItems: topk,
+      caption: '',
+    ));
 
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
             body: Center(
                 child: SizedBox(
                     width: 360,
-                    height: 240,
+                    height: 400,
                     child: AttentionView(entity: entity))))));
     await tester.pumpAndSettle();
 
@@ -232,14 +241,16 @@ void main() {
       [const TopKItem(row: 2, col: 3, score: 0.5)],
     ];
 
-    final entity = ImageCaptionEntity(attributes: {
-      'attention_image_bytes': imageBytes,
-      'tokens': tokens,
-      'token_scores': tokenScores,
+    final entity = ImageCaptionEntity(
+        attributes: ImageCaptionAttributes(
+      attentionImageBytes: imageBytes,
+      tokens: tokens,
+      tokenScores: tokenScores,
       // provide shape as Map instead of list
-      'attention_shape': const {'rows': 3, 'cols': 4},
-      'attention_topk_items': topk,
-    });
+      attentionShape: const {'rows': 3, 'cols': 4},
+      attentionTopkItems: topk,
+      caption: '',
+    ));
 
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
@@ -295,14 +306,16 @@ void main() {
       ],
     ];
 
-    final entity = ImageCaptionEntity(attributes: {
-      'attention_image_bytes': imageBytes,
-      'tokens': tokens,
-      'token_scores': tokenScores,
+    final entity = ImageCaptionEntity(
+        attributes: ImageCaptionAttributes(
+      attentionImageBytes: imageBytes,
+      tokens: tokens,
+      tokenScores: tokenScores,
       // use grid 3x3 so second marker targets bottom-right
-      'attention_grid': const [3, 3],
-      'attention_topk_items': topk,
-    });
+      attentionGridList: const [3, 3],
+      attentionTopkItems: topk,
+      caption: '',
+    ));
 
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
@@ -343,20 +356,22 @@ void main() {
       [const TopKItem(row: 0, col: 1, score: 0.3)],
     ];
 
-    final entity = ImageCaptionEntity(attributes: {
-      'attention_image_bytes': imageBytes,
-      'tokens': tokens,
-      'token_scores': tokenScores,
-      'attention_grid': const [1, 2],
-      'attention_topk_items': topk,
-    });
+    final entity = ImageCaptionEntity(
+        attributes: ImageCaptionAttributes(
+      attentionImageBytes: imageBytes,
+      tokens: tokens,
+      tokenScores: tokenScores,
+      attentionGridList: const [1, 2],
+      attentionTopkItems: topk,
+      caption: '',
+    ));
 
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
             body: Center(
                 child: SizedBox(
                     width: 360,
-                    height: 240,
+                    height: 400,
                     child: AttentionView(entity: entity))))));
     await tester.pumpAndSettle();
 
@@ -396,18 +411,20 @@ void main() {
       ],
     ];
 
-    final entity = ImageCaptionEntity(attributes: {
-      'attention_image_bytes': imageBytes,
-      'tokens': tokens,
-      'token_scores': tokenScores,
+    final entity = ImageCaptionEntity(
+        attributes: ImageCaptionAttributes(
+      attentionImageBytes: imageBytes,
+      tokens: tokens,
+      tokenScores: tokenScores,
       // grid 3x3 so the right/bottom marker targets the corner cell
-      'attention_grid': const [3, 3],
-      'attention_topk_items': topk,
-    });
+      attentionGridList: const [3, 3],
+      attentionTopkItems: topk,
+      caption: '',
+    ));
 
     // Use an exact container size so geometry is deterministic
     const containerW = 360.0;
-    const containerH = 240.0;
+    const containerH = 400.0;
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         body: Center(
@@ -481,13 +498,15 @@ void main() {
       ],
     ];
 
-    final entity = ImageCaptionEntity(attributes: {
-      'attention_image_bytes': imageBytes,
-      'tokens': tokens,
-      'token_scores': tokenScores,
-      'attention_grid': const [10, 10],
-      'attention_topk_items': topk,
-    });
+    final entity = ImageCaptionEntity(
+        attributes: ImageCaptionAttributes(
+      attentionImageBytes: imageBytes,
+      tokens: tokens,
+      tokenScores: tokenScores,
+      attentionGridList: const [10, 10],
+      attentionTopkItems: topk,
+      caption: '',
+    ));
 
     // Make container generous so Column won't overflow but image cell sizes remain small
     await tester.pumpWidget(MaterialApp(
@@ -544,18 +563,18 @@ void main() {
         'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=';
     final bytes = base64Decode(b64);
 
-    final entity = ImageCaptionEntity(attributes: {
-      'tokens': const ['tok1'],
-      'token_scores': const [1.0],
-      'attention_image_bytes': Uint8List.fromList(bytes),
+    final entity = ImageCaptionEntity(
+        attributes: ImageCaptionAttributes(
+      tokens: const ['tok1'],
+      tokenScores: const [1.0],
+      attentionImageBytes: Uint8List.fromList(bytes),
       // topk: outer list per token, inner list of items as maps
-      'attention_topk_items': const [
-        [
-          {'row': 0, 'col': 0, 'score': 1.0}
-        ]
+      attentionTopkItems: const [
+        [TopKItem(row: 0, col: 0, score: 1.0)]
       ],
-      'attention_colors': const ['#ff0000'],
-    });
+      attentionColors: const ['#ff0000'],
+      caption: '',
+    ));
 
     await tester.pumpWidget(
         MaterialApp(home: Scaffold(body: AttentionView(entity: entity))));
@@ -590,20 +609,18 @@ void main() {
         'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=';
     final bytes = base64Decode(b64);
 
-    final entity = ImageCaptionEntity(attributes: {
-      'tokens': const ['a', 'b'],
-      'token_scores': const [1.0, 0.8],
-      'attention_image_bytes': Uint8List.fromList(bytes),
-      'attention_topk_items': const [
-        [
-          {'row': 0, 'col': 0, 'score': 1.0}
-        ],
-        [
-          {'row': 0, 'col': 1, 'score': 0.8}
-        ]
+    final entity = ImageCaptionEntity(
+        attributes: ImageCaptionAttributes(
+      tokens: const ['a', 'b'],
+      tokenScores: const [1.0, 0.8],
+      attentionImageBytes: Uint8List.fromList(bytes),
+      attentionTopkItems: const [
+        [TopKItem(row: 0, col: 0, score: 1.0)],
+        [TopKItem(row: 0, col: 1, score: 0.8)]
       ],
-      'attention_color_map': const {'a': '#00ff00', 'b': '#0000ff'},
-    });
+      attentionColorMap: const {'a': '#00ff00', 'b': '#0000ff'},
+      caption: '',
+    ));
 
     await tester.pumpWidget(
         MaterialApp(home: Scaffold(body: AttentionView(entity: entity))));
@@ -639,27 +656,21 @@ void main() {
         'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=';
     final bytes = base64Decode(b64);
 
-    final entity = ImageCaptionEntity(attributes: {
-      'tokens': const ['t0', 't1', 't2', 't3'],
-      'token_scores': const [1.0, 0.5, 0.2, 0.9],
-      'attention_image_bytes': Uint8List.fromList(bytes),
-      'attention_topk_items': const [
-        [
-          {'row': 0, 'col': 0, 'score': 1.0}
-        ],
-        [
-          {'row': 0, 'col': 1, 'score': 0.5}
-        ],
-        [
-          {'row': 0, 'col': 2, 'score': 0.2}
-        ],
-        [
-          {'row': 0, 'col': 3, 'score': 0.9}
-        ]
+    final entity = ImageCaptionEntity(
+        attributes: ImageCaptionAttributes(
+      tokens: const ['t0', 't1', 't2', 't3'],
+      tokenScores: const [1.0, 0.5, 0.2, 0.9],
+      attentionImageBytes: Uint8List.fromList(bytes),
+      attentionTopkItems: const [
+        [TopKItem(row: 0, col: 0, score: 1.0)],
+        [TopKItem(row: 0, col: 1, score: 0.5)],
+        [TopKItem(row: 0, col: 2, score: 0.2)],
+        [TopKItem(row: 0, col: 3, score: 0.9)]
       ],
       // various formats
-      'attention_colors': const ['ff0000', '#80ff0000', 'BADHEX', '00ff00'],
-    });
+      attentionColors: const ['ff0000', '#80ff0000', 'BADHEX', '00ff00'],
+      caption: '',
+    ));
 
     await tester.pumpWidget(
         MaterialApp(home: Scaffold(body: AttentionView(entity: entity))));
@@ -712,23 +723,19 @@ void main() {
         'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=';
     final bytes = base64Decode(b64);
 
-    final entity = ImageCaptionEntity(attributes: {
-      'tokens': const ['x', 'y', 'z'],
-      'token_scores': const [1.0, 1.0, 1.0],
-      'attention_image_bytes': Uint8List.fromList(bytes),
-      'attention_topk_items': const [
-        [
-          {'row': 0, 'col': 0, 'score': 1.0}
-        ],
-        [
-          {'row': 0, 'col': 1, 'score': 1.0}
-        ],
-        [
-          {'row': 0, 'col': 2, 'score': 1.0}
-        ]
+    final entity = ImageCaptionEntity(
+        attributes: ImageCaptionAttributes(
+      tokens: const ['x', 'y', 'z'],
+      tokenScores: const [1.0, 1.0, 1.0],
+      attentionImageBytes: Uint8List.fromList(bytes),
+      attentionTopkItems: const [
+        [TopKItem(row: 0, col: 0, score: 1.0)],
+        [TopKItem(row: 0, col: 1, score: 1.0)],
+        [TopKItem(row: 0, col: 2, score: 1.0)]
       ],
-      'attention_colors': const ['#123456'],
-    });
+      attentionColors: const ['#123456'],
+      caption: '',
+    ));
 
     await tester.pumpWidget(
         MaterialApp(home: Scaffold(body: AttentionView(entity: entity))));

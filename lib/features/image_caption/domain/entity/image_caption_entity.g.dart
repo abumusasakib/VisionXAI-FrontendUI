@@ -10,8 +10,8 @@ _$ImageCaptionEntityImpl _$$ImageCaptionEntityImplFromJson(
         Map<String, dynamic> json) =>
     _$ImageCaptionEntityImpl(
       id: json['id'] as String?,
-      attributes: json['attributes'] as Map<String, dynamic>? ??
-          const <String, dynamic>{},
+      attributes: ImageCaptionAttributes.fromJson(
+          json['attributes'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$ImageCaptionEntityImplToJson(
