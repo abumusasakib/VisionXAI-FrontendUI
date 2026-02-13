@@ -61,7 +61,7 @@ class TokenChipsRow extends StatelessWidget {
             onSelected: (_) => onSelected(index, selected),
           );
         },
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemCount: tokens.length,
       ),
     );

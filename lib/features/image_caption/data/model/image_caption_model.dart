@@ -6,11 +6,11 @@ part 'image_caption_model.freezed.dart';
 part 'image_caption_model.g.dart';
 
 @freezed
-class ImageCaptionModel with _$ImageCaptionModel {
-  const factory ImageCaptionModel(
-          {String? id,
-          @Default(<String, dynamic>{}) Map<String, dynamic> attributes}) =
-      _ImageCaptionModel;
+abstract class ImageCaptionModel with _$ImageCaptionModel {
+  const factory ImageCaptionModel({
+    String? id,
+    @Default(<String, dynamic>{}) Map<String, dynamic> attributes,
+  }) = _ImageCaptionModel;
   const ImageCaptionModel._();
 
   /// Preserve the old Map-based constructor semantics (removes 'id' from attributes)

@@ -4,9 +4,12 @@ part 'topk_item.freezed.dart';
 part 'topk_item.g.dart';
 
 @freezed
-class TopKItem with _$TopKItem {
-  const factory TopKItem(
-      {required int row, required int col, required double score}) = _TopKItem;
+abstract class TopKItem with _$TopKItem {
+  const factory TopKItem({
+    required int row,
+    required int col,
+    required double score,
+  }) = _TopKItem;
 
   const TopKItem._();
 

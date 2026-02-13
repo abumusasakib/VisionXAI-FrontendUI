@@ -5,7 +5,7 @@ part 'image_caption_entity.freezed.dart';
 part 'image_caption_entity.g.dart';
 
 @freezed
-class ImageCaptionEntity with _$ImageCaptionEntity {
+abstract class ImageCaptionEntity with _$ImageCaptionEntity {
   const factory ImageCaptionEntity({
     String? id,
     required ImageCaptionAttributes attributes,
@@ -20,7 +20,9 @@ class ImageCaptionEntity with _$ImageCaptionEntity {
     final mapCopy = Map<String, dynamic>.from(map);
     final id = mapCopy.remove('id')?.toString();
     return ImageCaptionEntity(
-        id: id, attributes: ImageCaptionAttributes.fromJson(mapCopy));
+      id: id,
+      attributes: ImageCaptionAttributes.fromJson(mapCopy),
+    );
   }
 
   Map<String, dynamic> toMap() => {'id': id, ...attributes.toJson()};

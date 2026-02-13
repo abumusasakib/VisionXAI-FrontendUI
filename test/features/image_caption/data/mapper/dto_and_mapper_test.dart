@@ -21,14 +21,14 @@ void main() {
         'attention_topk': [
           [
             [6, 2, 0.999992],
-            [7, 6, 0.985347]
+            [7, 6, 0.985347],
           ],
           [
             [0, 6, 0.999996],
-            [0, 7, 0.842281]
+            [0, 7, 0.842281],
           ],
-          []
-        ]
+          [],
+        ],
       };
 
       final dto = ImageCaptionResponseDto.fromJson(sample);
@@ -57,14 +57,14 @@ void main() {
         'attention_topk': [
           [
             [6, 2, 0.999992],
-            [7, 6, 0.985347]
+            [7, 6, 0.985347],
           ],
           [
             [0, 6, 0.999996],
-            [0, 7, 0.842281]
+            [0, 7, 0.842281],
           ],
-          []
-        ]
+          [],
+        ],
       };
 
       final dto = ImageCaptionResponseDto.fromJson(sample);

@@ -14,7 +14,7 @@ part 'image_caption_response_dto.g.dart';
 /// and `fromSource` while also providing generated equality/immutability
 /// and `fromJson(Map)`/`toJson()` via `freezed` + `json_serializable`.
 @freezed
-class ImageCaptionResponseDto with _$ImageCaptionResponseDto {
+abstract class ImageCaptionResponseDto with _$ImageCaptionResponseDto {
   const factory ImageCaptionResponseDto({
     required String caption,
     String? filename,
@@ -66,16 +66,19 @@ class ImageCaptionResponseDto with _$ImageCaptionResponseDto {
     final caption = (json['caption'] ?? '') as String;
 
     // token ids / tokens / scores
-    final tokenIds =
-        (json['token_ids'] as List<dynamic>?)?.map((e) => e as int).toList();
-    final tokens =
-        (json['tokens'] as List<dynamic>?)?.map((e) => e as String).toList();
+    final tokenIds = (json['token_ids'] as List<dynamic>?)
+        ?.map((e) => e as int)
+        .toList();
+    final tokens = (json['tokens'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList();
     final tokenScores = (json['token_scores'] as List<dynamic>?)
         ?.map((e) => (e as num).toDouble())
         .toList();
 
     // attention image: prefer `attention_image_bytes` if present
-    final attentionImageBytes = json['attention_image_bytes'] as String? ??
+    final attentionImageBytes =
+        json['attention_image_bytes'] as String? ??
         json['attention_image'] as String?;
 
     // attention means
@@ -92,9 +95,11 @@ class ImageCaptionResponseDto with _$ImageCaptionResponseDto {
     if (rawTopk is List) {
       try {
         parsedTopk = (rawTopk)
-            .map<List<TopKItem>>((outer) => (outer as List)
-                .map<TopKItem>((entry) => TopKItem.fromList(entry as List))
-                .toList())
+            .map<List<TopKItem>>(
+              (outer) => (outer as List)
+                  .map<TopKItem>((entry) => TopKItem.fromList(entry as List))
+                  .toList(),
+            )
             .toList();
       } catch (_) {
         parsedTopk = null;
@@ -102,10 +107,13 @@ class ImageCaptionResponseDto with _$ImageCaptionResponseDto {
     } else if (rawTopkItems is List) {
       try {
         parsedTopk = (rawTopkItems)
-            .map<List<TopKItem>>((outer) => (outer as List)
-                .map<TopKItem>(
-                    (entry) => TopKItem.fromMap(entry as Map<String, dynamic>))
-                .toList())
+            .map<List<TopKItem>>(
+              (outer) => (outer as List)
+                  .map<TopKItem>(
+                    (entry) => TopKItem.fromMap(entry as Map<String, dynamic>),
+                  )
+                  .toList(),
+            )
             .toList();
       } catch (_) {
         parsedTopk = null;
@@ -158,23 +166,23 @@ class ImageCaptionResponseDto with _$ImageCaptionResponseDto {
   /// Preserve original Map-style serialization helper. The generated
   /// `toJson()` (from json_serializable) will also be available.
   Map<String, dynamic> toMap() => {
-        'caption': caption,
-        'filename': filename,
-        'token_ids': tokenIds,
-        'tokens': tokens,
-        'token_scores': tokenScores,
-        'attention_image': attentionImage,
-        'attention_image_bytes': attentionImageBytes,
-        'attention_colors': attentionColors,
-        'attention_color_map': attentionColorMap,
-        'attention_grid': attentionGrid?.toList(),
-        'attention_shape': attentionShape,
-        'attention_means': attentionMeans,
-        'attention_topk': attentionTopk
-            ?.map((outer) => outer.map((item) => item.toList()).toList())
-            .toList(),
-        'confidence': confidence,
-        'id': id,
-        'statusCode': statusCode,
-      };
+    'caption': caption,
+    'filename': filename,
+    'token_ids': tokenIds,
+    'tokens': tokens,
+    'token_scores': tokenScores,
+    'attention_image': attentionImage,
+    'attention_image_bytes': attentionImageBytes,
+    'attention_colors': attentionColors,
+    'attention_color_map': attentionColorMap,
+    'attention_grid': attentionGrid?.toList(),
+    'attention_shape': attentionShape,
+    'attention_means': attentionMeans,
+    'attention_topk': attentionTopk
+        ?.map((outer) => outer.map((item) => item.toList()).toList())
+        .toList(),
+    'confidence': confidence,
+    'id': id,
+    'statusCode': statusCode,
+  };
 }

@@ -8,7 +8,7 @@ part 'image_caption_attributes.freezed.dart';
 part 'image_caption_attributes.g.dart';
 
 @freezed
-class ImageCaptionAttributes with _$ImageCaptionAttributes {
+abstract class ImageCaptionAttributes with _$ImageCaptionAttributes {
   const factory ImageCaptionAttributes({
     required String caption,
     String? filename,

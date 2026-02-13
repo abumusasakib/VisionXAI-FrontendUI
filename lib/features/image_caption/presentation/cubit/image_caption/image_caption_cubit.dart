@@ -6,6 +6,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
 import '../../../domain/entity/image_caption_entity.dart';
+import '../../../domain/entity/image_caption_entity_group.dart';
 import '../../../domain/use_case/image_caption_uc.dart';
 
 part 'image_caption_cubit.freezed.dart';
@@ -20,12 +21,15 @@ class ImageCaptionCubit extends Cubit<ImageCaptionState> {
     useCase = newUseCase;
   }
 
-  Future<ImageCaptionState> call(Uint8List imageBytes, String filename,
-      {CancelToken? cancelToken}) async {
+  Future<ImageCaptionState> call(
+    Uint8List imageBytes,
+    String filename, {
+    CancelToken? cancelToken,
+  }) async {
     emit(const ImageCaptionState.loading());
 
-    final Either<Exception, dynamic> result =
-        await useCase.call(imageBytes, filename, cancelToken: cancelToken);
+    final Either<Exception, ImageCaptionEntityGroup> result = await useCase
+        .call(imageBytes, filename, cancelToken: cancelToken);
 
     ImageCaptionState terminal = const ImageCaptionState.unKnown();
     result.fold(

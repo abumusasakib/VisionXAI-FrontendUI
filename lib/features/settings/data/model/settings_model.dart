@@ -6,21 +6,23 @@ part 'settings_model.freezed.dart';
 part 'settings_model.g.dart';
 
 @freezed
-class SettingsModel with _$SettingsModel {
-  const factory SettingsModel(
-      {required String ip,
-      required String port,
-      required String locale}) = _SettingsModel;
+abstract class SettingsModel with _$SettingsModel {
+  const factory SettingsModel({
+    required String ip,
+    required String port,
+    required String locale,
+  }) = _SettingsModel;
 
   const SettingsModel._();
 
   /// Preserve existing behavior: create from a Map and apply defaults.
   factory SettingsModel.fromMap(Map<String, dynamic> json) => SettingsModel(
-        ip: json['ip'] as String? ?? IPDetails.defaultIP,
-        port: json['port'] as String? ?? IPDetails.defaultPort,
-        locale: json['locale'] as String? ??
-            AppLocalizations.supportedLocales.first.languageCode,
-      );
+    ip: json['ip'] as String? ?? IPDetails.defaultIP,
+    port: json['port'] as String? ?? IPDetails.defaultPort,
+    locale:
+        json['locale'] as String? ??
+        AppLocalizations.supportedLocales.first.languageCode,
+  );
 
   /// JSON factory used by generated code.
   factory SettingsModel.fromJson(Map<String, dynamic> json) =>
