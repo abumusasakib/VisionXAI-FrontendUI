@@ -25,15 +25,18 @@ void main() {
       try {
         final bytes = base64Decode(attention);
         debugPrint(
-            'DTO normalized summary: attention_image_bytes: Binary, ${bytes.length} bytes');
+          'DTO normalized summary: attention_image_bytes: Binary, ${bytes.length} bytes',
+        );
       } catch (_) {
         // Not valid base64 — fallback to printing length of the string
         debugPrint(
-            'DTO normalized summary: attention_image_bytes: String, length: ${attention.length}');
+          'DTO normalized summary: attention_image_bytes: String, length: ${attention.length}',
+        );
       }
       // Also print the other top-level keys for quick inspection
       debugPrint(
-          'DTO keys: ${normalized.keys.where((k) => k != 'attention_image_bytes').toList()}');
+        'DTO keys: ${normalized.keys.where((k) => k != 'attention_image_bytes').toList()}',
+      );
     } else {
       debugPrint('DTO normalized keys: ${normalized.keys.toList()}');
     }
@@ -46,12 +49,13 @@ void main() {
     final group = mapper.map(dto);
 
     // Ensure we got a success or unknown (don't fail on unknown)
-    group.when(
-      success: (entity) {
-        debugPrint('Mapped entity id: ${entity.id}');
-        debugPrint('Attributes keys: ${entity.attributes.keys.toList()}');
-      },
-      unKnown: () => debugPrint('Mapped to unknown group'),
-    );
+    final dyn = group as dynamic;
+    if (dyn.entity != null) {
+      final entity = dyn.entity;
+      debugPrint('Mapped entity id: ${entity.id}');
+      debugPrint('Attributes: ${entity.attributes}');
+    } else {
+      debugPrint('Mapped to unknown group');
+    }
   });
 }

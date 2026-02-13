@@ -4,7 +4,7 @@ part 'about_entity.freezed.dart';
 part 'about_entity.g.dart';
 
 @freezed
-class AboutEntity with _$AboutEntity {
+abstract class AboutEntity with _$AboutEntity {
   const factory AboutEntity(
       {required String appVersion, required String platform}) = _AboutEntity;
 

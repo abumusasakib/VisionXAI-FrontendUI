@@ -57,11 +57,11 @@ class TokenChipsRow extends StatelessWidget {
             ),
             selected: selected,
             backgroundColor: tokenColor,
-            selectedColor: tokenColor?.withOpacity(0.9),
+            selectedColor: tokenColor?.withAlpha((0.9 * 255).round()),
             onSelected: (_) => onSelected(index, selected),
           );
         },
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemCount: tokens.length,
       ),
     );

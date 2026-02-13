@@ -11,8 +11,7 @@ import '../datasource/remote/sample_feature_remote.dart';
 class SampleFeatureRepoImpl implements SampleFeatureRepo {
   SampleFeatureRepoImpl({
     required SampleFeatureRemote remote,
-    required SampleFeatureResponseToEntityGroupMapper
-        responseToEntityGroupMapper,
+    required SampleFeatureResponseToEntityGroupMapper responseToEntityGroupMapper,
   })  : _remote = remote,
         _responseToEntityGroupMapper = responseToEntityGroupMapper;
 
@@ -20,13 +19,10 @@ class SampleFeatureRepoImpl implements SampleFeatureRepo {
   final SampleFeatureResponseToEntityGroupMapper _responseToEntityGroupMapper;
 
   @override
-  Future<Either<Exception, SampleFeatureEntityGroup>> call(
-      Uint8List imageBytes, String filename,
-      {CancelToken? cancelToken}) async {
+  Future<Either<Exception, SampleFeatureEntityGroup>> call(Uint8List imageBytes, String filename, {CancelToken? cancelToken}) async {
     try {
       final multipart = MultipartFile.fromBytes(imageBytes, filename: filename);
-      final response = await _remote
-          .captionImage({'image': multipart}, cancelToken: cancelToken);
+      final response = await _remote.captionImage({'image': multipart}, cancelToken: cancelToken);
       final entityGroup = _responseToEntityGroupMapper.map(response);
       return Right(entityGroup);
     } catch (e) {

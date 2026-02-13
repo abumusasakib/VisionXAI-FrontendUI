@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,162 +9,272 @@ part of 'attention_grid.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-AttentionGrid _$AttentionGridFromJson(Map<String, dynamic> json) {
-  return _AttentionGrid.fromJson(json);
-}
 
 /// @nodoc
 mixin _$AttentionGrid {
-  int get rows => throw _privateConstructorUsedError;
-  int get cols => throw _privateConstructorUsedError;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $AttentionGridCopyWith<AttentionGrid> get copyWith =>
-      throw _privateConstructorUsedError;
+ int get rows; int get cols;
+/// Create a copy of AttentionGrid
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AttentionGridCopyWith<AttentionGrid> get copyWith => _$AttentionGridCopyWithImpl<AttentionGrid>(this as AttentionGrid, _$identity);
+
+  /// Serializes this AttentionGrid to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AttentionGrid&&(identical(other.rows, rows) || other.rows == rows)&&(identical(other.cols, cols) || other.cols == cols));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,rows,cols);
+
+@override
+String toString() {
+  return 'AttentionGrid(rows: $rows, cols: $cols)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $AttentionGridCopyWith<$Res> {
-  factory $AttentionGridCopyWith(
-          AttentionGrid value, $Res Function(AttentionGrid) then) =
-      _$AttentionGridCopyWithImpl<$Res, AttentionGrid>;
-  @useResult
-  $Res call({int rows, int cols});
-}
+abstract mixin class $AttentionGridCopyWith<$Res>  {
+  factory $AttentionGridCopyWith(AttentionGrid value, $Res Function(AttentionGrid) _then) = _$AttentionGridCopyWithImpl;
+@useResult
+$Res call({
+ int rows, int cols
+});
 
+
+
+
+}
 /// @nodoc
-class _$AttentionGridCopyWithImpl<$Res, $Val extends AttentionGrid>
+class _$AttentionGridCopyWithImpl<$Res>
     implements $AttentionGridCopyWith<$Res> {
-  _$AttentionGridCopyWithImpl(this._value, this._then);
+  _$AttentionGridCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final AttentionGrid _self;
+  final $Res Function(AttentionGrid) _then;
 
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? rows = null,
-    Object? cols = null,
-  }) {
-    return _then(_value.copyWith(
-      rows: null == rows
-          ? _value.rows
-          : rows // ignore: cast_nullable_to_non_nullable
-              as int,
-      cols: null == cols
-          ? _value.cols
-          : cols // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
-  }
+/// Create a copy of AttentionGrid
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? rows = null,Object? cols = null,}) {
+  return _then(_self.copyWith(
+rows: null == rows ? _self.rows : rows // ignore: cast_nullable_to_non_nullable
+as int,cols: null == cols ? _self.cols : cols // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
 }
 
-/// @nodoc
-abstract class _$$AttentionGridImplCopyWith<$Res>
-    implements $AttentionGridCopyWith<$Res> {
-  factory _$$AttentionGridImplCopyWith(
-          _$AttentionGridImpl value, $Res Function(_$AttentionGridImpl) then) =
-      __$$AttentionGridImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({int rows, int cols});
 }
 
-/// @nodoc
-class __$$AttentionGridImplCopyWithImpl<$Res>
-    extends _$AttentionGridCopyWithImpl<$Res, _$AttentionGridImpl>
-    implements _$$AttentionGridImplCopyWith<$Res> {
-  __$$AttentionGridImplCopyWithImpl(
-      _$AttentionGridImpl _value, $Res Function(_$AttentionGridImpl) _then)
-      : super(_value, _then);
 
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? rows = null,
-    Object? cols = null,
-  }) {
-    return _then(_$AttentionGridImpl(
-      rows: null == rows
-          ? _value.rows
-          : rows // ignore: cast_nullable_to_non_nullable
-              as int,
-      cols: null == cols
-          ? _value.cols
-          : cols // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
-  }
+/// Adds pattern-matching-related methods to [AttentionGrid].
+extension AttentionGridPatterns on AttentionGrid {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AttentionGrid value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AttentionGrid() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AttentionGrid value)  $default,){
+final _that = this;
+switch (_that) {
+case _AttentionGrid():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AttentionGrid value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AttentionGrid() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int rows,  int cols)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AttentionGrid() when $default != null:
+return $default(_that.rows,_that.cols);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int rows,  int cols)  $default,) {final _that = this;
+switch (_that) {
+case _AttentionGrid():
+return $default(_that.rows,_that.cols);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int rows,  int cols)?  $default,) {final _that = this;
+switch (_that) {
+case _AttentionGrid() when $default != null:
+return $default(_that.rows,_that.cols);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$AttentionGridImpl extends _AttentionGrid {
-  const _$AttentionGridImpl({required this.rows, required this.cols})
-      : super._();
 
-  factory _$AttentionGridImpl.fromJson(Map<String, dynamic> json) =>
-      _$$AttentionGridImplFromJson(json);
+class _AttentionGrid extends AttentionGrid {
+  const _AttentionGrid({required this.rows, required this.cols}): super._();
+  factory _AttentionGrid.fromJson(Map<String, dynamic> json) => _$AttentionGridFromJson(json);
 
-  @override
-  final int rows;
-  @override
-  final int cols;
+@override final  int rows;
+@override final  int cols;
 
-  @override
-  String toString() {
-    return 'AttentionGrid(rows: $rows, cols: $cols)';
-  }
+/// Create a copy of AttentionGrid
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AttentionGridCopyWith<_AttentionGrid> get copyWith => __$AttentionGridCopyWithImpl<_AttentionGrid>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$AttentionGridImpl &&
-            (identical(other.rows, rows) || other.rows == rows) &&
-            (identical(other.cols, cols) || other.cols == cols));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, rows, cols);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$AttentionGridImplCopyWith<_$AttentionGridImpl> get copyWith =>
-      __$$AttentionGridImplCopyWithImpl<_$AttentionGridImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$AttentionGridImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$AttentionGridToJson(this, );
 }
 
-abstract class _AttentionGrid extends AttentionGrid {
-  const factory _AttentionGrid(
-      {required final int rows, required final int cols}) = _$AttentionGridImpl;
-  const _AttentionGrid._() : super._();
-
-  factory _AttentionGrid.fromJson(Map<String, dynamic> json) =
-      _$AttentionGridImpl.fromJson;
-
-  @override
-  int get rows;
-  @override
-  int get cols;
-  @override
-  @JsonKey(ignore: true)
-  _$$AttentionGridImplCopyWith<_$AttentionGridImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AttentionGrid&&(identical(other.rows, rows) || other.rows == rows)&&(identical(other.cols, cols) || other.cols == cols));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,rows,cols);
+
+@override
+String toString() {
+  return 'AttentionGrid(rows: $rows, cols: $cols)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AttentionGridCopyWith<$Res> implements $AttentionGridCopyWith<$Res> {
+  factory _$AttentionGridCopyWith(_AttentionGrid value, $Res Function(_AttentionGrid) _then) = __$AttentionGridCopyWithImpl;
+@override @useResult
+$Res call({
+ int rows, int cols
+});
+
+
+
+
+}
+/// @nodoc
+class __$AttentionGridCopyWithImpl<$Res>
+    implements _$AttentionGridCopyWith<$Res> {
+  __$AttentionGridCopyWithImpl(this._self, this._then);
+
+  final _AttentionGrid _self;
+  final $Res Function(_AttentionGrid) _then;
+
+/// Create a copy of AttentionGrid
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? rows = null,Object? cols = null,}) {
+  return _then(_AttentionGrid(
+rows: null == rows ? _self.rows : rows // ignore: cast_nullable_to_non_nullable
+as int,cols: null == cols ? _self.cols : cols // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+// dart format on

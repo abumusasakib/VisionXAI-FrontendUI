@@ -1,4 +1,4 @@
-import 'dart:developer' as developer;
+import 'package:logging/logging.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
@@ -7,6 +7,8 @@ import 'package:vision_xai/core/services/error_handle/error_handling.dart';
 import '../../domain/entity/settings_entity.dart';
 import '../../domain/use_case/settings_uc.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
+
+final _logger = Logger('SettingsFeatureCubit');
 
 class SettingsFeatureCubit extends Cubit<SettingsEntity?> {
   final SettingsFeatureUC _useCase;
@@ -28,13 +30,15 @@ class SettingsFeatureCubit extends Cubit<SettingsEntity?> {
     // original exception as before.
     final tr = context.tr;
     try {
-      await runWithErrorHandling(() => load(),
-          localizations: tr, rethrowOnError: true);
+      await runWithErrorHandling(
+        () => load(),
+        localizations: tr,
+        rethrowOnError: true,
+      );
     } catch (e, st) {
       // Preserve localized logging for diagnostics.
       final message = mapErrorToMessage(e, tr);
-      developer.log('Settings load failed: $message',
-          name: 'SettingsFeatureCubit', error: e, stackTrace: st);
+      _logger.severe('Settings load failed: $message', e, st);
       rethrow;
     }
   }
@@ -46,15 +50,19 @@ class SettingsFeatureCubit extends Cubit<SettingsEntity?> {
 
   /// Variant of `save` that maps errors to localized messages and logs them.
   Future<void> saveWithContext(
-      SettingsEntity entity, BuildContext context) async {
+    SettingsEntity entity,
+    BuildContext context,
+  ) async {
     final tr = context.tr;
     try {
-      await runWithErrorHandling(() => save(entity),
-          localizations: tr, rethrowOnError: true);
+      await runWithErrorHandling(
+        () => save(entity),
+        localizations: tr,
+        rethrowOnError: true,
+      );
     } catch (e, st) {
       final message = mapErrorToMessage(e, tr);
-      developer.log('Settings save failed: $message',
-          name: 'SettingsFeatureCubit', error: e, stackTrace: st);
+      _logger.severe('Settings save failed: $message', e, st);
       rethrow;
     }
   }

@@ -6,7 +6,7 @@ part 'image_caption_model.freezed.dart';
 part 'image_caption_model.g.dart';
 
 @freezed
-class ImageCaptionModel with _$ImageCaptionModel {
+abstract class ImageCaptionModel with _$ImageCaptionModel {
   const factory ImageCaptionModel(
           {String? id,
           @Default(<String, dynamic>{}) Map<String, dynamic> attributes}) =

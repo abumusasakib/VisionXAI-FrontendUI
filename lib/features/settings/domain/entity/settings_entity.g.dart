@@ -6,15 +6,14 @@ part of 'settings_entity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SettingsEntityImpl _$$SettingsEntityImplFromJson(Map<String, dynamic> json) =>
-    _$SettingsEntityImpl(
+_SettingsEntity _$SettingsEntityFromJson(Map<String, dynamic> json) =>
+    _SettingsEntity(
       ip: json['ip'] as String,
       port: json['port'] as String,
       locale: json['locale'] as String,
     );
 
-Map<String, dynamic> _$$SettingsEntityImplToJson(
-        _$SettingsEntityImpl instance) =>
+Map<String, dynamic> _$SettingsEntityToJson(_SettingsEntity instance) =>
     <String, dynamic>{
       'ip': instance.ip,
       'port': instance.port,

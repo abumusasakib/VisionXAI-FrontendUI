@@ -4,7 +4,7 @@ part 'settings_entity.freezed.dart';
 part 'settings_entity.g.dart';
 
 @freezed
-class SettingsEntity with _$SettingsEntity {
+abstract class SettingsEntity with _$SettingsEntity {
   const factory SettingsEntity(
       {required String ip,
       required String port,

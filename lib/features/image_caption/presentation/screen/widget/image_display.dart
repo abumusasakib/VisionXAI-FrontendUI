@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:vision_xai/features/image_caption/presentation/cubit/home/home_state.dart';
 import 'package:vision_xai/features/image_caption/presentation/screen/alert/preview_dialog.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
+import '../../../core/utils/image_layout_utils.dart';
 
 Widget imageDisplay(BuildContext context, HomeState state) {
-  // Use a larger, responsive display height (60% of viewport height, clamped).
-  final double displayHeight =
-      (MediaQuery.of(context).size.height * 0.6).clamp(220.0, 800.0);
+  final double displayHeight = getResponsiveImageHeight(context);
 
   if (state.imageFile != null) {
     return GestureDetector(
@@ -54,8 +53,10 @@ Widget imageDisplay(BuildContext context, HomeState state) {
 
 /// Returns a widget that displays image bytes and shows a preview dialog on long press.
 Widget imageWidgetFromBytes(BuildContext context, Uint8List imageBytes) {
-  final double displayHeight =
-      (MediaQuery.of(context).size.height * 0.6).clamp(220.0, 800.0);
+  final double displayHeight = getResponsiveImageHeight(
+    context,
+    heightFactor: 0.5,
+  );
 
   return GestureDetector(
     onLongPress: () => previewDialogFromBytes(context, imageBytes),

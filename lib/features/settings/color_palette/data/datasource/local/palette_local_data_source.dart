@@ -1,5 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'dart:developer' as developer;
+import 'package:logging/logging.dart';
+
+final _logger = Logger('PaletteLocalDataSource');
 
 /// Simple local data source for persisting user-selected palette overrides.
 ///
@@ -16,16 +18,16 @@ class PaletteLocalDataSource {
   Future<Map<String, String>?> getOverrides() async {
     try {
       final box = Hive.box(_boxName);
-      developer.log(
-          'PaletteLocalDataSource.getOverrides: box keys=${box.keys.toList()}',
-          name: 'PaletteLocalDataSource');
+      _logger.info(
+        'PaletteLocalDataSource.getOverrides: box keys=${box.keys.toList()}',
+      );
       if (box.isEmpty) return null;
       final primary = box.get('primary') as String?;
       final secondary = box.get('secondary') as String?;
       final background = box.get('background') as String?;
-      developer.log(
-          'PaletteLocalDataSource.getOverrides: primary=$primary secondary=$secondary background=$background',
-          name: 'PaletteLocalDataSource');
+      _logger.info(
+        'PaletteLocalDataSource.getOverrides: primary=$primary secondary=$secondary background=$background',
+      );
       if (primary == null && secondary == null && background == null) {
         return null;
       }
@@ -35,17 +37,16 @@ class PaletteLocalDataSource {
         if (background != null) 'background': background,
       };
     } catch (_) {
-      developer.log('PaletteLocalDataSource.getOverrides: error reading box',
-          name: 'PaletteLocalDataSource');
+      _logger.warning('PaletteLocalDataSource.getOverrides: error reading box');
       return null;
     }
   }
 
   Future<void> saveOverrides(Map<String, String> overrides) async {
     final box = Hive.box(_boxName);
-    developer.log(
-        'PaletteLocalDataSource.saveOverrides: saving overrides=$overrides',
-        name: 'PaletteLocalDataSource');
+    _logger.info(
+      'PaletteLocalDataSource.saveOverrides: saving overrides=$overrides',
+    );
     await box.putAll(overrides);
     // Persist a timestamp so we can distinguish when overrides were
     // actually saved (useful across app restarts / cubit recreation).
@@ -54,8 +55,7 @@ class PaletteLocalDataSource {
 
   Future<void> clearOverrides() async {
     final box = Hive.box(_boxName);
-    developer.log('PaletteLocalDataSource.clearOverrides: removing overrides',
-        name: 'PaletteLocalDataSource');
+    _logger.info('PaletteLocalDataSource.clearOverrides: removing overrides');
     // Only remove the override keys and timestamp so presets remain intact.
     await box.delete('primary');
     await box.delete('secondary');
@@ -68,8 +68,7 @@ class PaletteLocalDataSource {
   Future<Map<String, Map<String, String>>> getPresets() async {
     final box = Hive.box(_boxName);
     final raw = box.get('presets') as Map<dynamic, dynamic>?;
-    developer.log('PaletteLocalDataSource.getPresets: raw=$raw',
-        name: 'PaletteLocalDataSource');
+    _logger.info('PaletteLocalDataSource.getPresets: raw=$raw');
     if (raw == null) return {};
     // Normalize types
     final Map<String, Map<String, String>> out = {};
@@ -92,8 +91,7 @@ class PaletteLocalDataSource {
   Future<DateTime?> getOverridesUpdatedAt() async {
     final box = Hive.box(_boxName);
     final raw = box.get(_overridesTimestampKey);
-    developer.log('PaletteLocalDataSource.getOverridesUpdatedAt: raw=$raw',
-        name: 'PaletteLocalDataSource');
+    _logger.info('PaletteLocalDataSource.getOverridesUpdatedAt: raw=$raw');
     if (raw == null) return null;
     try {
       if (raw is DateTime) return raw;
@@ -106,9 +104,9 @@ class PaletteLocalDataSource {
   Future<void> savePreset(String name, Map<String, String> colors) async {
     final box = Hive.box(_boxName);
     final raw = (box.get('presets') as Map<dynamic, dynamic>?) ?? {};
-    developer.log(
-        'PaletteLocalDataSource.savePreset: name=$name colors=$colors',
-        name: 'PaletteLocalDataSource');
+    _logger.info(
+      'PaletteLocalDataSource.savePreset: name=$name colors=$colors',
+    );
     raw[name] = colors;
     await box.put('presets', raw);
   }
@@ -116,9 +114,9 @@ class PaletteLocalDataSource {
   Future<void> deletePreset(String name) async {
     final box = Hive.box(_boxName);
     final raw = (box.get('presets') as Map<dynamic, dynamic>?) ?? {};
-    developer.log(
-        'PaletteLocalDataSource.deletePreset: name=$name existingKeys=${raw.keys.toList()}',
-        name: 'PaletteLocalDataSource');
+    _logger.info(
+      'PaletteLocalDataSource.deletePreset: name=$name existingKeys=${raw.keys.toList()}',
+    );
     raw.remove(name);
     await box.put('presets', raw);
   }

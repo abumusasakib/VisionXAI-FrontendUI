@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import '../../core/palette_manager.dart';
 import '../../domain/repository/palette_repo.dart';
 import '../datasource/local/palette_local_data_source.dart';
-import 'dart:developer' as developer;
+import 'package:logging/logging.dart';
+
+final _logger = Logger('PaletteRepoImpl');
 
 class PaletteRepoImpl implements PaletteRepo {
   final PaletteLocalDataSource _local;
 
   PaletteRepoImpl([PaletteLocalDataSource? local])
-      : _local = local ?? PaletteLocalDataSource();
+    : _local = local ?? PaletteLocalDataSource();
 
   @override
   Future<Map<String, Color>> generatePalette(ImageProvider image) async {
@@ -19,27 +21,30 @@ class PaletteRepoImpl implements PaletteRepo {
     try {
       if (image is AssetImage && image.assetName == 'assets/icon/icon.png') {
         final overrides = await _local.getOverrides();
-        developer.log(
-            'PaletteRepoImpl.generatePalette: loaded overrides=$overrides for asset icon',
-            name: 'PaletteRepoImpl');
+        _logger.info(
+          'PaletteRepoImpl.generatePalette: loaded overrides=$overrides for asset icon',
+        );
         if (overrides != null) {
           final Map<String, Color> map = {};
           if (overrides.containsKey('primary')) {
-            map['primary'] =
-                PaletteManager.getWebSafeColorFromHex(overrides['primary']!);
+            map['primary'] = PaletteManager.getWebSafeColorFromHex(
+              overrides['primary']!,
+            );
           }
           if (overrides.containsKey('secondary')) {
-            map['secondary'] =
-                PaletteManager.getWebSafeColorFromHex(overrides['secondary']!);
+            map['secondary'] = PaletteManager.getWebSafeColorFromHex(
+              overrides['secondary']!,
+            );
           }
           if (overrides.containsKey('background')) {
-            map['background'] =
-                PaletteManager.getWebSafeColorFromHex(overrides['background']!);
+            map['background'] = PaletteManager.getWebSafeColorFromHex(
+              overrides['background']!,
+            );
           }
           if (map.isNotEmpty) {
-            developer.log(
-                'PaletteRepoImpl.generatePalette: returning overrides-as-palette=$map',
-                name: 'PaletteRepoImpl');
+            _logger.info(
+              'PaletteRepoImpl.generatePalette: returning overrides-as-palette=$map',
+            );
             return map;
           }
         }

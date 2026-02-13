@@ -14,6 +14,5 @@ class SampleFeatureResponseDto with _$SampleFeatureResponseDto {
 
   const SampleFeatureResponseDto._();
 
-  factory SampleFeatureResponseDto.fromJson(Map<String, dynamic> json) =>
-      _$SampleFeatureResponseDtoFromJson(json);
+  factory SampleFeatureResponseDto.fromJson(Map<String, dynamic> json) => _$SampleFeatureResponseDtoFromJson(json);
 }

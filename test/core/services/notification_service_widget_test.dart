@@ -5,8 +5,9 @@ import 'package:vision_xai/core/services/global_ui_service.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
 
 void main() {
-  testWidgets('NotificationServiceImpl logs metadata on showSnackBar',
-      (tester) async {
+  testWidgets('NotificationServiceImpl logs metadata on showSnackBar', (
+    tester,
+  ) async {
     // Create a dedicated logger for this test
     final testLogger = Logger('NotificationService.Test');
     final records = <LogRecord>[];
@@ -19,15 +20,19 @@ void main() {
     final service = NotificationServiceImpl(logger: testLogger);
 
     late BuildContext capturedContext;
-    await tester.pumpWidget(MaterialApp(
-      scaffoldMessengerKey: GlobalUiService.scaffoldMessengerKey,
-      home: Scaffold(
-        body: Builder(builder: (ctx) {
-          capturedContext = ctx;
-          return const SizedBox.shrink();
-        }),
+    await tester.pumpWidget(
+      MaterialApp(
+        scaffoldMessengerKey: GlobalUiService.scaffoldMessengerKey,
+        home: Scaffold(
+          body: Builder(
+            builder: (ctx) {
+              capturedContext = ctx;
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
       ),
-    ));
+    );
 
     service.showSnackBar('log-snack', context: capturedContext);
 
@@ -37,7 +42,7 @@ void main() {
     expect(records, isNotEmpty, reason: 'No log records captured');
 
     final rec = records.last;
-    expect(rec.message, equals('log-snack'));
+    expect(rec.message, equals('Show SnackBar: "log-snack"'));
     expect(rec.error, isA<Map>());
 
     final meta = rec.error as Map;
@@ -50,15 +55,19 @@ void main() {
     final service = NotificationServiceImpl();
 
     late BuildContext capturedContext;
-    await tester.pumpWidget(MaterialApp(
-      scaffoldMessengerKey: GlobalUiService.scaffoldMessengerKey,
-      home: Scaffold(
-        body: Builder(builder: (ctx) {
-          capturedContext = ctx;
-          return const SizedBox.shrink();
-        }),
+    await tester.pumpWidget(
+      MaterialApp(
+        scaffoldMessengerKey: GlobalUiService.scaffoldMessengerKey,
+        home: Scaffold(
+          body: Builder(
+            builder: (ctx) {
+              capturedContext = ctx;
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
       ),
-    ));
+    );
 
     service.showSnackBar('Test SnackBar Message', context: capturedContext);
 
@@ -72,8 +81,9 @@ void main() {
     expect(find.byType(SnackBar), findsOneWidget);
   });
 
-  testWidgets('Log contains correct route name when using named route',
-      (tester) async {
+  testWidgets('Log contains correct route name when using named route', (
+    tester,
+  ) async {
     final testLogger = Logger('NotificationService.RouteTest');
     final records = <LogRecord>[];
 
@@ -84,25 +94,29 @@ void main() {
     final service = NotificationServiceImpl(logger: testLogger);
 
     late BuildContext capturedContext;
-    await tester.pumpWidget(MaterialApp(
-      scaffoldMessengerKey: GlobalUiService.scaffoldMessengerKey,
-      routes: {
-        '/test-route': (context) => Scaffold(
-              body: Builder(builder: (ctx) {
+    await tester.pumpWidget(
+      MaterialApp(
+        scaffoldMessengerKey: GlobalUiService.scaffoldMessengerKey,
+        routes: {
+          '/test-route': (context) => Scaffold(
+            body: Builder(
+              builder: (ctx) {
                 capturedContext = ctx;
                 return const Text('Test Route');
-              }),
+              },
             ),
-      },
-      home: Builder(
-        builder: (context) => Scaffold(
-          body: ElevatedButton(
-            onPressed: () => Navigator.pushNamed(context, '/test-route'),
-            child: const Text('Navigate'),
+          ),
+        },
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, '/test-route'),
+              child: const Text('Navigate'),
+            ),
           ),
         ),
       ),
-    ));
+    );
 
     // Navigate to named route
     await tester.tap(find.text('Navigate'));
@@ -120,7 +134,7 @@ void main() {
 
     expect(records, isNotEmpty);
     final rec = records.last;
-    expect(rec.message, equals('route-test'));
+    expect(rec.message, equals('Show SnackBar: "route-test"'));
 
     final meta = rec.error as Map;
     // Verify the route name is captured
@@ -131,15 +145,19 @@ void main() {
     final service = NotificationServiceImpl();
 
     late BuildContext capturedContext;
-    await tester.pumpWidget(MaterialApp(
-      scaffoldMessengerKey: GlobalUiService.scaffoldMessengerKey,
-      home: Scaffold(
-        body: Builder(builder: (ctx) {
-          capturedContext = ctx;
-          return const SizedBox.shrink();
-        }),
+    await tester.pumpWidget(
+      MaterialApp(
+        scaffoldMessengerKey: GlobalUiService.scaffoldMessengerKey,
+        home: Scaffold(
+          body: Builder(
+            builder: (ctx) {
+              capturedContext = ctx;
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
       ),
-    ));
+    );
 
     service.showSnackBar(
       'Styled Message',
@@ -158,8 +176,9 @@ void main() {
     expect(find.text('Styled Message'), findsOneWidget);
   });
 
-  testWidgets('Log metadata includes backgroundColor and duration',
-      (tester) async {
+  testWidgets('Log metadata includes backgroundColor and duration', (
+    tester,
+  ) async {
     final testLogger = Logger('NotificationService.MetadataTest');
     final records = <LogRecord>[];
 
@@ -170,15 +189,19 @@ void main() {
     final service = NotificationServiceImpl(logger: testLogger);
 
     late BuildContext capturedContext;
-    await tester.pumpWidget(MaterialApp(
-      scaffoldMessengerKey: GlobalUiService.scaffoldMessengerKey,
-      home: Scaffold(
-        body: Builder(builder: (ctx) {
-          capturedContext = ctx;
-          return const SizedBox.shrink();
-        }),
+    await tester.pumpWidget(
+      MaterialApp(
+        scaffoldMessengerKey: GlobalUiService.scaffoldMessengerKey,
+        home: Scaffold(
+          body: Builder(
+            builder: (ctx) {
+              capturedContext = ctx;
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
       ),
-    ));
+    );
 
     service.showSnackBar(
       'metadata-test',
@@ -191,7 +214,7 @@ void main() {
 
     expect(records, isNotEmpty);
     final rec = records.last;
-    expect(rec.message, equals('metadata-test'));
+    expect(rec.message, equals('Show SnackBar: "metadata-test"'));
 
     final meta = rec.error as Map;
     expect(meta.containsKey('backgroundColor'), isTrue);

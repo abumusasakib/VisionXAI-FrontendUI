@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:vision_xai/features/image_caption/domain/entity/image_caption_entity_group.dart';
 
 import '../../../domain/entity/image_caption_entity.dart';
 import '../../../domain/use_case/image_caption_uc.dart';
@@ -24,7 +25,7 @@ class ImageCaptionCubit extends Cubit<ImageCaptionState> {
       {CancelToken? cancelToken}) async {
     emit(const ImageCaptionState.loading());
 
-    final Either<Exception, dynamic> result =
+    final Either<Exception, ImageCaptionEntityGroup> result =
         await useCase.call(imageBytes, filename, cancelToken: cancelToken);
 
     ImageCaptionState terminal = const ImageCaptionState.unKnown();
@@ -34,7 +35,7 @@ class ImageCaptionCubit extends Cubit<ImageCaptionState> {
         emit(terminal);
       },
       (entityGroup) {
-        entityGroup.when(
+        entityGroup.fold(
           success: (entity) {
             terminal = ImageCaptionState.loaded(entity);
             emit(terminal);

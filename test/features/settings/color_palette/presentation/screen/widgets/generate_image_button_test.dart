@@ -19,7 +19,7 @@ void main() {
     Future<File?> fakePickFile() async => File('dummy');
     // Injected generate that returns a known palette
     Future<Map<String, dynamic>> fakeGenerate(
-        BuildContext _, ImageProvider __) async {
+        BuildContext _, ImageProvider _) async {
       return {
         'primary': const Color(0xFF112233),
         'secondary': const Color(0xFF445566),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:developer' as developer;
+import 'package:logging/logging.dart';
 import 'package:vision_xai/features/settings/color_palette/core/utils/palette_utils.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_cubit.dart';
@@ -11,6 +11,8 @@ import 'package:vision_xai/features/settings/color_palette/presentation/screen/w
 import 'package:vision_xai/features/settings/color_palette/presentation/screen/widgets/presets_list.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
+
+final _logger = Logger('PaletteSettingsScreen');
 
 class PaletteSettingsScreen extends StatefulWidget {
   const PaletteSettingsScreen({super.key});
@@ -29,12 +31,15 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
   void initState() {
     super.initState();
     final palette = context.read<PaletteCubit>().state;
-    primaryController =
-        TextEditingController(text: toHex(palette.primaryColor));
-    secondaryController =
-        TextEditingController(text: toHex(palette.secondaryColor));
-    backgroundController =
-        TextEditingController(text: toHex(palette.backgroundColor));
+    primaryController = TextEditingController(
+      text: toHex(palette.primaryColor),
+    );
+    secondaryController = TextEditingController(
+      text: toHex(palette.secondaryColor),
+    );
+    backgroundController = TextEditingController(
+      text: toHex(palette.backgroundColor),
+    );
     // Load persisted overrides and presets after the first frame so the
     // provided cubit is available in the widget tree.
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -67,31 +72,30 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
               final primaryHex = toHex(paletteState.primaryColor);
               final secondaryHex = toHex(paletteState.secondaryColor);
               final backgroundHex = toHex(paletteState.backgroundColor);
-              developer.log(
-                  'PaletteCubit listener: primary=$primaryHex, secondary=$secondaryHex, background=$backgroundHex',
-                  name: 'PaletteSettingsScreen');
+              _logger.info(
+                'PaletteCubit listener: primary=$primaryHex, secondary=$secondaryHex, background=$backgroundHex',
+              );
               // Only update controllers if they differ to avoid stomping edits.
               if (primaryController.text != primaryHex) {
-                developer.log(
-                    'PaletteSettingsScreen: updating primaryController from ${primaryController.text} -> $primaryHex',
-                    name: 'PaletteSettingsScreen');
+                _logger.info(
+                  'PaletteSettingsScreen: updating primaryController from ${primaryController.text} -> $primaryHex',
+                );
                 primaryController.text = primaryHex;
               }
               if (secondaryController.text != secondaryHex) {
-                developer.log(
-                    'PaletteSettingsScreen: updating secondaryController from ${secondaryController.text} -> $secondaryHex',
-                    name: 'PaletteSettingsScreen');
+                _logger.info(
+                  'PaletteSettingsScreen: updating secondaryController from ${secondaryController.text} -> $secondaryHex',
+                );
                 secondaryController.text = secondaryHex;
               }
               if (backgroundController.text != backgroundHex) {
-                developer.log(
-                    'PaletteSettingsScreen: updating backgroundController from ${backgroundController.text} -> $backgroundHex',
-                    name: 'PaletteSettingsScreen');
+                _logger.info(
+                  'PaletteSettingsScreen: updating backgroundController from ${backgroundController.text} -> $backgroundHex',
+                );
                 backgroundController.text = backgroundHex;
               }
             } catch (e) {
-              developer.log('PaletteCubit listener error: $e',
-                  name: 'PaletteSettingsScreen');
+              _logger.warning('PaletteCubit listener error: $e');
             }
           },
         ),
@@ -115,8 +119,10 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
             // React when overrides changed OR when a message was added/changed.
             // This ensures snackbars (which use `state.message`) show even
             // if the overrides map itself didn't change (e.g. saving a preset).
-            final overridesChanged =
-                !mapsEqual(previous.overrides, current.overrides);
+            final overridesChanged = !mapsEqual(
+              previous.overrides,
+              current.overrides,
+            );
             final messageChanged = previous.message != current.message;
             return overridesChanged || messageChanged;
           },
@@ -125,16 +131,17 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
               if (state.message != null) {
                 // Use global notification service so the listener doesn't need
                 // to depend on ScaffoldMessenger directly.
-                defaultNotificationService.showSnackBar(state.message!,
-                    duration: const Duration(seconds: 3));
-                developer.log('PaletteSettingsCubit message: ${state.message}',
-                    name: 'PaletteSettingsScreen');
+                defaultNotificationService.showSnackBar(
+                  state.message!,
+                  duration: const Duration(seconds: 3),
+                );
+                _logger.info('PaletteSettingsCubit message: ${state.message}');
               }
               if (state.overrides != null) {
                 final o = state.overrides!;
-                developer.log(
-                    'PaletteSettingsCubit listener: applying overrides=$o, overridesTs=${state.overridesUpdatedAt}, previewTs=${state.previewColorsUpdatedAt}',
-                    name: 'PaletteSettingsScreen');
+                _logger.info(
+                  'PaletteSettingsCubit listener: applying overrides=$o, overridesTs=${state.overridesUpdatedAt}, previewTs=${state.previewColorsUpdatedAt}',
+                );
                 // Apply overrides per-key, but prefer newer transient previews
                 // when they exist. If a preview for a given key exists and
                 // the preview's timestamp is newer than the persisted
@@ -160,9 +167,9 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
                   // Apply override only if it's newer-or-equal to the preview.
                   final shouldApply =
                       ovTs.isAfter(pvTs) || ovTs.isAtSameMomentAs(pvTs);
-                  developer.log(
-                      'shouldApplyKey($key): ovTs=$ovTs > pvTs=$pvTs? $shouldApply',
-                      name: 'PaletteSettingsScreen');
+                  _logger.info(
+                    'shouldApplyKey($key): ovTs=$ovTs > pvTs=$pvTs? $shouldApply',
+                  );
                   return shouldApply;
                 }
 
@@ -180,8 +187,7 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
                 }
               }
             } catch (e) {
-              developer.log('PaletteSettingsCubit listener error: $e',
-                  name: 'PaletteSettingsScreen');
+              _logger.warning('PaletteSettingsCubit listener error: $e');
             }
           },
         ),
@@ -213,12 +219,14 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.palette,
-                                color: context
-                                    .watch<PaletteCubit>()
-                                    .state
-                                    .secondaryColor,
-                                size: 24),
+                            Icon(
+                              Icons.palette,
+                              color: context
+                                  .watch<PaletteCubit>()
+                                  .state
+                                  .secondaryColor,
+                              size: 24,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               context.tr.colorConfiguration,
@@ -239,8 +247,9 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
                                 label: context.tr.primaryColor,
                                 fieldKey: 'primary',
                                 controller: primaryController,
-                                swatchColor:
-                                    colorFromHex(primaryController.text),
+                                swatchColor: colorFromHex(
+                                  primaryController.text,
+                                ),
                                 onPickColor: showColorPicker,
                                 validator: hexValidator,
                               ),
@@ -249,8 +258,9 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
                                 label: context.tr.secondaryColor,
                                 fieldKey: 'secondary',
                                 controller: secondaryController,
-                                swatchColor:
-                                    colorFromHex(secondaryController.text),
+                                swatchColor: colorFromHex(
+                                  secondaryController.text,
+                                ),
                                 onPickColor: showColorPicker,
                                 validator: hexValidator,
                               ),
@@ -259,8 +269,9 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
                                 label: context.tr.backgroundColor,
                                 fieldKey: 'background',
                                 controller: backgroundController,
-                                swatchColor:
-                                    colorFromHex(backgroundController.text),
+                                swatchColor: colorFromHex(
+                                  backgroundController.text,
+                                ),
                                 onPickColor: showColorPicker,
                                 validator: hexValidator,
                               ),

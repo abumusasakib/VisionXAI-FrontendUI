@@ -1,4 +1,6 @@
-import 'dart:developer' as developer;
+import 'package:logging/logging.dart';
+
+final _logger = Logger('MapperImpl');
 
 /// Simple Mapper contract used by the image caption feature.
 abstract class Mapper<TFrom, TTo> {
@@ -21,11 +23,10 @@ abstract class MapperImpl<TFrom, TTo> implements Mapper<TFrom, TTo> {
     } catch (e, st) {
       try {
         final mapperType = runtimeType;
-        developer.log(
+        _logger.severe(
           'MapperImpl.run failed in $mapperType: ${e.runtimeType}: $e',
-          name: 'MapperImpl',
-          error: e,
-          stackTrace: st,
+          e,
+          st,
         );
       } catch (_) {}
       rethrow;

@@ -26,7 +26,7 @@ class PresetsList extends StatelessWidget {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: presets.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
               itemBuilder: (ctx2, i) {
                 final entry = presets.entries.elementAt(i);
                 final name = entry.key;

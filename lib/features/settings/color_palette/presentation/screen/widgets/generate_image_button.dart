@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
@@ -24,7 +24,7 @@ class GenerateImageButton extends StatefulWidget {
   final Future<File?> Function()? pickFile;
   final Future<File?> Function()? pickFromGallery;
   final Future<Map<String, dynamic>> Function(BuildContext, ImageProvider)?
-      generate;
+  generate;
 
   const GenerateImageButton({
     super.key,
@@ -52,30 +52,34 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
         // BuildContext across async gaps.
         final tr = context.tr;
         // Only read the cubit if no injected `generate` function exists.
-        final PaletteCubit? paletteCubit =
-            widget.generate == null ? context.read<PaletteCubit>() : null;
+        final PaletteCubit? paletteCubit = widget.generate == null
+            ? context.read<PaletteCubit>()
+            : null;
 
         try {
           // The bottom sheet uses the provided context to show UI; the
           // resulting await is intentionally permitted. Lint is noisy
           // here because the context is used to present the sheet. Guard
           // subsequent UI calls with `mounted`.
-          final choice = await (widget.showImageSourcePicker?.call(context) ??
-              BottomSheetService.showImageSourcePicker());
+          final choice =
+              await (widget.showImageSourcePicker?.call(context) ??
+                  BottomSheetService.showImageSourcePicker());
           if (choice == null) return;
 
           ImageProvider? provider;
 
           if (choice == 'files') {
             if (kIsWeb) {
-              // On web, use bytes
-              final result = await FilePicker.platform.pickFiles(
-                type: FileType.image,
-                allowMultiple: false,
+              // On web, use bytes from file_selector
+              const XTypeGroup images = XTypeGroup(
+                label: 'images',
+                extensions: <String>['png', 'jpg', 'jpeg', 'webp', 'gif'],
               );
-              if (result == null || result.files.isEmpty) return;
-              final bytes = result.files.single.bytes;
-              if (bytes == null) return;
+              final XFile? result = await openFile(
+                acceptedTypeGroups: <XTypeGroup>[images],
+              );
+              if (result == null) return;
+              final bytes = await result.readAsBytes();
               provider = MemoryImage(bytes);
             } else {
               final File? file =
@@ -84,8 +88,9 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
               provider = FileImage(file);
             }
           } else if (choice == 'gallery') {
-            final File? file = await (widget.pickFromGallery?.call() ??
-                _defaultPickFromGallery());
+            final File? file =
+                await (widget.pickFromGallery?.call() ??
+                    _defaultPickFromGallery());
             if (file == null) return;
             provider = FileImage(file);
           }
@@ -127,7 +132,7 @@ class _GenerateImageButtonState extends State<GenerateImageButton> {
         backgroundColor: secondaryColor,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        side: BorderSide(color: secondaryColor.withOpacity(0.3)),
+        side: BorderSide(color: secondaryColor.withAlpha((0.3 * 255).round())),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
@@ -144,13 +149,20 @@ Color _safeSecondaryColor(BuildContext context) {
 
 // Default helpers used when injection points are not provided.
 Future<File?> _defaultPickFile() async {
-  final result = await FilePicker.platform.pickFiles(
-    type: FileType.image,
-    allowMultiple: false,
+  // Use `file_selector` to pick an image file. On web the returned XFile may
+  // not have a usable filesystem path; callers already check `kIsWeb` and
+  // show a notification for web, so returning null on web is acceptable.
+  const XTypeGroup images = XTypeGroup(
+    label: 'images',
+    extensions: <String>['png', 'jpg', 'jpeg', 'webp', 'gif'],
   );
-  if (result == null || result.files.isEmpty) return null;
-  final path = result.files.single.path;
-  if (path == null) return null;
+
+  final XFile? result = await openFile(
+    acceptedTypeGroups: <XTypeGroup>[images],
+  );
+  if (result == null) return null;
+  final String path = result.path;
+  if (path.isEmpty) return null;
   return File(path);
 }
 

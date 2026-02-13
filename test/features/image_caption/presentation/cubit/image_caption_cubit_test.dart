@@ -7,6 +7,7 @@ import 'package:vision_xai/features/image_caption/domain/use_case/image_caption_
 import 'package:dio/dio.dart';
 import 'package:vision_xai/features/image_caption/presentation/cubit/image_caption/image_caption_cubit.dart';
 import 'package:vision_xai/features/image_caption/domain/entity/image_caption_entity.dart';
+import 'package:vision_xai/features/image_caption/domain/entity/image_caption_attributes.dart';
 import 'package:vision_xai/features/image_caption/domain/entity/image_caption_entity_group.dart';
 import 'package:vision_xai/features/image_caption/domain/repository/image_caption_repo.dart';
 
@@ -15,8 +16,8 @@ class FakeRepoSuccess implements ImageCaptionRepo {
   Future<Either<Exception, ImageCaptionEntityGroup>> call(
       Uint8List imageBytes, String filename,
       {CancelToken? cancelToken}) async {
-    return const Right(ImageCaptionEntityGroup.success(
-        ImageCaptionEntity(id: '1', attributes: {'caption': 'ok'})));
+    return const Right(ImageCaptionEntityGroup.success(ImageCaptionEntity(
+        id: '1', attributes: ImageCaptionAttributes(caption: 'ok'))));
   }
 }
 
@@ -135,8 +136,8 @@ void main() {
 
   test('ImageCaptionCubit.call returns terminal loaded state synchronously',
       () async {
-    const entity =
-        ImageCaptionEntity(id: '1', attributes: {'caption': 'hello'});
+    const entity = ImageCaptionEntity(
+        id: '1', attributes: ImageCaptionAttributes(caption: 'hello'));
     final repo = _FakeRepo(const ImageCaptionEntityGroup.success(entity));
     final uc = ImageCaptionUC(repo);
     final cubit = ImageCaptionCubit(uc);
@@ -150,6 +151,6 @@ void main() {
         cubit.state.maybeWhen(loaded: (e) => e, orElse: () => null), isNotNull);
     final loadedEntity =
         terminal.maybeWhen(loaded: (e) => e, orElse: () => null);
-    expect(loadedEntity?.attributes['caption'], equals('hello'));
+    expect(loadedEntity?.attributes.caption, equals('hello'));
   });
 }

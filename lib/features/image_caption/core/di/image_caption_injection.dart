@@ -13,6 +13,7 @@ import '../../domain/use_case/image_caption_uc.dart';
 /// Use this in data layer so apps can call it from DI/bootstrap code.
 ImageCaptionUC createImageCaptionUseCase(Dio dio, {String? baseUrl}) {
   final remote = ImageCaptionRemote(dio, baseUrl: baseUrl);
+
   final jsonToModel = ImageCaptionJsonToModelMapper();
   final modelToEntity = ImageCaptionModelToEntityMapper();
   final responseMapper = ImageCaptionResponseToEntityGroupMapper(

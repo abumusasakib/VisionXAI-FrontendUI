@@ -4,7 +4,7 @@ part 'attention_grid.freezed.dart';
 part 'attention_grid.g.dart';
 
 @freezed
-class AttentionGrid with _$AttentionGrid {
+abstract class AttentionGrid with _$AttentionGrid {
   const factory AttentionGrid({required int rows, required int cols}) =
       _AttentionGrid;
 

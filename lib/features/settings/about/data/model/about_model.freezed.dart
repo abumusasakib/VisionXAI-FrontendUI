@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,165 +9,272 @@ part of 'about_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-AboutModel _$AboutModelFromJson(Map<String, dynamic> json) {
-  return _AboutModel.fromJson(json);
-}
 
 /// @nodoc
 mixin _$AboutModel {
-  String get appVersion => throw _privateConstructorUsedError;
-  String get platform => throw _privateConstructorUsedError;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $AboutModelCopyWith<AboutModel> get copyWith =>
-      throw _privateConstructorUsedError;
+ String get appVersion; String get platform;
+/// Create a copy of AboutModel
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AboutModelCopyWith<AboutModel> get copyWith => _$AboutModelCopyWithImpl<AboutModel>(this as AboutModel, _$identity);
+
+  /// Serializes this AboutModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AboutModel&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion)&&(identical(other.platform, platform) || other.platform == platform));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,appVersion,platform);
+
+@override
+String toString() {
+  return 'AboutModel(appVersion: $appVersion, platform: $platform)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $AboutModelCopyWith<$Res> {
-  factory $AboutModelCopyWith(
-          AboutModel value, $Res Function(AboutModel) then) =
-      _$AboutModelCopyWithImpl<$Res, AboutModel>;
-  @useResult
-  $Res call({String appVersion, String platform});
-}
+abstract mixin class $AboutModelCopyWith<$Res>  {
+  factory $AboutModelCopyWith(AboutModel value, $Res Function(AboutModel) _then) = _$AboutModelCopyWithImpl;
+@useResult
+$Res call({
+ String appVersion, String platform
+});
 
+
+
+
+}
 /// @nodoc
-class _$AboutModelCopyWithImpl<$Res, $Val extends AboutModel>
+class _$AboutModelCopyWithImpl<$Res>
     implements $AboutModelCopyWith<$Res> {
-  _$AboutModelCopyWithImpl(this._value, this._then);
+  _$AboutModelCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final AboutModel _self;
+  final $Res Function(AboutModel) _then;
 
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? appVersion = null,
-    Object? platform = null,
-  }) {
-    return _then(_value.copyWith(
-      appVersion: null == appVersion
-          ? _value.appVersion
-          : appVersion // ignore: cast_nullable_to_non_nullable
-              as String,
-      platform: null == platform
-          ? _value.platform
-          : platform // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
+/// Create a copy of AboutModel
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? appVersion = null,Object? platform = null,}) {
+  return _then(_self.copyWith(
+appVersion: null == appVersion ? _self.appVersion : appVersion // ignore: cast_nullable_to_non_nullable
+as String,platform: null == platform ? _self.platform : platform // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-abstract class _$$AboutModelImplCopyWith<$Res>
-    implements $AboutModelCopyWith<$Res> {
-  factory _$$AboutModelImplCopyWith(
-          _$AboutModelImpl value, $Res Function(_$AboutModelImpl) then) =
-      __$$AboutModelImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String appVersion, String platform});
 }
 
-/// @nodoc
-class __$$AboutModelImplCopyWithImpl<$Res>
-    extends _$AboutModelCopyWithImpl<$Res, _$AboutModelImpl>
-    implements _$$AboutModelImplCopyWith<$Res> {
-  __$$AboutModelImplCopyWithImpl(
-      _$AboutModelImpl _value, $Res Function(_$AboutModelImpl) _then)
-      : super(_value, _then);
 
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? appVersion = null,
-    Object? platform = null,
-  }) {
-    return _then(_$AboutModelImpl(
-      appVersion: null == appVersion
-          ? _value.appVersion
-          : appVersion // ignore: cast_nullable_to_non_nullable
-              as String,
-      platform: null == platform
-          ? _value.platform
-          : platform // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
+/// Adds pattern-matching-related methods to [AboutModel].
+extension AboutModelPatterns on AboutModel {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AboutModel value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AboutModel() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AboutModel value)  $default,){
+final _that = this;
+switch (_that) {
+case _AboutModel():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AboutModel value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AboutModel() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String appVersion,  String platform)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AboutModel() when $default != null:
+return $default(_that.appVersion,_that.platform);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String appVersion,  String platform)  $default,) {final _that = this;
+switch (_that) {
+case _AboutModel():
+return $default(_that.appVersion,_that.platform);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String appVersion,  String platform)?  $default,) {final _that = this;
+switch (_that) {
+case _AboutModel() when $default != null:
+return $default(_that.appVersion,_that.platform);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$AboutModelImpl extends _AboutModel {
-  const _$AboutModelImpl({required this.appVersion, required this.platform})
-      : super._();
 
-  factory _$AboutModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$AboutModelImplFromJson(json);
+class _AboutModel extends AboutModel {
+  const _AboutModel({required this.appVersion, required this.platform}): super._();
+  factory _AboutModel.fromJson(Map<String, dynamic> json) => _$AboutModelFromJson(json);
 
-  @override
-  final String appVersion;
-  @override
-  final String platform;
+@override final  String appVersion;
+@override final  String platform;
 
-  @override
-  String toString() {
-    return 'AboutModel(appVersion: $appVersion, platform: $platform)';
-  }
+/// Create a copy of AboutModel
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AboutModelCopyWith<_AboutModel> get copyWith => __$AboutModelCopyWithImpl<_AboutModel>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$AboutModelImpl &&
-            (identical(other.appVersion, appVersion) ||
-                other.appVersion == appVersion) &&
-            (identical(other.platform, platform) ||
-                other.platform == platform));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, appVersion, platform);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$AboutModelImplCopyWith<_$AboutModelImpl> get copyWith =>
-      __$$AboutModelImplCopyWithImpl<_$AboutModelImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$AboutModelImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$AboutModelToJson(this, );
 }
 
-abstract class _AboutModel extends AboutModel {
-  const factory _AboutModel(
-      {required final String appVersion,
-      required final String platform}) = _$AboutModelImpl;
-  const _AboutModel._() : super._();
-
-  factory _AboutModel.fromJson(Map<String, dynamic> json) =
-      _$AboutModelImpl.fromJson;
-
-  @override
-  String get appVersion;
-  @override
-  String get platform;
-  @override
-  @JsonKey(ignore: true)
-  _$$AboutModelImplCopyWith<_$AboutModelImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AboutModel&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion)&&(identical(other.platform, platform) || other.platform == platform));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,appVersion,platform);
+
+@override
+String toString() {
+  return 'AboutModel(appVersion: $appVersion, platform: $platform)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AboutModelCopyWith<$Res> implements $AboutModelCopyWith<$Res> {
+  factory _$AboutModelCopyWith(_AboutModel value, $Res Function(_AboutModel) _then) = __$AboutModelCopyWithImpl;
+@override @useResult
+$Res call({
+ String appVersion, String platform
+});
+
+
+
+
+}
+/// @nodoc
+class __$AboutModelCopyWithImpl<$Res>
+    implements _$AboutModelCopyWith<$Res> {
+  __$AboutModelCopyWithImpl(this._self, this._then);
+
+  final _AboutModel _self;
+  final $Res Function(_AboutModel) _then;
+
+/// Create a copy of AboutModel
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? appVersion = null,Object? platform = null,}) {
+  return _then(_AboutModel(
+appVersion: null == appVersion ? _self.appVersion : appVersion // ignore: cast_nullable_to_non_nullable
+as String,platform: null == platform ? _self.platform : platform // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+// dart format on

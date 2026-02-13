@@ -1,5 +1,6 @@
 /// Small utility helpers for attention/visualization features.
 /// The template provides a minimal placeholder that the developer can extend.
+library;
 
 class AttentionUtils {
   /// Convert a normalized attention value (0..1) to an alpha value for overlay.

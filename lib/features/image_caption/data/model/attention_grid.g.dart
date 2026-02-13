@@ -6,14 +6,11 @@ part of 'attention_grid.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AttentionGridImpl _$$AttentionGridImplFromJson(Map<String, dynamic> json) =>
-    _$AttentionGridImpl(
+_AttentionGrid _$AttentionGridFromJson(Map<String, dynamic> json) =>
+    _AttentionGrid(
       rows: (json['rows'] as num).toInt(),
       cols: (json['cols'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$AttentionGridImplToJson(_$AttentionGridImpl instance) =>
-    <String, dynamic>{
-      'rows': instance.rows,
-      'cols': instance.cols,
-    };
+Map<String, dynamic> _$AttentionGridToJson(_AttentionGrid instance) =>
+    <String, dynamic>{'rows': instance.rows, 'cols': instance.cols};

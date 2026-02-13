@@ -6,17 +6,13 @@ part of 'sample_feature_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SampleFeatureModelImpl _$$SampleFeatureModelImplFromJson(
-        Map<String, dynamic> json) =>
-    _$SampleFeatureModelImpl(
+_SampleFeatureModel _$SampleFeatureModelFromJson(Map<String, dynamic> json) =>
+    _SampleFeatureModel(
       id: json['id'] as String?,
-      attributes: json['attributes'] as Map<String, dynamic>? ??
+      attributes:
+          json['attributes'] as Map<String, dynamic>? ??
           const <String, dynamic>{},
     );
 
-Map<String, dynamic> _$$SampleFeatureModelImplToJson(
-        _$SampleFeatureModelImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'attributes': instance.attributes,
-    };
+Map<String, dynamic> _$SampleFeatureModelToJson(_SampleFeatureModel instance) =>
+    <String, dynamic>{'id': instance.id, 'attributes': instance.attributes};

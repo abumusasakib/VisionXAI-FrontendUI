@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/foundation.dart';
@@ -89,6 +91,8 @@ void main() {
     // Secondary: hue should match the rotated hue within tolerance and
     // saturation should be similar; lightness may be adjusted to improve
     // contrast so we avoid a strict lightness assertion here.
+    // Debug output to help diagnose hue mismatches
+    log('DBG: bgHue=${bgHsl.hue}, primaryHue=${pHsl.hue}, secondaryHue=${sHsl.hue}, expectedSecondaryHue=${eSHsl.hue}');
     expect(hueDiff(sHsl.hue, eSHsl.hue) <= hueTol, isTrue,
         reason:
             'Secondary hue differs by more than $hueTol degrees: ${hueDiff(sHsl.hue, eSHsl.hue)}');
@@ -107,9 +111,9 @@ void main() {
     final inputColor = Color(inputVal);
     if (kIsWeb) {
       // On web the mapping should yield channels that are multiples of 51
-      expect(c.red % 51, equals(0));
-      expect(c.green % 51, equals(0));
-      expect(c.blue % 51, equals(0));
+      expect(c.r * 255.0 % 51, equals(0));
+      expect(c.g * 255.0 % 51, equals(0));
+      expect(c.b * 255.0 % 51, equals(0));
     } else {
       // On non-web platforms the function returns the original color
       expect(c, equals(inputColor));
@@ -127,15 +131,18 @@ void main() {
 
       if (kIsWeb) {
         // Each channel should be a multiple of 51 and within 0..255
-        expect(mapped.red % 51, equals(0));
-        expect(mapped.green % 51, equals(0));
-        expect(mapped.blue % 51, equals(0));
+        expect((mapped.r * 255.0).round() % 51, equals(0));
+        expect((mapped.g * 255.0).round() % 51, equals(0));
+        expect((mapped.b * 255.0).round() % 51, equals(0));
 
         // Check that rounding is consistent with the same algorithm
         int expectedChannel(int ch) => ((ch / 51).round() * 51).clamp(0, 255);
-        expect(mapped.red, equals(expectedChannel(inputColor.red)));
-        expect(mapped.green, equals(expectedChannel(inputColor.green)));
-        expect(mapped.blue, equals(expectedChannel(inputColor.blue)));
+        final int inR = (inputColor.r * 255.0).round();
+        final int inG = (inputColor.g * 255.0).round();
+        final int inB = (inputColor.b * 255.0).round();
+        expect((mapped.r * 255.0).round(), equals(expectedChannel(inR)));
+        expect((mapped.g * 255.0).round(), equals(expectedChannel(inG)));
+        expect((mapped.b * 255.0).round(), equals(expectedChannel(inB)));
       } else {
         expect(mapped, equals(inputColor));
       }

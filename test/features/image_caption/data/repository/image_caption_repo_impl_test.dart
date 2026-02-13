@@ -16,8 +16,10 @@ class FakeRemote extends ImageCaptionRemote {
   FakeRemote(this.dto) : super(Dio());
 
   @override
-  Future<ImageCaptionResponseDto> captionImage(MultipartFile image,
-      {CancelToken? cancelToken}) async {
+  Future<ImageCaptionResponseDto> captionImage(
+    MultipartFile image, {
+    CancelToken? cancelToken,
+  }) async {
     // Ignore image in fake; return the preconfigured dto.
     return dto;
   }
@@ -27,8 +29,10 @@ class FakeRemoteError extends ImageCaptionRemote {
   FakeRemoteError() : super(Dio());
 
   @override
-  Future<ImageCaptionResponseDto> captionImage(MultipartFile image,
-      {CancelToken? cancelToken}) async {
+  Future<ImageCaptionResponseDto> captionImage(
+    MultipartFile image, {
+    CancelToken? cancelToken,
+  }) async {
     // Simulate server error by throwing
     throw Exception('server error');
   }
@@ -36,7 +40,7 @@ class FakeRemoteError extends ImageCaptionRemote {
 
 void main() {
   test('repo maps remote dto to entity group success', () async {
-    const dto = ImageCaptionResponseDto(
+    final dto = ImageCaptionResponseDto(
       caption: 'a cat',
       id: '1',
       statusCode: 200,
@@ -59,13 +63,14 @@ void main() {
     final result = await repo.call(bytes, 'image.png');
     expect(result, isA<Right>());
     result.fold((l) => fail('expected right'), (r) {
-      r.when(
-        success: (entity) {
-          expect(entity.id, '1');
-          expect(entity.attributes['caption'], 'a cat');
-        },
-        unKnown: () => fail('expected success'),
-      );
+      final dyn = r as dynamic;
+      if (dyn.entity != null) {
+        final entity = dyn.entity;
+        expect(entity.id, '1');
+        expect(entity.attributes.caption, 'a cat');
+      } else {
+        fail('expected success');
+      }
     });
   });
 

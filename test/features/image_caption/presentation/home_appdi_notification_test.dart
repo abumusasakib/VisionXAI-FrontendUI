@@ -13,6 +13,7 @@ import 'package:vision_xai/features/image_caption/presentation/cubit/image_capti
 import 'package:vision_xai/features/image_caption/domain/use_case/image_caption_uc.dart';
 import 'package:vision_xai/features/image_caption/domain/repository/image_caption_repo.dart';
 import 'package:vision_xai/features/image_caption/domain/entity/image_caption_entity.dart';
+import 'package:vision_xai/features/image_caption/domain/entity/image_caption_attributes.dart';
 import 'package:vision_xai/features/image_caption/domain/entity/image_caption_entity_group.dart';
 import 'package:vision_xai/features/settings/presentation/cubit/settings_feature_cubit.dart';
 import 'package:vision_xai/features/settings/domain/use_case/settings_uc.dart';
@@ -30,7 +31,8 @@ class _DummyRepo implements ImageCaptionRepo {
       Uint8List imageBytes, String filename,
       {CancelToken? cancelToken}) async {
     // Return a successful entity with a simple caption attribute
-    const e = ImageCaptionEntity(attributes: {'caption': 'ok'});
+    const e =
+        ImageCaptionEntity(attributes: ImageCaptionAttributes(caption: 'ok'));
     return right(const ImageCaptionEntityGroup.success(e));
   }
 }

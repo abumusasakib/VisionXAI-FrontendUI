@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:developer' as developer;
+import 'package:logging/logging.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -10,16 +10,20 @@ import 'package:vision_xai/l10n/app_localizations.dart';
 import 'result.dart';
 import '../notification_service.dart';
 
+final _logger = Logger('runWithErrorHandling');
+
 /// Runs [action] and returns a [Result]. If [showSnackOnError] is true and
 /// a valid [context] is provided, a SnackBar with the mapped message will be
 /// shown when an error occurs.
-Future<Result<T>> runWithErrorHandling<T>(Future<T> Function() action,
-    {bool showSnackOnError = false,
-    NotificationService? notificationService,
-    AppLocalizations? localizations,
-    bool rethrowOnError = false,
-    String? successMessage,
-    bool showSuccessOnSuccess = false}) async {
+Future<Result<T>> runWithErrorHandling<T>(
+  Future<T> Function() action, {
+  bool showSnackOnError = false,
+  NotificationService? notificationService,
+  AppLocalizations? localizations,
+  bool rethrowOnError = false,
+  String? successMessage,
+  bool showSuccessOnSuccess = false,
+}) async {
   try {
     final value = await action();
     // Optionally show a success SnackBar when action completes successfully.
@@ -47,8 +51,7 @@ Future<Result<T>> runWithErrorHandling<T>(Future<T> Function() action,
       } catch (_) {}
     }
 
-    developer.log('runWithErrorHandling failure: $msg',
-        name: 'runWithErrorHandling', error: e, stackTrace: st);
+    _logger.severe('runWithErrorHandling failure: $msg', e, st);
 
     if (rethrowOnError) rethrow;
 

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:developer' as developer;
+import 'package:logging/logging.dart';
 import 'package:vision_xai/features/settings/color_palette/core/utils/palette_utils.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette/palette_cubit.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_cubit.dart';
+
+final _logger = Logger('GenerateFromHexButton');
 
 class GenerateFromHexButton extends StatelessWidget {
   final TextEditingController primaryController;
@@ -30,14 +32,13 @@ class GenerateFromHexButton extends StatelessWidget {
           primaryController.text = toHex(palette['primary']!);
           secondaryController.text = toHex(palette['secondary']!);
           backgroundController.text = toHex(palette['background']!);
-          developer.log(
-              'GenerateFromHex: palette generated primary=${toHex(palette['primary']!)}, secondary=${toHex(palette['secondary']!)}, background=${toHex(palette['background']!)}',
-              name: 'GenerateFromHexButton');
+          _logger.info(
+            'GenerateFromHex: palette generated primary=${toHex(palette['primary']!)}, secondary=${toHex(palette['secondary']!)}, background=${toHex(palette['background']!)}',
+          );
           // Also update the live PaletteCubit so UI previews update immediately
           try {
             final cubit = context.read<PaletteCubit>();
-            developer.log('GenerateFromHex: updating PaletteCubit from hex',
-                name: 'GenerateFromHexButton');
+            _logger.info('GenerateFromHex: updating PaletteCubit from hex');
             cubit.updateFromMap({
               'primary': palette['primary']!,
               'secondary': palette['secondary']!,
@@ -57,9 +58,9 @@ class GenerateFromHexButton extends StatelessWidget {
               'secondary': toHex(palette['secondary']!),
               'background': toHex(palette['background']!),
             };
-            developer.log(
-                'GenerateFromHex: persisting generated overrides=$overrides',
-                name: 'GenerateFromHexButton');
+            _logger.info(
+              'GenerateFromHex: persisting generated overrides=$overrides',
+            );
             await settings.saveOverrides(overrides);
           } catch (_) {}
         } catch (_) {
@@ -74,7 +75,9 @@ class GenerateFromHexButton extends StatelessWidget {
         backgroundColor: _safeSecondaryColor(context),
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        side: BorderSide(color: _safeSecondaryColor(context).withOpacity(0.3)),
+        side: BorderSide(
+          color: _safeSecondaryColor(context).withAlpha((0.3 * 255).round()),
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );

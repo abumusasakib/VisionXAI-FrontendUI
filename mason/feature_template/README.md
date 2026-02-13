@@ -32,6 +32,9 @@ dependencies:
   flutter_bloc: ^8.1.3
   http: ^0.13.6
   dio: ^5.0.0
+  # The template's remote implementation uses Dio directly; codegen for Retrofit
+  # was removed from the template. Add `retrofit` only if you need generated
+  # client code in your project.
   retrofit: ^4.0.1
   json_annotation: ^4.9.0
   freezed_annotation: ^2.1.0
@@ -40,6 +43,10 @@ dev_dependencies:
   build_runner: ^2.4.6
   freezed: ^2.3.2
   retrofit_generator: ^4.0.1
+
+Note: The remote implementation in this brick uses `Dio` directly and does
+not require `retrofit_generator`. Keep `dio` in your dependencies so the
+generated remote class can make network requests.
 ```
 
 Notes:
