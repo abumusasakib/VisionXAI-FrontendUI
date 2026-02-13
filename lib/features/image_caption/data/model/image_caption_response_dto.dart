@@ -38,7 +38,7 @@ abstract class ImageCaptionResponseDto with _$ImageCaptionResponseDto {
 
   /// Generated JSON factory (Map -> model).
   factory ImageCaptionResponseDto.fromJson(Map<String, dynamic> json) =>
-      _$ImageCaptionResponseDtoFromJson(json);
+      ImageCaptionResponseDto.fromMap(json);
 
   /// Original custom parsing logic preserved. Use this when the source may be
   /// either a JSON string or an arbitrary Map (legacy behavior).
