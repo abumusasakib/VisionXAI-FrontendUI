@@ -202,30 +202,68 @@ function cleanUp() {
   }
 }
 
-// Main execution
-(async function main() {
-  if (!checkNodeInstalled()) {
-    installNode();
-  }
-
-  checkDockerInstalled();
-
-  // Get Flutter version from `.fvmrc`
-  const flutterVersion = getFlutterVersion();
-  console.log(`Flutter version found in .fvmrc: ${flutterVersion}`);
-
-  generateDockerfile(flutterVersion); // Create the Dockerfile with placeholder
-  // buildDockerImage(flutterVersion);    // Build Docker image with specific Flutter version
-  createDockerCompose(); // Create docker-compose.yml file
-
-  // Run 'docker-compose up --build' after creating the Dockerfile and docker-compose.yml
+// Extract app version from pubspec.yaml
+// This JavaScript function `extractVersion` reads a `pubspec.yaml`
+// file, extracts the version string (e.g., 1.1.2+1), and returns the base version (1.1.2).
+// If the file cannot be read or the version is not found, it logs an error and exits the process.
+function extractVersion() {
   try {
-    execSync("docker-compose up --build", { stdio: "inherit" });
+    const pubspecPath = path.join(__dirname, "pubspec.yaml");
+    const pubspecContent = fs.readFileSync(pubspecPath, "utf-8");
+
+    const versionMatch = pubspecContent.match(/version:\s*(.*)/);
+    if (versionMatch && versionMatch[1]) {
+      // Split by '+' to get only the base version (e.g., 1.1.2)
+      return versionMatch[1].trim().split("+")[0];
+    } else {
+      console.error("Version not found in pubspec.yaml");
+      process.exit(1);
+    }
   } catch (error) {
-    console.error("Error running docker-compose up:", error.message);
-    console.error("Maybe you need to run docker compose up --build instead?");
+    console.error("Error reading version from pubspec.yaml:", error.message);
     process.exit(1);
   }
+}
 
-  cleanUp(); // Clean up after building
-})();
+// Export functions for use in GitHub Actions or other scripts
+module.exports = {
+  checkNodeInstalled,
+  checkDockerInstalled,
+  getFlutterVersion,
+  extractPackageName,
+  extractVersion,
+  generateDockerfile,
+  createDockerCompose,
+  buildDockerImage,
+  cleanUp,
+};
+
+// Main execution (only if called directly)
+if (require.main === module) {
+  (async function main() {
+    if (!checkNodeInstalled()) {
+      installNode();
+    }
+
+    checkDockerInstalled();
+
+    // Get Flutter version from `.fvmrc`
+    const flutterVersion = getFlutterVersion();
+    console.log(`Flutter version found in .fvmrc: ${flutterVersion}`);
+
+    generateDockerfile(flutterVersion); // Create the Dockerfile with placeholder
+    // buildDockerImage(flutterVersion);    // Build Docker image with specific Flutter version
+    createDockerCompose(); // Create docker-compose.yml file
+
+    // Run 'docker-compose up --build' after creating the Dockerfile and docker-compose.yml
+    try {
+      execSync("docker-compose up --build", { stdio: "inherit" });
+    } catch (error) {
+      console.error("Error running docker-compose up:", error.message);
+      console.error("Maybe you need to run docker compose up --build instead?");
+      process.exit(1);
+    }
+
+    cleanUp(); // Clean up after building
+  })();
+}

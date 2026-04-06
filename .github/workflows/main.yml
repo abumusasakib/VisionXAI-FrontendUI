@@ -1,0 +1,116 @@
+name: VisionXAI CI/CD
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: write
+
+jobs:
+  build-web:
+    name: Build & Deploy Web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate localization
+        run: flutter gen-l10n
+
+      - name: Run build_runner
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Build Web
+        run: flutter build web --release --base-href "/${{ github.event.repository.name }}/"
+
+      - name: Deploy to GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build/web
+          branch: gh-pages
+
+  build-android:
+    name: Build Android & Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          channel: 'stable'
+          cache: true
+
+      - name: Extract Version Info
+        id: version_info
+        run: |
+          VERSION=$(node -e "console.log(require('./setup.js').extractVersion())")
+          PACKAGE=$(node -e "console.log(require('./setup.js').extractPackageName())")
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "PACKAGE=$PACKAGE" >> $GITHUB_OUTPUT
+          echo "BUILD_NUMBER=${{ github.run_number }}" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate localization
+        run: flutter gen-l10n
+
+      - name: Run build_runner
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Build Android APK
+        run: |
+          flutter build apk --release \
+            --build-name=${{ steps.version_info.outputs.VERSION }} \
+            --build-number=${{ steps.version_info.outputs.BUILD_NUMBER }}
+
+      - name: Rename APK
+        run: |
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/${{ steps.version_info.outputs.PACKAGE }}-v${{ steps.version_info.outputs.VERSION }}+${{ steps.version_info.outputs.BUILD_NUMBER }}.apk
+
+      - name: Create Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version_info.outputs.VERSION }}+${{ steps.version_info.outputs.BUILD_NUMBER }}
+          name: Release v${{ steps.version_info.outputs.VERSION }}+${{ steps.version_info.outputs.BUILD_NUMBER }}
+          files: build/app/outputs/flutter-apk/*.apk
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+
+  docker-build:
+    name: Docker Build Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract Package Name
+        id: package_info
+        run: |
+          PACKAGE=$(node -e "console.log(require('./setup.js').extractPackageName())")
+          echo "PACKAGE=$PACKAGE" >> $GITHUB_OUTPUT
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag ${{ steps.package_info.outputs.PACKAGE }}:$(date +%s)
