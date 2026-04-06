@@ -106,11 +106,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Extract Package Name
-        id: package_info
+      - name: Extract Build Metadata
+        id: build_info
         run: |
           PACKAGE=$(node -e "console.log(require('./setup.js').extractPackageName())")
+          FLUTTER=$(node -e "console.log(require('./setup.js').getFlutterVersion())")
           echo "PACKAGE=$PACKAGE" >> $GITHUB_OUTPUT
+          echo "FLUTTER_VERSION=$FLUTTER" >> $GITHUB_OUTPUT
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag ${{ steps.package_info.outputs.PACKAGE }}:$(date +%s)
+        run: |
+          docker build . --file Dockerfile \
+            --build-arg FLUTTER_VERSION=${{ steps.build_info.outputs.FLUTTER_VERSION }} \
+            --build-arg PACKAGE_NAME=${{ steps.build_info.outputs.PACKAGE }} \
+            --tag ${{ steps.build_info.outputs.PACKAGE }}:$(date +%s)

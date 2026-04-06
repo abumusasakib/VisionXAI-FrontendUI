@@ -2,7 +2,7 @@
 ARG FLUTTER_VERSION=3.22.3
 
 # Use the specified Flutter version as the base image
-FROM ghcr.io/cirruslabs/flutter:3.22.1
+FROM ghcr.io/cirruslabs/flutter:${FLUTTER_VERSION}
 
 RUN echo "Using Flutter version $FLUTTER_VERSION"
 
@@ -10,7 +10,7 @@ RUN echo "Using Flutter version $FLUTTER_VERSION"
 ARG PACKAGE_NAME=my_flutter_app
 
 # Set environment variable for PACKAGE_NAME for later use
-ENV PACKAGE_NAME=vision_xai
+ENV PACKAGE_NAME=$PACKAGE_NAME
 
 RUN echo "Using Package name $PACKAGE_NAME"
 
