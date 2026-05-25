@@ -6,8 +6,12 @@ import 'package:vision_xai/features/settings/color_palette/presentation/cubit/pa
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_cubit.dart';
 import 'package:vision_xai/core/services/notification_service.dart';
 
-typedef PickColorCallback = Future<void> Function(
-    BuildContext context, TextEditingController controller, String fieldKey);
+typedef PickColorCallback =
+    Future<void> Function(
+      BuildContext context,
+      TextEditingController controller,
+      String fieldKey,
+    );
 
 class HexField extends StatefulWidget {
   final String label;
@@ -100,7 +104,10 @@ class _HexFieldState extends State<HexField> {
             final key = widget.fieldKey ?? widget.label;
             final previewHex = preview[key];
             return Container(
-                width: 56, height: 56, color: _swatchFrom(previewHex));
+              width: 56,
+              height: 56,
+              color: _swatchFrom(previewHex),
+            );
           },
         ),
         const SizedBox(width: 12),
@@ -118,8 +125,10 @@ class _HexFieldState extends State<HexField> {
                 onSelected: (v) async {
                   if (v == 'copy') {
                     await Clipboard.setData(ClipboardData(text: _ctrl.text));
-                    defaultNotificationService.showSnackBar('Copied',
-                        duration: const Duration(seconds: 2));
+                    defaultNotificationService.showSnackBar(
+                      'Copied',
+                      duration: const Duration(seconds: 2),
+                    );
                   } else if (v == 'paste') {
                     final data = await Clipboard.getData('text/plain');
                     if (data?.text != null) _ctrl.text = data!.text!;
@@ -131,10 +140,17 @@ class _HexFieldState extends State<HexField> {
           ),
         ),
         IconButton(
-            onPressed: () => widget.onPickColor(
-                context, _ctrl, widget.fieldKey ?? widget.label),
-            icon: Icon(Icons.colorize,
-                color: context.watch<PaletteCubit>().state.secondaryColor)),
+          tooltip: context.tr.pickAColor,
+          onPressed: () => widget.onPickColor(
+            context,
+            _ctrl,
+            widget.fieldKey ?? widget.label,
+          ),
+          icon: Icon(
+            Icons.colorize,
+            color: context.watch<PaletteCubit>().state.secondaryColor,
+          ),
+        ),
       ],
     );
   }

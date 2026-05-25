@@ -28,6 +28,7 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(
+            tooltip: context.tr.settingsScreenTitle,
             onPressed: () {
               // Navigate to the settings page using GoRouter
               context.push(AppRoutes.settings);
@@ -70,8 +71,10 @@ class HomeScreen extends StatelessWidget {
                 final msg = state.infoMessage!;
                 if (context.mounted) {
                   try {
-                    ns.showSnackBar(msg,
-                        duration: const Duration(milliseconds: 2500));
+                    ns.showSnackBar(
+                      msg,
+                      duration: const Duration(milliseconds: 2500),
+                    );
                   } catch (_) {}
                 }
                 context.read<HomeCubit>().clearInfoMessage();
@@ -110,7 +113,11 @@ class HomeScreen extends StatelessWidget {
                                 Expanded(
                                   flex: 2,
                                   child: controlsWidget(
-                                      context, cubit, state, picker),
+                                    context,
+                                    cubit,
+                                    state,
+                                    picker,
+                                  ),
                                 ),
                               ],
                             )
