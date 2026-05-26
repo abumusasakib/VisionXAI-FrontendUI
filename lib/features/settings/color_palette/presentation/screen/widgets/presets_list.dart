@@ -4,6 +4,7 @@ import 'package:vision_xai/features/settings/color_palette/presentation/cubit/pa
 import 'package:vision_xai/features/settings/color_palette/core/palette_manager.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/screen/alert/delete_preset_dialog.dart';
+import 'package:vision_xai/features/settings/color_palette/core/utils/palette_utils.dart';
 
 class PresetsList extends StatelessWidget {
   const PresetsList({super.key});
@@ -34,20 +35,9 @@ class PresetsList extends StatelessWidget {
                   final entry = presets.entries.elementAt(i);
                   final name = entry.key;
                   final parts = entry.value;
-                  Color p1 = Theme.of(ctx2).colorScheme.surface,
-                      p2 = Theme.of(ctx2).colorScheme.surface,
-                      p3 = Theme.of(ctx2).colorScheme.surface;
-                  try {
-                    p1 = PaletteManager.getWebSafeColorFromHex(
-                      parts['primary'] ?? '#FFFFFF',
-                    );
-                    p2 = PaletteManager.getWebSafeColorFromHex(
-                      parts['secondary'] ?? '#FFFFFF',
-                    );
-                    p3 = PaletteManager.getWebSafeColorFromHex(
-                      parts['background'] ?? '#FFFFFF',
-                    );
-                  } catch (_) {}
+                  Color p1 = colorFromHex(parts['primary'] ?? '#FFFFFF');
+                  Color p2 = colorFromHex(parts['secondary'] ?? '#FFFFFF');
+                  Color p3 = colorFromHex(parts['background'] ?? '#FFFFFF');
 
                   return GestureDetector(
                     onTap: () async {
