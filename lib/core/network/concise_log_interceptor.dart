@@ -147,7 +147,6 @@ class ConciseLogInterceptor extends Interceptor {
     return v.runtimeType.toString();
   }
 
-  @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     final buffer = StringBuffer();
     buffer.writeln('--> ${options.method} ${options.uri}');
@@ -161,7 +160,6 @@ class ConciseLogInterceptor extends Interceptor {
     super.onRequest(options, handler);
   }
 
-  @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     final buffer = StringBuffer();
     buffer.writeln('<-- ${response.statusCode} ${response.requestOptions.uri}');
@@ -175,7 +173,6 @@ class ConciseLogInterceptor extends Interceptor {
     super.onResponse(response, handler);
   }
 
-  @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final buffer = StringBuffer();
     buffer.writeln('*** Dio Error (${err.type}) ***');
