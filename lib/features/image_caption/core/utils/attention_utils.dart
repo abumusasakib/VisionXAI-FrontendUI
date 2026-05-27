@@ -57,16 +57,17 @@ List<List<TopKItem>>? parseTopK(dynamic rawTopk) {
 }
 
 Map<String, int?> parseGrid(
-    dynamic typedGrid, dynamic rawGrid, dynamic rawGridMap, dynamic shape) {
+  dynamic typedGrid,
+  dynamic rawGrid,
+  dynamic rawGridMap,
+  dynamic shape,
+) {
   int? gridRows;
   int? gridCols;
 
   if (typedGrid is AttentionGrid) {
     gridRows = typedGrid.rows;
     gridCols = typedGrid.cols;
-  } else if (rawGrid is AttentionGrid) {
-    gridRows = rawGrid.rows;
-    gridCols = rawGrid.cols;
   } else if (rawGrid is List && rawGrid.length >= 2) {
     final r = rawGrid[0];
     final c = rawGrid[1];
@@ -99,13 +100,13 @@ Map<String, int?> parseGrid(
     gridRows ??= (shape['rows'] is num)
         ? (shape['rows'] as num).toInt()
         : (shape['rows'] is String
-            ? int.tryParse(shape['rows'].toString())
-            : null);
+              ? int.tryParse(shape['rows'].toString())
+              : null);
     gridCols ??= (shape['cols'] is num)
         ? (shape['cols'] as num).toInt()
         : (shape['cols'] is String
-            ? int.tryParse(shape['cols'].toString())
-            : null);
+              ? int.tryParse(shape['cols'].toString())
+              : null);
   }
 
   return {'rows': gridRows, 'cols': gridCols};
