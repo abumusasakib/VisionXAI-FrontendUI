@@ -38,6 +38,25 @@ void main() {
       expect(mapErrorToMessage(t, null), equals('Connection timed out'));
     });
 
+    test('mapErrorToMessage handles DioException', () {
+      final ex = DioException(
+          requestOptions: RequestOptions(path: ''),
+          type: DioExceptionType.connectionTimeout);
+      expect(mapErrorToMessage(ex, null), equals('Connection timed out'));
+    });
+
+    test('mapErrorToMessage handles HttpException', () {
+      const h = HttpException('not found');
+      expect(mapErrorToMessage(h, null),
+          equals('No internet or server unreachable'));
+    });
+
+    test('mapErrorToMessage handles arbitrary unknown errors', () {
+      final ex = Exception('something went wrong');
+      expect(mapErrorToMessage(ex, null), equals('Unknown error'));
+      expect(mapErrorToMessage('string error', null), equals('Unknown error'));
+    });
+
     test('runWithErrorHandling returns failure Result on thrown', () async {
       Future<int> thrower() async => throw const SocketException('no net');
       final res = await runWithErrorHandling<int>(thrower);
