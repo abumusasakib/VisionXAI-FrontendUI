@@ -39,9 +39,7 @@ List<List<TopKItem>>? parseTopK(dynamic rawTopk) {
       if (outer is List) {
         final inner = <TopKItem>[];
         for (final entry in outer) {
-          if (entry is TopKItem) {
-            inner.add(entry);
-          } else if (entry is Map) {
+          if (entry is Map) {
             inner.add(TopKItem.fromMap(Map<String, dynamic>.from(entry)));
           } else if (entry is List) {
             inner.add(TopKItem.fromList(entry));
