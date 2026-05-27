@@ -37,7 +37,7 @@ void main() {
       home: Scaffold(
         body: Center(
           child: SizedBox(
-              width: 400, height: 400, child: AttentionView(entity: entity)),
+              width: 400, height: 600, child: AttentionView(entity: entity)),
         ),
       ),
     ));
@@ -91,7 +91,7 @@ void main() {
             body: Center(
                 child: SizedBox(
                     width: 400,
-                    height: 300,
+                    height: 500,
                     child: AttentionView(entity: entity))))));
     // tap token
     final fA = find.text('a');
@@ -136,7 +136,7 @@ void main() {
             body: Center(
                 child: SizedBox(
                     width: 400,
-                    height: 300,
+                    height: 500,
                     child: AttentionView(entity: entity))))));
     await tester.pumpAndSettle();
 
@@ -194,7 +194,7 @@ void main() {
             body: Center(
                 child: SizedBox(
                     width: 360,
-                    height: 400,
+                    height: 600,
                     child: AttentionView(entity: entity))))));
     await tester.pumpAndSettle();
 
@@ -257,7 +257,7 @@ void main() {
             body: Center(
                 child: SizedBox(
                     width: 480,
-                    height: 320,
+                    height: 500,
                     child: AttentionView(entity: entity))))));
     await tester.pumpAndSettle();
 
@@ -322,7 +322,7 @@ void main() {
             body: Center(
                 child: SizedBox(
                     width: 300,
-                    height: 300,
+                    height: 500,
                     child: AttentionView(entity: entity))))));
     await tester.pumpAndSettle();
 
@@ -371,7 +371,7 @@ void main() {
             body: Center(
                 child: SizedBox(
                     width: 360,
-                    height: 400,
+                    height: 600,
                     child: AttentionView(entity: entity))))));
     await tester.pumpAndSettle();
 
@@ -424,7 +424,7 @@ void main() {
 
     // Use an exact container size so geometry is deterministic
     const containerW = 360.0;
-    const containerH = 400.0;
+    const containerH = 600.0;
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         body: Center(
@@ -513,7 +513,7 @@ void main() {
       home: Scaffold(
         body: Center(
           child: SizedBox(
-              width: 360, height: 300, child: AttentionView(entity: entity)),
+              width: 360, height: 500, child: AttentionView(entity: entity)),
         ),
       ),
     ));

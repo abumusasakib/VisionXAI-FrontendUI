@@ -85,7 +85,7 @@ class AppDi {
         // Trim values to avoid accidental whitespace in base URL
         final ip = s.ip.trim();
         final port = s.port.trim();
-        final newBase = 'http://$ip:$port';
+        final newBase = 'https://$ip:$port';
         try {
           // Update existing Dio's baseUrl so there is one shared instance.
           resolvedDio.options.baseUrl = newBase;
