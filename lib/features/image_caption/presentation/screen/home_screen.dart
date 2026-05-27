@@ -70,12 +70,10 @@ class HomeScreen extends StatelessWidget {
                 final ns = context.read<NotificationService>();
                 final msg = state.infoMessage!;
                 if (context.mounted) {
-                  try {
-                    ns.showSnackBar(
-                      msg,
-                      duration: const Duration(milliseconds: 2500),
-                    );
-                  } catch (_) {}
+                  ns.showSnackBar(
+                    msg,
+                    duration: const Duration(milliseconds: 2500),
+                  );
                 }
                 context.read<HomeCubit>().clearInfoMessage();
               }
