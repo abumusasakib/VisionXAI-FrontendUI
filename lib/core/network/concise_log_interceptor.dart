@@ -10,9 +10,10 @@ class ConciseLogInterceptor extends Interceptor {
   final int maxBodyChars;
   final void Function(Object object) logPrint;
 
-  ConciseLogInterceptor(
-      {this.maxBodyChars = 1024, void Function(Object)? logPrint})
-      : logPrint = logPrint ?? ((o) => log(o.toString(), name: 'Dio'));
+  ConciseLogInterceptor({
+    this.maxBodyChars = 1024,
+    void Function(Object)? logPrint,
+  }) : logPrint = logPrint ?? ((o) => log(o.toString(), name: 'Dio'));
 
   static bool _looksBinaryContentType(String? contentType) {
     if (contentType == null) return false;
@@ -44,8 +45,9 @@ class ConciseLogInterceptor extends Interceptor {
         return 'MultipartFile: filename=${data.filename ?? '<unknown>'}';
       }
       if (data is Uint8List || data is List<int>) {
-        final len =
-            data is Uint8List ? data.lengthInBytes : (data as List<int>).length;
+        final len = data is Uint8List
+            ? data.lengthInBytes
+            : (data as List<int>).length;
         return 'Binary body: $len bytes';
       }
       if (_looksBinaryContentType(contentType as String?)) {
@@ -79,19 +81,13 @@ class ConciseLogInterceptor extends Interceptor {
 
   String _responseBodySummary(Response response) {
     try {
-      final contentType = response.headers.value('content-type')?.toLowerCase();
       final data = response.data;
       if (data == null) return 'null';
       if (data is Uint8List || data is List<int>) {
-        final len =
-            data is Uint8List ? data.lengthInBytes : (data as List<int>).length;
+        final len = data is Uint8List
+            ? data.lengthInBytes
+            : (data as List<int>).length;
         return 'Binary response body: $len bytes';
-      }
-      if (_looksBinaryContentType(contentType)) {
-        if (data is String) {
-          return 'Binary-like response string: ${data.length} chars';
-        }
-        return 'Binary-like response (${data.runtimeType})';
       }
       if (data is String) return _truncateString(data);
 
@@ -181,7 +177,8 @@ class ConciseLogInterceptor extends Interceptor {
     buffer.writeln('*** Dio Error (${err.type}) ***');
     try {
       buffer.writeln(
-          'Request: ${err.requestOptions.method} ${err.requestOptions.uri}');
+        'Request: ${err.requestOptions.method} ${err.requestOptions.uri}',
+      );
     } catch (_) {}
     if (err.response != null) {
       buffer.writeln('Response status: ${err.response?.statusCode}');
