@@ -152,7 +152,7 @@ class HomeCubit extends Cubit<HomeState> {
       // Log effective base URL constructed from the current state (IP/port)
       // and file details so developers can verify what the client will call.
       try {
-        final effectiveBase = 'http://${state.ip.trim()}:${state.port.trim()}';
+        final effectiveBase = 'https://${state.ip.trim()}:${state.port.trim()}';
         log('Uploading image to $effectiveBase/caption', name: 'HomeCubit');
         log('Uploading file: ${xFile.name}, size: ${await xFile.length()} bytes',
             name: 'HomeCubit');

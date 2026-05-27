@@ -32,7 +32,7 @@ void setupServiceLocator() {
           settingsBox.get('ip', defaultValue: IPDetails.defaultIP) as String;
       final port = settingsBox.get('port', defaultValue: IPDetails.defaultPort)
           as String;
-      final baseUrl = 'http://$ip:$port';
+      final baseUrl = 'https://$ip:$port';
       final d = Dio(BaseOptions(
         baseUrl: baseUrl,
         connectTimeout: const Duration(seconds: 90),
