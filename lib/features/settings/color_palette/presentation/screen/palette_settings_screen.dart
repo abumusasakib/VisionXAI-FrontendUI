@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
@@ -106,20 +107,10 @@ class _PaletteSettingsScreenState extends State<PaletteSettingsScreen> {
           // so identical-but-new-map instances don't cause unnecessary
           // controller updates.
           listenWhen: (previous, current) {
-            bool mapsEqual(Map<String, String>? a, Map<String, String>? b) {
-              if (a == null && b == null) return true;
-              if (a == null || b == null) return false;
-              if (a.length != b.length) return false;
-              for (final k in a.keys) {
-                if (a[k] != b[k]) return false;
-              }
-              return true;
-            }
-
             // React when overrides changed OR when a message was added/changed.
             // This ensures snackbars (which use `state.message`) show even
             // if the overrides map itself didn't change (e.g. saving a preset).
-            final overridesChanged = !mapsEqual(
+            final overridesChanged = !mapEquals(
               previous.overrides,
               current.overrides,
             );
