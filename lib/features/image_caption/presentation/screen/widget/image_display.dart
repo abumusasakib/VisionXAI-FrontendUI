@@ -11,23 +11,26 @@ Widget imageDisplay(BuildContext context, HomeState state) {
   final double displayHeight = getResponsiveImageHeight(context);
 
   if (state.imageFile != null) {
-    return GestureDetector(
-      onLongPress: () => previewDialog(context, state.imageFile!),
-      child: kIsWeb
-          ? Image.network(
-              state.imageFile!.path,
-              height: displayHeight,
-              width: double.infinity,
-              fit: BoxFit.contain,
-              alignment: Alignment.center,
-            )
-          : Image.file(
-              File(state.imageFile!.path),
-              height: displayHeight,
-              width: double.infinity,
-              fit: BoxFit.contain,
-              alignment: Alignment.center,
-            ),
+    return MouseRegion(
+      cursor: SystemMouseCursors.zoomIn,
+      child: GestureDetector(
+        onLongPress: () => previewDialog(context, state.imageFile!),
+        child: kIsWeb
+            ? Image.network(
+                state.imageFile!.path,
+                height: displayHeight,
+                width: double.infinity,
+                fit: BoxFit.contain,
+                alignment: Alignment.center,
+              )
+            : Image.file(
+                File(state.imageFile!.path),
+                height: displayHeight,
+                width: double.infinity,
+                fit: BoxFit.contain,
+                alignment: Alignment.center,
+              ),
+      ),
     );
   }
 
@@ -58,14 +61,17 @@ Widget imageWidgetFromBytes(BuildContext context, Uint8List imageBytes) {
     heightFactor: 0.5,
   );
 
-  return GestureDetector(
-    onLongPress: () => previewDialogFromBytes(context, imageBytes),
-    child: Image.memory(
-      imageBytes,
-      height: displayHeight,
-      width: double.infinity,
-      fit: BoxFit.contain,
-      alignment: Alignment.center,
+  return MouseRegion(
+    cursor: SystemMouseCursors.zoomIn,
+    child: GestureDetector(
+      onLongPress: () => previewDialogFromBytes(context, imageBytes),
+      child: Image.memory(
+        imageBytes,
+        height: displayHeight,
+        width: double.infinity,
+        fit: BoxFit.contain,
+        alignment: Alignment.center,
+      ),
     ),
   );
 }

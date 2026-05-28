@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/cubit/palette_settings/palette_settings_cubit.dart';
-import 'package:vision_xai/features/settings/color_palette/core/palette_manager.dart';
 import 'package:vision_xai/l10n/localization_extension.dart';
 import 'package:vision_xai/features/settings/color_palette/presentation/screen/alert/delete_preset_dialog.dart';
 import 'package:vision_xai/features/settings/color_palette/core/utils/palette_utils.dart';
@@ -39,62 +38,64 @@ class PresetsList extends StatelessWidget {
                   Color p2 = colorFromHex(parts['secondary'] ?? '#FFFFFF');
                   Color p3 = colorFromHex(parts['background'] ?? '#FFFFFF');
 
-                  return GestureDetector(
-                    onTap: () async {
-                      final settingsCubit = ctx.read<PaletteSettingsCubit>();
-                      await settingsCubit.applyPreset(name);
-                    },
-                    child: Container(
-                      width: 220,
-                      height: 84,
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Theme.of(ctx).dividerColor),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(width: 40, height: 40, color: p1),
-                              const SizedBox(width: 6),
-                              Container(width: 40, height: 40, color: p2),
-                              const SizedBox(width: 6),
-                              Container(width: 40, height: 40, color: p3),
-                              const Spacer(),
-                              IconButton(
-                                tooltip: context.tr.delete,
-                                onPressed: () async {
-                                  final settingsCubit = ctx
-                                      .read<PaletteSettingsCubit>();
-                                  final confirm = await showDeletePresetDialog(
-                                    ctx,
-                                    name,
-                                  );
-                                  if (confirm == true) {
-                                    await settingsCubit.deletePreset(name);
-                                  }
-                                },
-                                icon: Icon(
-                                  Icons.delete,
-                                  color: Theme.of(ctx).colorScheme.error,
+                  return Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () async {
+                        final settingsCubit = ctx.read<PaletteSettingsCubit>();
+                        await settingsCubit.applyPreset(name);
+                      },
+                      child: Container(
+                        width: 220,
+                        height: 84,
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Theme.of(ctx).dividerColor),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(width: 40, height: 40, color: p1),
+                                const SizedBox(width: 6),
+                                Container(width: 40, height: 40, color: p2),
+                                const SizedBox(width: 6),
+                                Container(width: 40, height: 40, color: p3),
+                                const Spacer(),
+                                IconButton(
+                                  tooltip: context.tr.delete,
+                                  onPressed: () async {
+                                    final settingsCubit = ctx
+                                        .read<PaletteSettingsCubit>();
+                                    final confirm =
+                                        await showDeletePresetDialog(ctx, name);
+                                    if (confirm == true) {
+                                      await settingsCubit.deletePreset(name);
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: Theme.of(ctx).colorScheme.error,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              name,
-                              style: const TextStyle(fontSize: 12),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                              ],
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 6),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                name,
+                                style: const TextStyle(fontSize: 12),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
