@@ -85,7 +85,7 @@ Widget controlsWidget(BuildContext context, HomeCubit cubit, HomeState state,
           child: state.testOutput.isNotEmpty
               ? Column(
                   children: [
-                    Text(
+                    SelectableText(
                       state.testOutput,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -136,9 +136,9 @@ Widget controlsWidget(BuildContext context, HomeCubit cubit, HomeState state,
               : Text(
                   context.tr.captionText,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
         ),
