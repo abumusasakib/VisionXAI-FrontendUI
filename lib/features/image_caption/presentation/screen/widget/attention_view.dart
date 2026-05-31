@@ -89,6 +89,7 @@ class _AttentionViewBody extends StatelessWidget {
         }
 
         return Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             if (imageBytes != null) ...[
               SizedBox(

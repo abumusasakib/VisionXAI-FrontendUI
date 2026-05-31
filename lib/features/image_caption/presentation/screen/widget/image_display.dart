@@ -42,9 +42,24 @@ Widget imageDisplay(BuildContext context, HomeState state) {
     child: Center(
       child: RepaintBoundary(
         key: const ValueKey('no-image-text'),
-        child: Text(
-          context.tr.noImageSelected,
-          key: const ValueKey('no-image-text-inner'),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.image_outlined,
+              size: 48,
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              context.tr.noImageSelected,
+              key: const ValueKey('no-image-text-inner'),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                fontSize: 16,
+              ),
+            ),
+          ],
         ),
       ),
     ),

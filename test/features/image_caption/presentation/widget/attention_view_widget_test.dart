@@ -35,9 +35,9 @@ void main() {
 
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
-        body: Center(
+        body: SingleChildScrollView(
           child: SizedBox(
-              width: 400, height: 400, child: AttentionView(entity: entity)),
+              width: 400, height: 800, child: AttentionView(entity: entity)),
         ),
       ),
     ));
@@ -88,10 +88,10 @@ void main() {
 
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
-            body: Center(
+            body: SingleChildScrollView(
                 child: SizedBox(
                     width: 400,
-                    height: 300,
+                    height: 800,
                     child: AttentionView(entity: entity))))));
     // tap token
     final fA = find.text('a');
@@ -133,10 +133,10 @@ void main() {
 
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
-            body: Center(
+            body: SingleChildScrollView(
                 child: SizedBox(
                     width: 400,
-                    height: 300,
+                    height: 800,
                     child: AttentionView(entity: entity))))));
     await tester.pumpAndSettle();
 
@@ -191,10 +191,10 @@ void main() {
 
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
-            body: Center(
+            body: SingleChildScrollView(
                 child: SizedBox(
                     width: 360,
-                    height: 400,
+                    height: 800,
                     child: AttentionView(entity: entity))))));
     await tester.pumpAndSettle();
 
@@ -254,10 +254,10 @@ void main() {
 
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
-            body: Center(
+            body: SingleChildScrollView(
                 child: SizedBox(
                     width: 480,
-                    height: 320,
+                    height: 800,
                     child: AttentionView(entity: entity))))));
     await tester.pumpAndSettle();
 
@@ -319,10 +319,10 @@ void main() {
 
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
-            body: Center(
+            body: SingleChildScrollView(
                 child: SizedBox(
                     width: 300,
-                    height: 300,
+                    height: 800,
                     child: AttentionView(entity: entity))))));
     await tester.pumpAndSettle();
 
@@ -368,10 +368,10 @@ void main() {
 
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
-            body: Center(
+            body: SingleChildScrollView(
                 child: SizedBox(
                     width: 360,
-                    height: 400,
+                    height: 800,
                     child: AttentionView(entity: entity))))));
     await tester.pumpAndSettle();
 
@@ -427,10 +427,10 @@ void main() {
     const containerH = 400.0;
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
-        body: Center(
+        body: SingleChildScrollView(
           child: SizedBox(
               width: containerW,
-              height: containerH,
+              height: 800,
               child: AttentionView(entity: entity)),
         ),
       ),
@@ -511,9 +511,9 @@ void main() {
     // Make container generous so Column won't overflow but image cell sizes remain small
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
-        body: Center(
+        body: SingleChildScrollView(
           child: SizedBox(
-              width: 360, height: 300, child: AttentionView(entity: entity)),
+              width: 360, height: 800, child: AttentionView(entity: entity)),
         ),
       ),
     ));
