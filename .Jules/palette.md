@@ -1,3 +1,7 @@
 ## 2024-03-24 - Interactive Images and Tactile Feedback
 **Learning:** Found that long-press interactions on images (like the preview dialog) lack cursor affordances for non-touch platforms, making them hidden. Also, tapping `GestureDetector`s without `InkWell` feels dead.
 **Action:** Always wrap long-press or tap-capable elements in `MouseRegion(cursor: SystemMouseCursors.zoomIn/click)` and use `InkWell` for visual ripple feedback.
+
+## 2024-03-24 - InkWell over Images
+**Learning:** In Flutter, `InkWell` paints its ripple effect on the nearest `Material` ancestor. To make the ripple visible over opaque widgets like `Image`, overlay the `InkWell` (wrapped in a transparent `Material`) on top of the image using a `Stack` and `Positioned.fill`. Additionally, `InkWell` applies a default click cursor that overrides any ancestor `MouseRegion` cursors, so to use a custom cursor, explicitly set the `mouseCursor` property directly on the `InkWell`. Finally, when using a `Stack` to overlay an `InkWell` for tactile feedback, ensure it is ordered earlier in the `children` list (beneath) other interactive elements (like markers) to avoid intercepting and blocking their touch events.
+**Action:** Use `Stack` with `Positioned.fill`, `Material(color: Colors.transparent)`, and `InkWell` for tactile feedback over images, setting `mouseCursor` directly on `InkWell` and layering it correctly below other interactive elements.
