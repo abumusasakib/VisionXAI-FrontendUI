@@ -140,39 +140,45 @@ class _ImageWithMarkersState extends State<ImageWithMarkers> {
 
             return MouseRegion(
               cursor: SystemMouseCursors.zoomIn,
-              child: GestureDetector(
-                onLongPress: () =>
-                    previewDialogFromBytes(context, widget.imageBytes),
-                child: Stack(
-                  children: [
-                    // Center the image; when we have intrinsic size we constrain its box so it fits exactly
-                    Positioned.fill(
-                      child: Center(
-                        child: Image.memory(
-                          widget.imageBytes,
-                          width: imgW > 0 ? imageDisplayWidth : double.infinity,
-                          height: imgH > 0 ? imageDisplayHeight : double.infinity,
-                          fit: BoxFit.contain,
-                        ),
+              child: Stack(
+                children: [
+                  // Center the image; when we have intrinsic size we constrain its box so it fits exactly
+                  Positioned.fill(
+                    child: Center(
+                      child: Image.memory(
+                        widget.imageBytes,
+                        width: imgW > 0 ? imageDisplayWidth : double.infinity,
+                        height: imgH > 0 ? imageDisplayHeight : double.infinity,
+                        fit: BoxFit.contain,
                       ),
                     ),
-                    if (widget.topk != null && selectedIdx != null)
-                      ...markersWidget(
-                        context,
-                        widget.topk!,
-                        selectedIdx,
-                        imageDisplayWidth,
-                        imageDisplayHeight,
-                        gridRows: widget.gridRows,
-                        gridCols: widget.gridCols,
-                        color: selectedTokenColor,
-                        originLeft: originLeft,
-                        originTop: originTop,
-                        containerWidth: width,
-                        containerHeight: height,
+                  ),
+                  Positioned.fill(
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        mouseCursor: SystemMouseCursors.zoomIn,
+                        onLongPress: () =>
+                            previewDialogFromBytes(context, widget.imageBytes),
                       ),
-                  ],
-                ),
+                    ),
+                  ),
+                  if (widget.topk != null && selectedIdx != null)
+                    ...markersWidget(
+                      context,
+                      widget.topk!,
+                      selectedIdx,
+                      imageDisplayWidth,
+                      imageDisplayHeight,
+                      gridRows: widget.gridRows,
+                      gridCols: widget.gridCols,
+                      color: selectedTokenColor,
+                      originLeft: originLeft,
+                      originTop: originTop,
+                      containerWidth: width,
+                      containerHeight: height,
+                    ),
+                ],
               ),
             );
           },

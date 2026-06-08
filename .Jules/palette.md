@@ -1,3 +1,4 @@
 ## 2024-03-24 - Interactive Images and Tactile Feedback
 **Learning:** Found that long-press interactions on images (like the preview dialog) lack cursor affordances for non-touch platforms, making them hidden. Also, tapping `GestureDetector`s without `InkWell` feels dead.
 **Action:** Always wrap long-press or tap-capable elements in `MouseRegion(cursor: SystemMouseCursors.zoomIn/click)` and use `InkWell` for visual ripple feedback.
+## 2024-06-01 - Image Tap Affordance with Inkwell\n**Learning:** In Flutter, `InkWell` applies a default click cursor that overrides any ancestor `MouseRegion` cursors, and when placed at the top of a Stack, it can block hit-testing for underlying interactive elements.\n**Action:** When replacing `GestureDetector` with `InkWell` in a Stack, explicitly pass the intended `mouseCursor` to the `InkWell` and order it below other interactive layers (like markers) to prevent breaking interactions.
