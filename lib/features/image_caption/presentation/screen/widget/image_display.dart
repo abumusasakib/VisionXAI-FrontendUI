@@ -11,25 +11,36 @@ Widget imageDisplay(BuildContext context, HomeState state) {
   final double displayHeight = getResponsiveImageHeight(context);
 
   if (state.imageFile != null) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.zoomIn,
-      child: GestureDetector(
-        onLongPress: () => previewDialog(context, state.imageFile!),
-        child: kIsWeb
-            ? Image.network(
-                state.imageFile!.path,
-                height: displayHeight,
-                width: double.infinity,
-                fit: BoxFit.contain,
-                alignment: Alignment.center,
-              )
-            : Image.file(
-                File(state.imageFile!.path),
-                height: displayHeight,
-                width: double.infinity,
-                fit: BoxFit.contain,
-                alignment: Alignment.center,
+    return SizedBox(
+      height: displayHeight,
+      width: double.infinity,
+      child: Stack(
+        children: [
+          kIsWeb
+              ? Image.network(
+                  state.imageFile!.path,
+                  height: displayHeight,
+                  width: double.infinity,
+                  fit: BoxFit.contain,
+                  alignment: Alignment.center,
+                )
+              : Image.file(
+                  File(state.imageFile!.path),
+                  height: displayHeight,
+                  width: double.infinity,
+                  fit: BoxFit.contain,
+                  alignment: Alignment.center,
+                ),
+          Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                mouseCursor: SystemMouseCursors.zoomIn,
+                onLongPress: () => previewDialog(context, state.imageFile!),
               ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -51,14 +62,18 @@ Widget imageDisplay(BuildContext context, HomeState state) {
             Icon(
               Icons.image_outlined,
               size: 48,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
             Text(
               context.tr.noImageSelected,
               key: const ValueKey('no-image-text-inner'),
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.6),
                 fontSize: 16,
               ),
             ),
@@ -76,17 +91,28 @@ Widget imageWidgetFromBytes(BuildContext context, Uint8List imageBytes) {
     heightFactor: 0.5,
   );
 
-  return MouseRegion(
-    cursor: SystemMouseCursors.zoomIn,
-    child: GestureDetector(
-      onLongPress: () => previewDialogFromBytes(context, imageBytes),
-      child: Image.memory(
-        imageBytes,
-        height: displayHeight,
-        width: double.infinity,
-        fit: BoxFit.contain,
-        alignment: Alignment.center,
-      ),
+  return SizedBox(
+    height: displayHeight,
+    width: double.infinity,
+    child: Stack(
+      children: [
+        Image.memory(
+          imageBytes,
+          height: displayHeight,
+          width: double.infinity,
+          fit: BoxFit.contain,
+          alignment: Alignment.center,
+        ),
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              mouseCursor: SystemMouseCursors.zoomIn,
+              onLongPress: () => previewDialogFromBytes(context, imageBytes),
+            ),
+          ),
+        ),
+      ],
     ),
   );
 }
