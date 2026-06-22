@@ -11,11 +11,10 @@ Widget imageDisplay(BuildContext context, HomeState state) {
   final double displayHeight = getResponsiveImageHeight(context);
 
   if (state.imageFile != null) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.zoomIn,
-      child: GestureDetector(
-        onLongPress: () => previewDialog(context, state.imageFile!),
-        child: kIsWeb
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        kIsWeb
             ? Image.network(
                 state.imageFile!.path,
                 height: displayHeight,
@@ -30,7 +29,16 @@ Widget imageDisplay(BuildContext context, HomeState state) {
                 fit: BoxFit.contain,
                 alignment: Alignment.center,
               ),
-      ),
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              mouseCursor: SystemMouseCursors.zoomIn,
+              onLongPress: () => previewDialog(context, state.imageFile!),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -76,17 +84,25 @@ Widget imageWidgetFromBytes(BuildContext context, Uint8List imageBytes) {
     heightFactor: 0.5,
   );
 
-  return MouseRegion(
-    cursor: SystemMouseCursors.zoomIn,
-    child: GestureDetector(
-      onLongPress: () => previewDialogFromBytes(context, imageBytes),
-      child: Image.memory(
+  return Stack(
+    alignment: Alignment.center,
+    children: [
+      Image.memory(
         imageBytes,
         height: displayHeight,
         width: double.infinity,
         fit: BoxFit.contain,
         alignment: Alignment.center,
       ),
-    ),
+      Positioned.fill(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            mouseCursor: SystemMouseCursors.zoomIn,
+            onLongPress: () => previewDialogFromBytes(context, imageBytes),
+          ),
+        ),
+      ),
+    ],
   );
 }
