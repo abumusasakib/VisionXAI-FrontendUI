@@ -1,3 +1,3 @@
 ## 2024-03-24 - Interactive Images and Tactile Feedback
 **Learning:** Found that long-press interactions on images (like the preview dialog) lack cursor affordances for non-touch platforms, making them hidden. Also, tapping `GestureDetector`s without `InkWell` feels dead.
-**Action:** Always wrap long-press or tap-capable elements in `MouseRegion(cursor: SystemMouseCursors.zoomIn/click)` and use `InkWell` for visual ripple feedback.
+**Action:** Always wrap long-press or tap-capable elements in `MouseRegion(cursor: SystemMouseCursors.zoomIn/click)` or use `InkWell` (which manages the cursor automatically via `mouseCursor`) for visual ripple feedback. When overlaying `InkWell` over an image in a `Stack`, position the `InkWell` (wrapped in a transparent `Material`) after the image but before interactive elements like markers.
